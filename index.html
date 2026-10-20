@@ -63,7 +63,11 @@
   color-scheme: light;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
+}
 
 body {
   font-family: 'Syne', sans-serif;
@@ -71,6 +75,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  max-width: 100%;
   transition: background 0.4s, color 0.4s;
 }
 
@@ -137,14 +142,16 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 clamp(18px, 4vw, 36px);
-  height: 68px;
+  padding: 0 clamp(14px, 4vw, 36px);
+  height: 64px;
   background: var(--bg-nav);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
   transition: background 0.4s, border-color 0.4s;
   overflow: visible;
+  width: 100%;
+  min-width: 0;
 }
 
 .logo {
@@ -159,6 +166,8 @@ nav {
   align-items: center;
   gap: 10px;
   transition: color 0.4s;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .logo-icon {
   position: relative;
@@ -204,9 +213,10 @@ nav {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   overflow: visible;
   position: relative;
+  flex-shrink: 0;
 }
 
 /* ── THEME TOGGLE ── */
@@ -312,9 +322,9 @@ nav {
 /* ── DRAWER ── */
 .drawer {
   position: fixed;
-  top: 68px; right: 0;
-  width: 280px;
-  height: calc(100vh - 68px);
+  top: 64px; right: 0;
+  width: min(280px, 80vw);
+  height: calc(100vh - 64px);
   background: var(--bg-drawer);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
@@ -595,7 +605,7 @@ main {
 
 .si-text { min-width: 0; }
 .si-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; letter-spacing: -0.3px; }
-.si-desc { font-size: 12.5px; color: var(--text-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.si-desc { font-size: 12.5px; color: var(--text-sub); white-space: normal; line-height: 1.5; }
 
 .sa-chevron {
   flex-shrink: 0; color: var(--muted);
@@ -785,6 +795,32 @@ footer a:hover { color: var(--text); }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 640px) {
+  nav {
+    height: 60px;
+    padding: 0 14px;
+  }
+  .logo {
+    font-size: 14px;
+    letter-spacing: 2.5px;
+    gap: 8px;
+  }
+  .nav-right {
+    gap: 6px;
+  }
+  .theme-toggle {
+    width: 56px;
+    height: 26px;
+  }
+  .toggle-thumb {
+    width: 18px;
+    height: 18px;
+    top: 2px;
+    left: 2px;
+  }
+  [data-theme="light"] .toggle-thumb {
+    left: calc(100% - 20px);
+  }
+  .toggle-icon { font-size: 10px; }
   .hero { padding: 72px 0 56px; }
   .hero-orbit-wrap, .planet-deco { display: none; }
   .stats-row { flex-wrap: wrap; border-radius: 10px; }
@@ -793,7 +829,25 @@ footer a:hover { color: var(--text); }
   .stat-item:nth-last-child(-n+2) { border-bottom: none; }
   .about-accent { display: none; }
   .btn-login { display: none; }
+  .btn-signup {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
   .about-strip { padding: 28px 22px; }
+  .drawer {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+  /* Logged-in avatar: hide name on mobile */
+  .user-avatar-name { display: none; }
+  .user-avatar-btn { padding: 4px 8px 4px 4px; }
+  /* Dropdown should not overflow left edge */
+  .user-dropdown { right: 0; min-width: 170px; }
+}
+
+@media (max-width: 380px) {
+  .logo { font-size: 13px; letter-spacing: 1.5px; }
+  .btn-signup { display: none; }
 }
 
 /* ── USER AVATAR (after login) ── */
@@ -1075,7 +1129,7 @@ footer a:hover { color: var(--text); }
           <span class="si-num">01</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
           <div class="si-text">
-            <div class="si-name">Publisher Monetization</div>
+            <div class="si-name">Publishers (WEBSITES & APPS)</div>
             <div class="si-desc">Earn revenue from your content and traffic</div>
           </div>
         </div>
@@ -1086,7 +1140,7 @@ footer a:hover { color: var(--text); }
           <p>Turn your web traffic, apps, or mobile views into steady automated revenue streams with high-yielding ad formats and a global advertiser network.</p>
           <ul class="sa-points">
             <li>High eCPM global ad inventory</li>
-            <li>Instant automated payouts</li>
+            <li>Multiple Ad Formats</li>
             <li>Real-time tracking and reporting dashboard</li>
           </ul>
           <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-01" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-01" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
