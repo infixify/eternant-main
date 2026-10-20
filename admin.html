@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eternant Admin — Link Configuration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="dark"] {
+  --bg:         #03050d;
+  --bg-card:    #070c1a;
+  --bg-hover:   #0b1226;
+  --bg-nav:     rgba(3,5,13,0.88);
+  --border:     #141f38;
+  --border-lt:  #1e3058;
+  --text:       #d8e6ff;
+  --text-sub:   #8aa4c8;
+  --muted:      #4a6080;
+  --accent:     #6eb5ff;
+  --accent2:    #a78bfa;
+  --accent-dim: rgba(110,181,255,0.08);
+  --glow:       rgba(110,181,255,0.18);
+  --success:    #4ade80;
+  --success-dim:rgba(74,222,128,0.08);
+  --warn:       #fbbf24;
+  --warn-dim:   rgba(251,191,36,0.08);
+  --danger:     #f87171;
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  --bg:         #f0f4ff;
+  --bg-card:    #ffffff;
+  --bg-hover:   #e8eeff;
+  --bg-nav:     rgba(240,244,255,0.92);
+  --border:     #d0daf0;
+  --border-lt:  #b8c8e8;
+  --text:       #0d1832;
+  --text-sub:   #3a5080;
+  --muted:      #6a82a8;
+  --accent:     #2a7fd4;
+  --accent2:    #7c54e8;
+  --accent-dim: rgba(42,127,212,0.08);
+  --glow:       rgba(42,127,212,0.14);
+  --success:    #16a34a;
+  --success-dim:rgba(22,163,74,0.08);
+  --warn:       #d97706;
+  --warn-dim:   rgba(217,119,6,0.08);
+  --danger:     #dc2626;
+  color-scheme: light;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.35s, color 0.35s; }
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(18px,4vw,36px); height: 64px;
+  background: var(--bg-nav); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.35s, border-color 0.35s;
+}
+.logo { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: 3px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-badge { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; background: linear-gradient(135deg, rgba(110,181,255,0.2), rgba(167,139,250,0.15)); border: 1px solid rgba(110,181,255,0.3); color: var(--accent); padding: 2px 8px; border-radius: 100px; font-family: 'Space Mono', monospace; text-transform: uppercase; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle { display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 100px; padding: 3px; cursor: pointer; width: 64px; height: 28px; transition: border-color 0.2s, background 0.35s; position: relative; }
+.theme-toggle:hover { border-color: var(--border-lt); }
+.toggle-track { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+.toggle-icon { font-size: 11px; z-index: 1; line-height: 1; }
+.toggle-thumb { position: absolute; top: 1px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 2px 8px var(--glow); transition: left 0.3s cubic-bezier(0.4,0,0.2,1); }
+[data-theme="light"] .toggle-thumb { left: calc(100% - 22px); }
+
+.btn-preview { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; padding: 7px 18px; border-radius: 8px; border: 1px solid rgba(110,181,255,0.4); background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.08)); color: var(--accent); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.btn-preview:hover { box-shadow: 0 0 18px var(--glow); border-color: var(--accent); }
+.btn-preview svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.btn-logout { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-lt); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.btn-logout:hover { color: var(--danger); border-color: var(--danger); background: rgba(248,113,113,0.06); }
+
+/* ── LAYOUT ── */
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 clamp(18px,4vw,28px) 80px; }
+
+/* ── LOGIN SCREEN ── */
+#loginScreen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 64px);
+  padding: 40px 20px;
+}
+.login-card {
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 44px 40px;
+  width: 100%; max-width: 400px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(110,181,255,0.04);
+}
+.login-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
+  border: 1px solid rgba(110,181,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+}
+.login-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.login-card h2 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.4px; }
+.login-card p { font-size: 13px; color: var(--text-sub); margin-bottom: 28px; line-height: 1.6; }
+.login-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-sub); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.login-input { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border-lt); background: var(--bg-hover); color: var(--text); font-family: 'Syne', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 14px; }
+.login-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(110,181,255,0.1); }
+.login-input::placeholder { color: var(--muted); }
+.btn-login-submit { width: 100%; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, #4a9eff, #7b5ef7); color: #fff; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 18px rgba(74,158,255,0.3); margin-top: 6px; }
+.btn-login-submit:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,158,255,0.4); }
+.btn-login-submit:disabled { opacity: 0.6; pointer-events: none; }
+.login-error { margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: var(--danger); font-size: 12px; display: none; }
+.login-error.show { display: block; }
+
+/* ── ADMIN CONTENT ── */
+#adminContent { display: none; }
+
+/* ── PAGE HEADER ── */
+.page-header { padding: 52px 0 40px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+.page-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.page-header h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; letter-spacing: -1px; color: var(--text); }
+.page-header h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.page-header p { font-size: 14px; color: var(--text-sub); line-height: 1.7; margin-top: 10px; max-width: 480px; }
+.admin-user-badge { display: flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 100px; background: var(--success-dim); border: 1px solid rgba(74,222,128,0.2); font-family: 'Space Mono', monospace; font-size: 10px; color: var(--success); letter-spacing: 0.5px; flex-shrink: 0; }
+.admin-user-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+
+/* ── SAVE BAR ── */
+.save-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 32px; transition: background 0.35s, border-color 0.35s; }
+.save-status { display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s, box-shadow 0.3s; }
+.status-dot.saved   { background: var(--success); box-shadow: 0 0 8px var(--success); }
+.status-dot.unsaved { background: var(--warn); box-shadow: 0 0 8px var(--warn); animation: blink 1.5s ease-in-out infinite; }
+.status-dot.loading { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: blink 0.8s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.save-actions { display: flex; gap: 8px; }
+.btn-reset { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 500; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-lt); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.btn-reset:hover { color: var(--text); border-color: var(--muted); background: var(--bg-hover); }
+.btn-save { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 22px; border-radius: 8px; border: none; background: linear-gradient(135deg, #4a9eff, #7b5ef7); color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 16px rgba(74,158,255,0.3); }
+.btn-save:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,158,255,0.4); }
+.btn-save svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+.btn-save.saving { opacity: 0.7; pointer-events: none; }
+
+/* ── GROUP ── */
+.group { margin-bottom: 28px; }
+.group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.group-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; }
+.group-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+
+/* ── LINK ROW ── */
+.link-list { display: flex; flex-direction: column; gap: 8px; }
+.link-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; flex-wrap: wrap; }
+.link-row:hover { border-color: var(--border-lt); }
+.link-label { min-width: 160px; flex-shrink: 0; }
+.link-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.link-desc { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+.link-input-wrap { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 0; border: 1px solid var(--border-lt); border-radius: 10px; background: var(--bg-hover); overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+.link-input-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(110,181,255,0.08); }
+.link-input-icon { padding: 0 10px; color: var(--muted); display: flex; align-items: center; flex-shrink: 0; }
+.link-input-icon svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.link-input { flex: 1; padding: 9px 4px; background: transparent; border: none; outline: none; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; min-width: 0; }
+.link-input::placeholder { color: var(--muted); }
+.link-clear { padding: 9px 12px; background: transparent; border: none; border-left: 1px solid var(--border); color: var(--muted); cursor: pointer; font-size: 11px; transition: color 0.15s, background 0.15s; flex-shrink: 0; }
+.link-clear:hover { color: var(--text); background: var(--bg-card); }
+
+/* ── PLATFORM ROW ── */
+.platform-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; flex-wrap: wrap; }
+.platform-row:hover { border-color: var(--border-lt); }
+.platform-vis { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.vis-label { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+/* ── PILL SWITCH ── */
+.pill-switch { position: relative; display: inline-block; cursor: pointer; }
+.pill-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.pill-track { display: block; background: var(--border-lt); border-radius: 100px; width: 100%; height: 100%; transition: background 0.25s; position: relative; }
+.pill-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: calc(50% - 2px); height: calc(100% - 4px); border-radius: 100px; background: #fff; transition: left 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+.pill-switch input:checked + .pill-track { background: var(--accent); }
+.pill-switch input:checked + .pill-track::after { left: calc(50% + 2px); }
+
+/* ── PLATFORM DOTS ── */
+.p-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.p-dot-instagram { background: linear-gradient(135deg, #e1306c, #f77737); }
+.p-dot-youtube   { background: #ff0000; }
+.p-dot-telegram  { background: #2aabee; }
+.p-dot-whatsapp  { background: #25d366; }
+.p-dot-x         { background: #e7e9ea; }
+.p-dot-linkedin  { background: #0a66c2; }
+.p-dot-facebook  { background: #1877f2; }
+.p-dot-discord   { background: #5865f2; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 28px; right: 24px; z-index: 999; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.3); opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; max-width: 320px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { border-color: rgba(74,222,128,0.3); background: var(--success-dim); color: var(--success); }
+.toast.error   { border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.08); color: var(--danger); }
+.toast.reset   { border-color: var(--border-lt); color: var(--text-sub); }
+.toast-icon { font-size: 15px; }
+
+/* ── FOLLOW LABEL ── */
+.follow-label-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; margin-bottom: 8px; }
+.follow-label-row:hover { border-color: var(--border-lt); }
+.section-vis-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+.section-vis-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.section-vis-desc  { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+@media (max-width: 600px) {
+  .link-row, .platform-row { flex-direction: column; align-items: flex-start; }
+  .link-input-wrap { width: 100%; }
+  .platform-vis { width: 100%; justify-content: flex-end; }
+  .login-card { padding: 32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="logo">
+    ETERNANT
+    <span class="logo-badge">ADMIN</span>
+  </a>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb"></div>
+      </div>
+    </button>
+    <a href="index.html" class="btn-preview" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Preview Site
+    </a>
+    <button class="btn-logout" id="btnLogout" onclick="logout()" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2>Admin Access</h2>
+    <p>Sign in with your Eternant admin account to manage site configuration.</p>
+    <label class="login-label" for="loginEmail">Email</label>
+    <input class="login-input" type="email" id="loginEmail" placeholder="admin@eternant.com" autocomplete="email">
+    <label class="login-label" for="loginPassword">Password</label>
+    <input class="login-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-login-submit" id="btnLoginSubmit" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ADMIN CONTENT -->
+<div id="adminContent">
+<div class="wrap">
+
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <h1>Link <em>Configuration</em></h1>
+        <p>Manage all navigation links, service CTAs, social profiles, and footer links. Changes go live instantly on the site.</p>
+      </div>
+      <div class="admin-user-badge">
+        <div class="admin-user-dot"></div>
+        <span id="adminEmailBadge">admin</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Bar -->
+  <div class="save-bar">
+    <div class="save-status">
+      <div class="status-dot loading" id="statusDot"></div>
+      <span id="statusText">Loading…</span>
+    </div>
+    <div class="save-actions">
+      <button class="btn-reset" onclick="resetAll()">Reset All</button>
+      <button class="btn-save" id="btnSave" onclick="saveAll()">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Save Changes
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Navigation</span><div class="group-line"></div></div>
+    <div class="link-list">
+      <div class="link-row">
+        <div class="link-label"><div class="link-name">Log In</div><div class="link-desc">nav → log in button</div></div>
+        <div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="nav_login" placeholder="https://app.eternant.com/login"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+      </div>
+      <div class="link-row">
+        <div class="link-label"><div class="link-name">Get Started</div><div class="link-desc">nav → get started button</div></div>
+        <div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="nav_get_started" placeholder="https://app.eternant.com/signup"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Hero Section</span><div class="group-line"></div></div>
+    <div class="link-list">
+      <div class="link-row">
+        <div class="link-label"><div class="link-name">Start for Free</div><div class="link-desc">hero → primary CTA</div></div>
+        <div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hero_start_free" placeholder="https://app.eternant.com/signup"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+      </div>
+      <div class="link-row">
+        <div class="link-label"><div class="link-name">How It Works</div><div class="link-desc">hero → secondary CTA</div></div>
+        <div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hero_how_it_works" placeholder="https://eternant.com/how-it-works"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Services — Get Started CTAs</span><div class="group-line"></div></div>
+    <div class="link-list">
+      <div class="link-row"><div class="link-label"><div class="link-name">01 Publisher Monetization</div><div class="link-desc">service_01 → get started</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="service_01" placeholder="https://eternant.com/publishers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">02 Advertiser Campaigns</div><div class="link-desc">service_02 → get started</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="service_02" placeholder="https://eternant.com/advertisers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">03 Social Influencers</div><div class="link-desc">service_03 → get started</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="service_03" placeholder="https://eternant.com/influencers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">04 Web &amp; App Dev</div><div class="link-desc">service_04 → get started</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="service_04" placeholder="https://eternant.com/it-solutions"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">05 Giveaways &amp; Promos</div><div class="link-desc">service_05 → get started</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="service_05" placeholder="https://eternant.com/giveaways"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">06 Analytics</div><div class="link-desc">service_06 → get started</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="service_06" placeholder="https://eternant.com/analytics"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+    </div>
+  </div>
+
+  <!-- How It Works CTAs -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Services — How It Works CTAs</span><div class="group-line"></div></div>
+    <div class="link-list">
+      <div class="link-row"><div class="link-label"><div class="link-name">01 Publisher HIW</div><div class="link-desc">hiw_01 → how it works</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hiw_01" placeholder="https://eternant.com/how-it-works#publishers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">02 Advertiser HIW</div><div class="link-desc">hiw_02 → how it works</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hiw_02" placeholder="https://eternant.com/how-it-works#advertisers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">03 Influencer HIW</div><div class="link-desc">hiw_03 → how it works</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hiw_03" placeholder="https://eternant.com/how-it-works#influencers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">04 Dev HIW</div><div class="link-desc">hiw_04 → how it works</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hiw_04" placeholder="https://eternant.com/how-it-works#dev"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">05 Giveaway HIW</div><div class="link-desc">hiw_05 → how it works</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hiw_05" placeholder="https://eternant.com/how-it-works#giveaways"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">06 Analytics HIW</div><div class="link-desc">hiw_06 → how it works</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="hiw_06" placeholder="https://eternant.com/how-it-works#analytics"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Drawer Navigation</span><div class="group-line"></div></div>
+    <div class="link-list">
+      <div class="link-row"><div class="link-label"><div class="link-name">Home</div><div class="link-desc">drawer → home</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_home" placeholder="https://eternant.com"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">Publishers</div><div class="link-desc">drawer → publishers</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_publishers" placeholder="https://eternant.com/publishers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">Advertisers</div><div class="link-desc">drawer → advertisers</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_advertisers" placeholder="https://eternant.com/advertisers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">IT Solutions</div><div class="link-desc">drawer → it solutions</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_it" placeholder="https://eternant.com/it-solutions"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">Influencers</div><div class="link-desc">drawer → influencers</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_influencers" placeholder="https://eternant.com/influencers"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">Giveaways</div><div class="link-desc">drawer → giveaways</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_giveaways" placeholder="https://eternant.com/giveaways"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+      <div class="link-row"><div class="link-label"><div class="link-name">Contact</div><div class="link-desc">drawer → contact</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="drawer_contact" placeholder="https://eternant.com/contact"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+    </div>
+  </div>
+
+  <!-- Follow Us -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Follow Us Section</span><div class="group-line"></div></div>
+
+    <div class="section-vis-row">
+      <div><div class="section-vis-label">Show Section</div><div class="section-vis-desc">toggle entire follow us section</div></div>
+      <label class="pill-switch" style="width:44px;height:24px;"><input type="checkbox" id="toggle-follow_section_visible" data-toggle-key="follow_section_visible" checked onchange="markDirty()"><span class="pill-track"></span></label>
+    </div>
+
+    <div class="follow-label-row">
+      <div class="link-label"><div class="link-name">Subtitle</div><div class="link-desc">optional subtitle text</div></div>
+      <div class="link-input-wrap" style="flex:1;min-width:220px;"><span class="link-input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 6.1H3M21 12.1H3M15.1 18H3"/></svg></span><input class="link-input" type="text" data-key="follow_label" placeholder="Stay connected with us"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+    </div>
+
+    <div class="link-list">
+      <!-- Instagram -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-instagram"></span>Instagram</div><div class="link-desc">follow → instagram</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_instagram" placeholder="https://instagram.com/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_instagram_visible" data-toggle-key="follow_instagram_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- YouTube -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-youtube"></span>YouTube</div><div class="link-desc">follow → youtube</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_youtube" placeholder="https://youtube.com/@eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_youtube_visible" data-toggle-key="follow_youtube_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- Telegram -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-telegram"></span>Telegram</div><div class="link-desc">follow → telegram</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_telegram" placeholder="https://t.me/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_telegram_visible" data-toggle-key="follow_telegram_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- WhatsApp -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-whatsapp"></span>WhatsApp</div><div class="link-desc">follow → whatsapp</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_whatsapp" placeholder="https://wa.me/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_whatsapp_visible" data-toggle-key="follow_whatsapp_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- X -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-x"></span>X (Twitter)</div><div class="link-desc">follow → x</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_x" placeholder="https://x.com/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_x_visible" data-toggle-key="follow_x_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- LinkedIn -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-linkedin"></span>LinkedIn</div><div class="link-desc">follow → linkedin</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_linkedin" placeholder="https://linkedin.com/company/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_linkedin_visible" data-toggle-key="follow_linkedin_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- Facebook -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-facebook"></span>Facebook</div><div class="link-desc">follow → facebook</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_facebook" placeholder="https://facebook.com/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_facebook_visible" data-toggle-key="follow_facebook_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+      <!-- Discord -->
+      <div class="platform-row">
+        <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-discord"></span>Discord</div><div class="link-desc">follow → discord</div></div>
+        <div class="link-input-wrap" style="flex:1;min-width:180px;"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_discord" placeholder="https://discord.gg/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+        <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_discord_visible" data-toggle-key="follow_discord_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="group">
+    <div class="group-header"><span class="group-label">Footer</span><div class="group-line"></div></div>
+    <div class="link-list">
+      <div class="link-row"><div class="link-label"><div class="link-name">Contact</div><div class="link-desc">footer → contact link</div></div><div class="link-input-wrap"><span class="link-input-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="footer_contact" placeholder="https://eternant.com/contact"><button class="link-clear" onclick="clearInput(this)">✕</button></div></div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+</div><!-- /adminContent -->
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   SUPABASE CONFIG
+   ════════════════════════════════════════════ */
+var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
+var ADMIN_EMAIL   = 'sarthaksinghyadav1@gmail.com';
+var CACHE_KEY     = 'eternant_links_v1';
+
+var session = null;
+var isDirty = false;
+
+/* ── THEME ── */
+var htmlEl = document.documentElement;
+var savedTheme = localStorage.getItem('et-theme');
+if (savedTheme) htmlEl.setAttribute('data-theme', savedTheme);
+document.getElementById('themeToggle').addEventListener('click', function() {
+  var next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  htmlEl.setAttribute('data-theme', next);
+  localStorage.setItem('et-theme', next);
+});
+
+/* ── AUTH CHECK ON LOAD ── */
+(async function() {
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem('et_session') || 'null'); } catch(e) {}
+  if (stored && stored.access_token && stored.expires_at > Date.now()) {
+    session = stored;
+    showAdmin();
+  }
+  // else stay on login screen
+})();
+
+/* ── LOGIN ── */
+document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+async function doLogin() {
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass  = document.getElementById('loginPassword').value;
+  var errEl = document.getElementById('loginError');
+  var btn   = document.getElementById('btnLoginSubmit');
+
+  errEl.classList.remove('show');
+
+  if (email !== ADMIN_EMAIL) {
+    errEl.textContent = 'Access denied. Not an admin account.';
+    errEl.classList.add('show');
+    return;
+  }
+  if (!email || !pass) {
+    errEl.textContent = 'Please enter email and password.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    });
+    var data = await res.json();
+    if (!res.ok || data.error) {
+      throw new Error(data.error_description || data.msg || 'Invalid credentials');
+    }
+    session = {
+      access_token: data.access_token,
+      user_email:   data.user.email,
+      expires_at:   Date.now() + (data.expires_in * 1000)
+    };
+    localStorage.setItem('et_session', JSON.stringify(session));
+    showAdmin();
+  } catch(e) {
+    errEl.textContent = e.message || 'Login failed. Check your credentials.';
+    errEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+}
+
+function showAdmin() {
+  document.getElementById('loginScreen').style.display  = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+  document.getElementById('btnLogout').style.display    = 'inline-flex';
+  if (session && session.user_email) {
+    document.getElementById('adminEmailBadge').textContent = session.user_email.split('@')[0];
+  }
+  loadData();
+}
+
+async function logout() {
+  try {
+    await fetch(SUPABASE_URL + '/auth/v1/logout', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + session.access_token }
+    });
+  } catch(e) {}
+  localStorage.removeItem('et_session');
+  localStorage.removeItem(CACHE_KEY);
+  session = null;
+  document.getElementById('loginScreen').style.display  = 'flex';
+  document.getElementById('adminContent').style.display = 'none';
+  document.getElementById('btnLogout').style.display    = 'none';
+  document.getElementById('loginEmail').value    = '';
+  document.getElementById('loginPassword').value = '';
+  var btn = document.getElementById('btnLoginSubmit');
+  btn.disabled = false; btn.textContent = 'Sign In';
+}
+
+/* ── LOAD DATA FROM SUPABASE ── */
+async function loadData() {
+  setStatus('loading');
+  try {
+    var res = await fetch(
+      SUPABASE_URL + '/rest/v1/site_config?select=key,value',
+      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + session.access_token } }
+    );
+    if (!res.ok) throw new Error('fetch failed');
+    var rows = await res.json();
+    var data = {};
+    rows.forEach(function(r) { data[r.key] = r.value; });
+
+    // Populate inputs
+    document.querySelectorAll('.link-input').forEach(function(inp) {
+      var k = inp.dataset.key;
+      if (k && data[k]) inp.value = data[k];
+    });
+    // Restore toggles
+    document.querySelectorAll('[data-toggle-key]').forEach(function(cb) {
+      var k = cb.dataset.toggleKey;
+      if (k in data) cb.checked = (data[k] !== 'false');
+    });
+
+    // Update localStorage cache
+    data._ts = Date.now();
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    isDirty = false;
+    setStatus('saved');
+  } catch(e) {
+    setStatus('saved');
+    showToast('error', '⚠️ Could not load from Supabase');
+  }
+}
+
+/* ── DIRTY TRACKING ── */
+function markDirty() { isDirty = true; setStatus('unsaved'); }
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('link-input')) markDirty();
+});
+
+/* ── STATUS ── */
+function setStatus(state) {
+  var dot  = document.getElementById('statusDot');
+  var text = document.getElementById('statusText');
+  dot.className = 'status-dot ' + state;
+  if (state === 'saved')   text.textContent = 'All changes saved';
+  if (state === 'unsaved') text.textContent = 'Unsaved changes';
+  if (state === 'loading') text.textContent = 'Loading…';
+  if (state === 'saving')  text.textContent = 'Saving…';
+}
+
+/* ── SAVE TO SUPABASE ── */
+async function saveAll() {
+  if (!session) return;
+  var btn = document.getElementById('btnSave');
+  btn.classList.add('saving');
+  setStatus('saving');
+
+  // Build rows array
+  var rows = [];
+  document.querySelectorAll('.link-input').forEach(function(inp) {
+    var v = inp.value.trim();
+    var k = inp.dataset.key;
+    if (k) rows.push({ key: k, value: v || '', updated_at: new Date().toISOString() });
+  });
+  document.querySelectorAll('[data-toggle-key]').forEach(function(cb) {
+    var k = cb.dataset.toggleKey;
+    rows.push({ key: k, value: cb.checked ? 'true' : 'false', updated_at: new Date().toISOString() });
+  });
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/site_config', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + session.access_token,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(rows)
+    });
+    if (!res.ok) {
+      var err = await res.json().catch(function(){ return {}; });
+      throw new Error(err.message || 'Save failed (HTTP ' + res.status + ')');
+    }
+
+    // Update localStorage cache
+    var cached = {};
+    rows.forEach(function(r) { cached[r.key] = r.value; });
+    cached._ts = Date.now();
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cached));
+
+    isDirty = false;
+    btn.classList.remove('saving');
+    setStatus('saved');
+    showToast('success', '✓ Links saved — site updated!');
+  } catch(e) {
+    btn.classList.remove('saving');
+    setStatus('unsaved');
+    showToast('error', '✕ ' + (e.message || 'Save failed'));
+  }
+}
+
+/* ── RESET ── */
+async function resetAll() {
+  if (!confirm('Reset all links to empty? This will clear the database too.')) return;
+  if (!session) return;
+
+  // Get all keys and set to empty
+  document.querySelectorAll('.link-input').forEach(function(inp) { inp.value = ''; });
+  document.querySelectorAll('[data-toggle-key]').forEach(function(cb) { cb.checked = true; });
+  isDirty = false;
+  await saveAll();
+  showToast('reset', 'All links cleared');
+}
+
+/* ── CLEAR SINGLE ── */
+function clearInput(btn) {
+  var inp = btn.closest('.link-input-wrap').querySelector('.link-input');
+  inp.value = ''; isDirty = true; setStatus('unsaved'); inp.focus();
+}
+
+/* ── TOAST ── */
+function showToast(type, msg) {
+  var t = document.getElementById('toast');
+  t.className = 'toast ' + type;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+/* ── KEYBOARD SAVE ── */
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (session) saveAll();
+  }
+});
+
+/* ── UNSAVED WARN ── */
+window.addEventListener('beforeunload', function(e) {
+  if (isDirty) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
