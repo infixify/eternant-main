@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Eternant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#03050d;--bg-card:#070c1a;--bg-nav:rgba(3,5,13,0.90);--border:#141f38;--border-lt:#1e3058;--text:#d8e6ff;--text-sub:#8aa4c8;--muted:#4a6080;--accent:#6eb5ff;--accent2:#a78bfa;--glow:rgba(110,181,255,0.18);color-scheme:dark}
+[data-theme="light"]{--bg:#f0f4ff;--bg-card:#ffffff;--bg-nav:rgba(240,244,255,0.92);--border:#d0daf0;--border-lt:#b8c8e8;--text:#0d1832;--text-sub:#3a5080;--muted:#6a82a8;--accent:#2a7fd4;--accent2:#7c54e8;--glow:rgba(42,127,212,0.14);color-scheme:light}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:64px;background:var(--bg-nav);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--text);letter-spacing:4px;text-decoration:none}
+.logo:hover{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.btn-home{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:7px 18px;border-radius:8px;border:1px solid var(--border-lt);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-home:hover{background:var(--bg-card);color:var(--text);border-color:var(--accent)}
+
+/* THEME TOGGLE */
+.theme-toggle{display:flex;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:100px;padding:3px;cursor:pointer;width:60px;height:28px;position:relative}
+.toggle-track{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 5px}
+.toggle-icon{font-size:11px;z-index:1;line-height:1}
+.toggle-thumb{position:absolute;top:1px;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 2px 8px var(--glow);transition:left 0.3s cubic-bezier(0.4,0,0.2,1);left:2px}
+[data-theme="light"] .toggle-thumb{left:calc(100% - 22px)}
+
+/* MAIN CONTENT */
+.page-wrap{max-width:780px;margin:0 auto;padding:60px clamp(20px,4vw,48px) 100px}
+.page-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;border:1px solid var(--border-lt);background:rgba(110,181,255,0.06);font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);margin-bottom:24px;letter-spacing:0.5px}
+.page-title{font-size:clamp(28px,5vw,42px);font-weight:800;color:var(--text);letter-spacing:-1px;margin-bottom:10px;line-height:1.1}
+.page-meta{font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.page-meta span{color:var(--accent)}
+
+.section{margin-bottom:36px}
+.section h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:10px;letter-spacing:0.2px}
+.section h2::before{content:'';width:3px;height:16px;background:linear-gradient(to bottom,var(--accent),var(--accent2));border-radius:2px;flex-shrink:0}
+.section p{font-size:14px;color:var(--text-sub);line-height:1.8;margin-bottom:10px}
+.section ul{margin:10px 0 0 0;padding-left:0;list-style:none}
+.section ul li{font-size:14px;color:var(--text-sub);line-height:1.8;padding:4px 0 4px 20px;position:relative}
+.section ul li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:12px;top:5px}
+.section a{color:var(--accent);text-decoration:none}
+.section a:hover{text-decoration:underline}
+
+/* FOOTER */
+.page-footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:gap;gap:12px}
+.page-footer p{font-size:12px;color:var(--muted)}
+.page-footer a{font-size:12px;color:var(--muted);text-decoration:none}
+.page-footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">ETERNANT</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb" id="toggleThumb"></div>
+      </div>
+    </button>
+    <a href="/" class="btn-home">← Home</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-badge">🔒 Legal</div>
+  <h1 class="page-title">Privacy Policy</h1>
+  <p class="page-meta">Last updated: <span>October 2026</span> &nbsp;·&nbsp; Effective immediately &nbsp;·&nbsp; Eternant Technologies Pvt. Ltd.</p>
+
+  <div class="section">
+    <h2>1. Who We Are</h2>
+    <p>Eternant is a multi-service platform connecting publishers, advertisers, developers, and creators. We operate under Eternant Technologies Pvt. Ltd. and are committed to protecting the privacy of everyone who uses our platform.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. What We Collect</h2>
+    <p>We collect information you provide directly — such as name, email address, and payment details when you register or transact on the platform. We also collect:</p>
+    <ul>
+      <li>Usage data (pages visited, features used, time spent)</li>
+      <li>Device and browser information</li>
+      <li>IP address and approximate location</li>
+      <li>Campaign and content performance metrics for publishers and advertisers</li>
+      <li>Google account information (name, email, profile photo) when you sign in with Google</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>3. How We Use Your Data</h2>
+    <p>Your data is used to operate and improve the platform, send service-related communications, personalise your experience, process payments, and comply with legal obligations. We do not sell your personal data to third parties.</p>
+    <p>When you sign in with Google, we use your Google account information solely to authenticate your identity and personalise your experience on the Eternant platform.</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Cookies</h2>
+    <p>We use cookies and similar tracking technologies to maintain sessions, remember preferences, and understand how the platform is used. You may disable cookies in your browser settings, though some features may not function correctly as a result.</p>
+  </div>
+
+  <div class="section">
+    <h2>5. Data Sharing</h2>
+    <p>We may share data with trusted service providers (hosting, analytics, payment processors) strictly for the purpose of operating our services. All third parties are contractually bound to protect your data and may not use it for their own purposes.</p>
+    <p>We use Supabase for authentication and data storage, which processes data in accordance with their privacy policy and applicable data protection laws.</p>
+  </div>
+
+  <div class="section">
+    <h2>6. Data Retention</h2>
+    <p>We retain your data for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data at any time by contacting us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
+  </div>
+
+  <div class="section">
+    <h2>7. Your Rights</h2>
+    <p>Depending on your jurisdiction, you may have the right to access, correct, export, or delete your data. To exercise any of these rights, contact us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
+  </div>
+
+  <div class="section">
+    <h2>8. Security</h2>
+    <p>We implement industry-standard security measures including encryption in transit and at rest, access controls, and regular audits. However, no system is completely immune to breaches, and we encourage responsible handling of your credentials.</p>
+  </div>
+
+  <div class="section">
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this policy periodically. Significant changes will be communicated via email or a notice on the platform. Continued use of the platform after changes constitutes acceptance.</p>
+  </div>
+
+  <div class="section">
+    <h2>10. Contact</h2>
+    <p>For any privacy-related queries, reach us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
+  </div>
+
+  <div class="page-footer">
+    <p>© 2026 Eternant Technologies Pvt. Ltd.</p>
+    <a href="/terms.html">Terms of Service →</a>
+  </div>
+</div>
+
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  var isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('et_theme', isDark ? 'light' : 'dark');
+}
+// Apply saved theme
+var saved = localStorage.getItem('et_theme');
+if (saved) document.documentElement.setAttribute('data-theme', saved);
+</script>
+</body>
+</html>
