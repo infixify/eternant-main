@@ -144,6 +144,7 @@ nav {
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
   transition: background 0.4s, border-color 0.4s;
+  overflow: visible;
 }
 
 .logo {
@@ -204,6 +205,8 @@ nav {
   display: flex;
   align-items: center;
   gap: 10px;
+  overflow: visible;
+  position: relative;
 }
 
 /* ── THEME TOGGLE ── */
@@ -895,8 +898,16 @@ footer a:hover { color: var(--text); }
 @keyframes auth-spin { to { transform: rotate(360deg); } }
 @media (max-width: 420px) {
   .hero h1 { letter-spacing: -0.8px; }
-  .btn-signup { padding: 8px 14px; }
+  .btn-signup { padding: 8px 14px; font-size: 12px; }
   .theme-toggle { display: none; }
+}
+/* ── Mobile nav fixes ── */
+@media (max-width: 640px) {
+  .btn-signup { padding: 8px 14px; font-size: 12px; }
+  .btn-login  { display: none; }
+  .user-avatar-name { display: none; } /* sirf photo dikhao mobile pe */
+  .user-avatar-btn { padding: 3px; border-radius: 50%; gap: 0; }
+  .user-dropdown { right: -8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -1511,6 +1522,18 @@ var currentUser = null;
 
 /* Check session on page load */
 (async function initAuth() {
+  // Handle error query params (e.g. user cancelled Google login)
+  var qp = new URLSearchParams(window.location.search);
+  if (qp.get('error')) {
+    // Clean URL silently — no need to show error for user-cancelled flow
+    history.replaceState(null, '', window.location.pathname);
+    // Clear any stale session
+    localStorage.removeItem('et_user_session');
+    currentUser = null;
+    updateUserUI();
+    return;
+  }
+
   // Check URL for OAuth callback (hash params from Supabase)
   var hash = window.location.hash;
   if (hash && hash.includes('access_token')) {
