@@ -3,18 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Eternant is a multi-service platform for publisher monetization, advertiser campaigns, web and app development, influencer hubs, and giveaways.">
-<meta name="keywords" content="Eternant, publisher monetization, ad network, web development, digital platform, tech solutions">
-<meta name="author" content="Eternant">
-<meta property="og:title" content="Eternant — Publisher, Brand & Tech Platform">
-<meta property="og:description" content="Monetize content, run campaigns, ship digital products, and connect with creators in one place.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://eternant.ext.io/">
-<meta property="og:site_name" content="Eternant">
-<meta name="robots" content="index, follow">
-  <meta name="google-site-verification" content="zvEon9Bkxa2AvvrW6Ql7YSr2bhpFIaitZDKzPLsyeEs" />
 <title>Eternant — Publisher, Brand & Tech Platform</title>
-<link rel="canonical" href="https://eternant.ext.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -367,7 +356,6 @@ main {
   overflow: hidden;
 }
 
-/* Spinning orbit decorations */
 .hero-orbit-wrap {
   position: absolute;
   right: -60px; top: 30px;
@@ -394,25 +382,18 @@ main {
   border: 1px solid rgba(110,181,255,0.05);
   animation: orbit-spin 18s linear infinite;
 }
-.ho-planet {
-  position: absolute;
-  border-radius: 50%;
-}
+.ho-planet { position: absolute; border-radius: 50%; }
 .ho-p1 {
   width: 7px; height: 7px;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent);
-  top: 0; left: 50%;
-  transform: translate(-50%, -50%);
+  background: var(--accent); box-shadow: 0 0 14px var(--accent);
+  top: 0; left: 50%; transform: translate(-50%, -50%);
   animation: orbit-dot-1 40s linear infinite;
   transform-origin: 0 160px;
 }
 .ho-p2 {
   width: 5px; height: 5px;
-  background: var(--accent2);
-  box-shadow: 0 0 10px var(--accent2);
-  top: 0; left: 50%;
-  transform: translate(-50%, -50%);
+  background: var(--accent2); box-shadow: 0 0 10px var(--accent2);
+  top: 0; left: 50%; transform: translate(-50%, -50%);
   animation: orbit-dot-2 28s linear infinite reverse;
   transform-origin: 0 110px;
 }
@@ -529,8 +510,7 @@ main {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
+  opacity: 0; transition: opacity 0.3s;
 }
 .stat-item:hover::before { opacity: 0.5; }
 .stat-item:hover { background: var(--bg-hover); }
@@ -674,9 +654,7 @@ main {
 .sa-cta-ghost:hover { color: var(--text); border-color: var(--muted); background: var(--bg-hover); }
 
 /* ── FOLLOW US ── */
-.follow-section {
-  margin-top: 72px;
-}
+.follow-section { margin-top: 72px; }
 .follow-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
@@ -691,12 +669,8 @@ main {
   content: ''; width: 40px; height: 1px;
   background: linear-gradient(to right, var(--border), transparent);
 }
-.follow-sub {
-  font-size: 12px; color: var(--muted);
-}
-.follow-grid {
-  display: flex; flex-wrap: wrap; gap: 10px;
-}
+.follow-sub { font-size: 12px; color: var(--muted); }
+.follow-grid { display: flex; flex-wrap: wrap; gap: 10px; }
 .follow-chip {
   display: inline-flex; align-items: center; gap: 9px;
   padding: 10px 18px;
@@ -773,14 +747,12 @@ footer {
 footer p { font-size: 12px; color: var(--muted); }
 .footer-signal {
   display: flex; align-items: center; gap: 6px;
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 11px; color: var(--muted);
   font-family: 'Space Mono', monospace;
 }
 .footer-signal-dot {
   width: 5px; height: 5px; border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 8px #4ade80;
+  background: #4ade80; box-shadow: 0 0 8px #4ade80;
   animation: blink 2.5s ease-in-out infinite;
 }
 @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
@@ -788,12 +760,10 @@ footer a { font-size: 12px; color: var(--muted); text-decoration: none; transiti
 footer a:hover { color: var(--text); }
 .footer-links { display: flex; gap: 20px; }
 
-/* ── PLANET EASTER EGG (hero deco) ── */
+/* ── PLANET DECO ── */
 .planet-deco {
-  position: absolute;
-  right: 20px; bottom: 80px;
-  width: 90px; height: 90px;
-  border-radius: 50%;
+  position: absolute; right: 20px; bottom: 80px;
+  width: 90px; height: 90px; border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #1e3a7a 0%, #050d1e 60%, #020810 100%);
   box-shadow: 0 0 0 1px rgba(110,181,255,0.08), 0 4px 40px rgba(0,0,50,0.4), inset 0 1px 0 rgba(110,181,255,0.1);
   pointer-events: none;
@@ -801,8 +771,7 @@ footer a:hover { color: var(--text); }
   overflow: visible;
 }
 .planet-ring-outer {
-  position: absolute;
-  width: 148px; height: 38px;
+  position: absolute; width: 148px; height: 38px;
   border-radius: 50%;
   border: 1.5px solid rgba(110,181,255,0.18);
   top: 50%; left: 50%;
@@ -836,8 +805,7 @@ footer a:hover { color: var(--text); }
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
   opacity: 0; pointer-events: none;
@@ -846,28 +814,19 @@ footer a:hover { color: var(--text); }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
 .modal-box {
   background: var(--bg-card);
-  border: 1px solid var(--border-lt);
-  border-radius: 16px;
-  width: 100%; max-width: 580px;
-  max-height: 80vh;
+  border: 1px solid var(--border-lt); border-radius: 16px;
+  width: 100%; max-width: 580px; max-height: 80vh;
   display: flex; flex-direction: column;
   box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(110,181,255,0.06);
-  transform: translateY(12px);
-  transition: transform 0.25s;
+  transform: translateY(12px); transition: transform 0.25s;
   overflow: hidden;
 }
 .modal-overlay.active .modal-box { transform: translateY(0); }
 .modal-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
 }
-.modal-header h2 {
-  font-size: 15px; font-weight: 700; color: var(--text);
-  letter-spacing: -0.2px;
-  display: flex; align-items: center; gap: 8px;
-}
+.modal-header h2 { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
 .modal-header h2 span { color: var(--accent); font-size: 14px; }
 .modal-close {
   width: 30px; height: 30px; border-radius: 8px;
@@ -877,25 +836,11 @@ footer a:hover { color: var(--text); }
   transition: background 0.15s, color 0.15s;
 }
 .modal-close:hover { background: var(--bg-hover); color: var(--text); }
-.modal-meta {
-  padding: 10px 24px;
-  border-bottom: 1px solid var(--border);
-  font-family: 'Space Mono', monospace;
-  font-size: 10px; color: var(--muted);
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-}
-.modal-body {
-  overflow-y: auto; padding: 20px 24px 28px;
-  font-size: 13.5px; line-height: 1.85; color: var(--text-sub);
-  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
-}
+.modal-meta { padding: 10px 24px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; flex-shrink: 0; }
+.modal-body { overflow-y: auto; padding: 20px 24px 28px; font-size: 13.5px; line-height: 1.85; color: var(--text-sub); scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 .modal-body::-webkit-scrollbar { width: 4px; }
 .modal-body::-webkit-scrollbar-thumb { background: var(--border-lt); border-radius: 4px; }
-.modal-body h3 {
-  font-size: 13px; font-weight: 700; color: var(--text);
-  margin: 20px 0 6px; letter-spacing: -0.1px;
-}
+.modal-body h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 20px 0 6px; letter-spacing: -0.1px; }
 .modal-body h3:first-child { margin-top: 0; }
 .modal-body p { margin-bottom: 10px; }
 .modal-body ul { padding-left: 18px; margin-bottom: 10px; }
@@ -922,7 +867,6 @@ footer a:hover { color: var(--text); }
     ETERNANT
   </a>
   <div class="nav-right">
-    <!-- Theme Toggle -->
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
       <div class="toggle-track">
         <span class="toggle-icon">🌙</span>
@@ -930,8 +874,8 @@ footer a:hover { color: var(--text); }
         <div class="toggle-thumb" id="toggleThumb"></div>
       </div>
     </button>
-    <a href="#" class="btn-login">Log in</a>
-    <a href="#" class="btn-signup">Get started</a>
+    <a href="#" class="btn-login" id="nav-login-btn">Log in</a>
+    <a href="#" class="btn-signup" id="nav-signup-btn">Get started</a>
     <button class="hamburger" id="hbtn" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
@@ -940,31 +884,31 @@ footer a:hover { color: var(--text); }
 
 <!-- Drawer -->
 <nav class="drawer" id="drawer" aria-label="Site navigation">
-  <a href="#">
+  <a href="#" id="drawer-home">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
     Home
   </a>
-  <a href="#">
+  <a href="#" id="drawer-publishers">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
     Publishers
   </a>
-  <a href="#">
+  <a href="#" id="drawer-advertisers">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
     Advertisers
   </a>
-  <a href="#">
+  <a href="#" id="drawer-it">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
     IT Solutions
   </a>
-  <a href="#">
+  <a href="#" id="drawer-influencers">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
     Influencers
   </a>
-  <a href="#">
+  <a href="#" id="drawer-giveaways">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
     Giveaways
   </a>
-  <a href="#">
+  <a href="#" id="drawer-contact">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
     Contact
   </a>
@@ -980,34 +924,25 @@ footer a:hover { color: var(--text); }
       <div class="ho-planet ho-p1"></div>
       <div class="ho-planet ho-p2"></div>
     </div>
-
-    <div class="planet-deco">
-      <div class="planet-ring-outer"></div>
-    </div>
-
+    <div class="planet-deco"><div class="planet-ring-outer"></div></div>
     <div class="hero-badge">
       <div class="hero-badge-dot"></div>
       <span>Multi-service platform</span>
     </div>
-
     <h1>Publishers, brands and tech — <em>one orbit</em></h1>
     <p>Monetize content, run campaigns, ship digital products, and connect with creators. Everything your business needs to grow — in one place.</p>
-
     <div class="hero-cta">
-      <a href="#" class="cta-primary">Start for free</a>
-      <a href="#" class="cta-secondary">
+      <a href="#" class="cta-primary" id="hero-start-btn">Start for free</a>
+      <a href="#" class="cta-secondary" id="hero-hiw-btn">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         See how it works
       </a>
     </div>
-
-
   </section>
 
   <div class="section-label">Services</div>
 
   <section class="services">
-
     <!-- 01 -->
     <div class="sa" onclick="toggleSA(this)">
       <div class="sa-header">
@@ -1029,7 +964,7 @@ footer a:hover { color: var(--text); }
             <li>Instant automated payouts</li>
             <li>Real-time tracking and reporting dashboard</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-01" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-01" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
         </div>
       </div>
     </div>
@@ -1055,7 +990,7 @@ footer a:hover { color: var(--text); }
             <li>Self-serve campaign budget control</li>
             <li>Zero bot traffic guaranteed</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-02" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-02" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
         </div>
       </div>
     </div>
@@ -1077,11 +1012,11 @@ footer a:hover { color: var(--text); }
         <div class="sa-inner">
           <p>Whether you're a YouTuber, Instagram creator, or you own a WhatsApp or Telegram group and channel — turn your existing audience and content into a steady income stream without starting from scratch.</p>
           <ul class="sa-points">
-            <li>YouTubers, Instagrammers & all social creators</li>
-            <li>WhatsApp & Telegram group / channel owners</li>
+            <li>YouTubers, Instagrammers &amp; all social creators</li>
+            <li>WhatsApp &amp; Telegram group / channel owners</li>
             <li>Earn directly from your audience — no brand deals needed</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-03" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-03" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
         </div>
       </div>
     </div>
@@ -1093,7 +1028,7 @@ footer a:hover { color: var(--text); }
           <span class="si-num">04</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
           <div class="si-text">
-            <div class="si-name">Web & App Development</div>
+            <div class="si-name">Web &amp; App Development</div>
             <div class="si-desc">Custom websites, mobile apps and SaaS solutions</div>
           </div>
         </div>
@@ -1107,7 +1042,7 @@ footer a:hover { color: var(--text); }
             <li>Optimized for speed and SEO</li>
             <li>Dedicated maintenance and scaling support</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-04" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-04" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
         </div>
       </div>
     </div>
@@ -1119,7 +1054,7 @@ footer a:hover { color: var(--text); }
           <span class="si-num">05</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
           <div class="si-text">
-            <div class="si-name">Giveaways & Promos</div>
+            <div class="si-name">Giveaways &amp; Promos</div>
             <div class="si-desc">Viral campaigns to grow reach and engagement</div>
           </div>
         </div>
@@ -1133,7 +1068,7 @@ footer a:hover { color: var(--text); }
             <li>Automated winner selection algorithms</li>
             <li>Instant reward distribution system</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-05" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-05" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
         </div>
       </div>
     </div>
@@ -1145,7 +1080,7 @@ footer a:hover { color: var(--text); }
           <span class="si-num">06</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
           <div class="si-text">
-            <div class="si-name">Analytics & Reporting</div>
+            <div class="si-name">Analytics &amp; Reporting</div>
             <div class="si-desc">Real-time data across all your services</div>
           </div>
         </div>
@@ -1159,7 +1094,7 @@ footer a:hover { color: var(--text); }
             <li>Exportable reports (CSV, PDF)</li>
             <li>Custom alerts and performance goals</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-06" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-06" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
         </div>
       </div>
     </div>
@@ -1173,72 +1108,38 @@ footer a:hover { color: var(--text); }
       <span class="follow-sub" id="followSub"></span>
     </div>
     <div class="follow-grid" id="followGrid">
-
       <a href="#" class="follow-chip" data-platform="instagram" id="fc-instagram" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
         Instagram
       </a>
-
       <a href="#" class="follow-chip" data-platform="youtube" id="fc-youtube" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
-          <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
         YouTube
       </a>
-
       <a href="#" class="follow-chip" data-platform="telegram" id="fc-telegram" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21.2 4.8 2.8 11.6c-1.2.5-1.2 1.2 0 1.5l4.6 1.4 1.8 5.6c.3.8.7.9 1.2.6l2.8-2.3 4.7 3.5c.9.5 1.5.2 1.7-.8L22 6c.3-1.3-.4-1.8-1.6-1.2z"/>
-          <path d="M7.4 14.5 17 9"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 4.8 2.8 11.6c-1.2.5-1.2 1.2 0 1.5l4.6 1.4 1.8 5.6c.3.8.7.9 1.2.6l2.8-2.3 4.7 3.5c.9.5 1.5.2 1.7-.8L22 6c.3-1.3-.4-1.8-1.6-1.2z"/><path d="M7.4 14.5 17 9"/></svg>
         Telegram
       </a>
-
       <a href="#" class="follow-chip" data-platform="whatsapp" id="fc-whatsapp" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         WhatsApp
       </a>
-
       <a href="#" class="follow-chip" data-platform="x" id="fc-x" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         X (Twitter)
       </a>
-
       <a href="#" class="follow-chip" data-platform="linkedin" id="fc-linkedin" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-          <rect x="2" y="9" width="4" height="12"/>
-          <circle cx="4" cy="4" r="2"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
         LinkedIn
       </a>
-
       <a href="#" class="follow-chip" data-platform="facebook" id="fc-facebook" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
         Facebook
       </a>
-
       <a href="#" class="follow-chip" data-platform="discord" id="fc-discord" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
-          <path d="M7.5 7.5c2.5-1 6.5-1 9 0M7.5 16.5c2.5 1 6.5 1 9 0"/>
-          <path d="M8.5 4.5A15.5 15.5 0 0 0 3 9.5s1 5 3.5 7c1 .5 2.5.5 2.5.5l.5-1.5"/>
-          <path d="M15.5 4.5A15.5 15.5 0 0 1 21 9.5s-1 5-3.5 7c-1 .5-2.5.5-2.5.5l-.5-1.5"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M7.5 7.5c2.5-1 6.5-1 9 0M7.5 16.5c2.5 1 6.5 1 9 0"/><path d="M8.5 4.5A15.5 15.5 0 0 0 3 9.5s1 5 3.5 7c1 .5 2.5.5 2.5.5l.5-1.5"/><path d="M15.5 4.5A15.5 15.5 0 0 1 21 9.5s-1 5-3.5 7c-1 .5-2.5.5-2.5.5l-.5-1.5"/></svg>
         Discord
       </a>
-
     </div>
   </div>
 
@@ -1261,7 +1162,7 @@ footer a:hover { color: var(--text); }
   <div class="footer-links">
     <a href="#" onclick="openModal('privacy');return false;">Privacy</a>
     <a href="#" onclick="openModal('terms');return false;">Terms</a>
-    <a href="#">Contact</a>
+    <a href="#" id="footer-contact-link">Contact</a>
   </div>
 </footer>
 
@@ -1276,37 +1177,23 @@ footer a:hover { color: var(--text); }
     <div class="modal-body">
       <h3>1. Who We Are</h3>
       <p>Eternant is a multi-service platform connecting publishers, advertisers, developers, and creators. We operate under Eternant Technologies Pvt. Ltd. and are committed to protecting the privacy of everyone who uses our platform.</p>
-
       <h3>2. What We Collect</h3>
       <p>We collect information you provide directly — such as name, email address, and payment details when you register or transact on the platform. We also collect:</p>
-      <ul>
-        <li>Usage data (pages visited, features used, time spent)</li>
-        <li>Device and browser information</li>
-        <li>IP address and approximate location</li>
-        <li>Campaign and content performance metrics for publishers and advertisers</li>
-      </ul>
-
+      <ul><li>Usage data (pages visited, features used, time spent)</li><li>Device and browser information</li><li>IP address and approximate location</li><li>Campaign and content performance metrics for publishers and advertisers</li></ul>
       <h3>3. How We Use Your Data</h3>
       <p>Your data is used to operate and improve the platform, send service-related communications, personalise your experience, process payments, and comply with legal obligations. We do not sell your personal data to third parties.</p>
-
       <h3>4. Cookies</h3>
       <p>We use cookies and similar tracking technologies to maintain sessions, remember preferences, and understand how the platform is used. You may disable cookies in your browser settings, though some features may not function correctly as a result.</p>
-
       <h3>5. Data Sharing</h3>
       <p>We may share data with trusted service providers (hosting, analytics, payment processors) strictly for the purpose of operating our services. All third parties are contractually bound to protect your data and may not use it for their own purposes.</p>
-
       <h3>6. Data Retention</h3>
       <p>We retain your data for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data at any time by contacting us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
-
       <h3>7. Your Rights</h3>
       <p>Depending on your jurisdiction, you may have the right to access, correct, export, or delete your data. To exercise any of these rights, contact us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
-
       <h3>8. Security</h3>
       <p>We implement industry-standard security measures including encryption in transit and at rest, access controls, and regular audits. However, no system is completely immune to breaches, and we encourage responsible handling of your credentials.</p>
-
       <h3>9. Changes to This Policy</h3>
       <p>We may update this policy periodically. Significant changes will be communicated via email or a notice on the platform. Continued use of the platform after changes constitutes acceptance.</p>
-
       <h3>10. Contact</h3>
       <p>For any privacy-related queries, reach us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
     </div>
@@ -1317,48 +1204,32 @@ footer a:hover { color: var(--text); }
 <div class="modal-overlay" id="modal-terms" onclick="closeModalOutside(event,'modal-terms')">
   <div class="modal-box">
     <div class="modal-header">
-      <h2><span>📄</span> Terms & Conditions</h2>
+      <h2><span>📄</span> Terms &amp; Conditions</h2>
       <button class="modal-close" onclick="closeModal('modal-terms')">✕</button>
     </div>
     <div class="modal-meta">Last updated: October 2026 &nbsp;·&nbsp; Governing law: India</div>
     <div class="modal-body">
       <h3>1. Acceptance of Terms</h3>
       <p>By accessing or using the Eternant platform, you agree to be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
-
       <h3>2. Eligibility</h3>
       <p>You must be at least 18 years of age to create an account and use the platform. By registering, you confirm that the information you provide is accurate and up to date.</p>
-
       <h3>3. Platform Services</h3>
       <p>Eternant provides tools for publisher monetization, advertiser campaign management, web and app development services, influencer connections, giveaway management, and analytics. Services are subject to change, and we reserve the right to modify or discontinue any feature with reasonable notice.</p>
-
       <h3>4. User Accounts</h3>
       <p>You are responsible for maintaining the confidentiality of your account credentials. Any activity under your account is your responsibility. Notify us immediately at <a href="mailto:support@eternant.com">support@eternant.com</a> if you suspect unauthorised access.</p>
-
       <h3>5. Prohibited Conduct</h3>
       <p>You agree not to:</p>
-      <ul>
-        <li>Use the platform for unlawful, fraudulent, or harmful purposes</li>
-        <li>Upload content that infringes intellectual property rights</li>
-        <li>Reverse engineer, scrape, or interfere with platform infrastructure</li>
-        <li>Create fake accounts or misrepresent your identity</li>
-        <li>Distribute spam, malware, or unsolicited communications</li>
-      </ul>
-
+      <ul><li>Use the platform for unlawful, fraudulent, or harmful purposes</li><li>Upload content that infringes intellectual property rights</li><li>Reverse engineer, scrape, or interfere with platform infrastructure</li><li>Create fake accounts or misrepresent your identity</li><li>Distribute spam, malware, or unsolicited communications</li></ul>
       <h3>6. Intellectual Property</h3>
       <p>All platform content, branding, and software are the property of Eternant Technologies Pvt. Ltd. You retain ownership of content you upload, but grant Eternant a non-exclusive licence to use it to operate and improve the platform.</p>
-
-      <h3>7. Payments & Refunds</h3>
+      <h3>7. Payments &amp; Refunds</h3>
       <p>All transactions are processed securely. Fees for paid services are non-refundable unless otherwise specified or required by applicable law. Disputed charges must be raised within 30 days of the transaction date.</p>
-
       <h3>8. Limitation of Liability</h3>
       <p>To the maximum extent permitted by law, Eternant shall not be liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability shall not exceed the amount paid by you in the three months preceding the claim.</p>
-
       <h3>9. Termination</h3>
       <p>We reserve the right to suspend or terminate your account if you violate these terms, engage in fraudulent activity, or if continued access poses risk to the platform or other users.</p>
-
       <h3>10. Governing Law</h3>
       <p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.</p>
-
       <h3>11. Contact</h3>
       <p>For any queries regarding these terms, contact us at <a href="mailto:legal@eternant.com">legal@eternant.com</a>.</p>
     </div>
@@ -1366,28 +1237,30 @@ footer a:hover { color: var(--text); }
 </div>
 
 <script>
-/* ── THEME TOGGLE ── */
+/* ════════════════════════════════════════════
+   SUPABASE CONFIG
+   ════════════════════════════════════════════ */
+var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
+var CACHE_KEY     = 'eternant_links_v1';
+var CACHE_TTL     = 5 * 60 * 1000; // 5 min cache
+
+/* ── THEME ── */
 var htmlEl = document.documentElement;
-var themeBtn = document.getElementById('themeToggle');
+var saved  = localStorage.getItem('et-theme');
+if (saved) htmlEl.setAttribute('data-theme', saved);
 
-// Load saved preference
-var saved = localStorage.getItem('et-theme');
-if (saved) { htmlEl.setAttribute('data-theme', saved); }
-
-themeBtn.addEventListener('click', function() {
-  var current = htmlEl.getAttribute('data-theme') || 'dark';
-  var next = current === 'dark' ? 'light' : 'dark';
+document.getElementById('themeToggle').addEventListener('click', function() {
+  var next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   htmlEl.setAttribute('data-theme', next);
   localStorage.setItem('et-theme', next);
-  // Reinit stars with correct colors
-  initStars();
+  if (window.initStars) initStars();
 });
 
 /* ── DRAWER ── */
 var drawer = document.getElementById('drawer');
 var hbtn   = document.getElementById('hbtn');
 var menuOpen = false;
-
 function toggleMenu() {
   menuOpen = !menuOpen;
   drawer.classList.toggle('open', menuOpen);
@@ -1403,13 +1276,88 @@ document.addEventListener('click', function(e) {
   }
 });
 
+/* ════════════════════════════════════════════
+   LINK INJECTION — Supabase-powered
+   ════════════════════════════════════════════ */
+function applyConfig(cfg) {
+  function setLink(el, href) {
+    if (el && href && href !== '#') el.setAttribute('href', href);
+  }
+  // Nav
+  setLink(document.getElementById('nav-login-btn'),  cfg.nav_login);
+  setLink(document.getElementById('nav-signup-btn'), cfg.nav_get_started);
+  // Hero
+  setLink(document.getElementById('hero-start-btn'), cfg.hero_start_free);
+  setLink(document.getElementById('hero-hiw-btn'),   cfg.hero_how_it_works);
+  // Services CTAs
+  for (var i = 1; i <= 6; i++) {
+    var n = ('0' + i).slice(-2);
+    setLink(document.getElementById('svc-cta-' + n), cfg['service_' + n]);
+    setLink(document.getElementById('svc-hiw-' + n), cfg['hiw_' + n]);
+  }
+  // Drawer
+  setLink(document.getElementById('drawer-home'),        cfg.drawer_home);
+  setLink(document.getElementById('drawer-publishers'),  cfg.drawer_publishers);
+  setLink(document.getElementById('drawer-advertisers'), cfg.drawer_advertisers);
+  setLink(document.getElementById('drawer-it'),          cfg.drawer_it);
+  setLink(document.getElementById('drawer-influencers'), cfg.drawer_influencers);
+  setLink(document.getElementById('drawer-giveaways'),   cfg.drawer_giveaways);
+  setLink(document.getElementById('drawer-contact'),     cfg.drawer_contact);
+  // Footer
+  setLink(document.getElementById('footer-contact-link'), cfg.footer_contact);
+  // Follow Us
+  if (cfg.follow_section_visible === 'false') {
+    var fs = document.getElementById('followSection');
+    if (fs) fs.style.display = 'none';
+  }
+  if (cfg.follow_label) {
+    var sub = document.getElementById('followSub');
+    if (sub) sub.textContent = cfg.follow_label;
+  }
+  ['instagram','youtube','telegram','whatsapp','x','linkedin','facebook','discord'].forEach(function(p) {
+    var chip = document.getElementById('fc-' + p);
+    if (!chip) return;
+    if (cfg['follow_' + p] && cfg['follow_' + p] !== '#') chip.setAttribute('href', cfg['follow_' + p]);
+    if (cfg['follow_' + p + '_visible'] === 'false') chip.classList.add('hidden');
+  });
+}
+
+async function loadConfig() {
+  // 1) Try localStorage cache first (fast paint)
+  try {
+    var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached && cached._ts && (Date.now() - cached._ts) < CACHE_TTL) {
+      applyConfig(cached);
+      return; // fresh cache — skip network
+    }
+    if (cached) applyConfig(cached); // stale but apply immediately, refresh below
+  } catch(e) {}
+
+  // 2) Fetch fresh from Supabase
+  try {
+    var res = await fetch(
+      SUPABASE_URL + '/rest/v1/site_config?select=key,value',
+      { headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' } }
+    );
+    if (!res.ok) return;
+    var rows = await res.json();
+    var cfg  = { _ts: Date.now() };
+    rows.forEach(function(r) { cfg[r.key] = r.value; });
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cfg));
+    applyConfig(cfg);
+  } catch(e) {
+    // Network failed — cached version already applied above
+  }
+}
+
+loadConfig();
+
 /* ── STARFIELD ── */
 (function() {
   var canvas = document.getElementById('starfield');
   var ctx = canvas.getContext('2d');
   var stars = [];
   var W, H;
-  var animFrame;
 
   function resize() {
     W = canvas.width  = window.innerWidth;
@@ -1419,50 +1367,22 @@ document.addEventListener('click', function(e) {
   function getStarColors() {
     var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     if (isDark) {
-      return {
-        purple: 'rgba(167,139,250,',
-        blue:   'rgba(110,181,255,',
-        white:  'rgba(216,230,255,'
-      };
+      return { purple: 'rgba(167,139,250,', blue: 'rgba(110,181,255,', white: 'rgba(216,230,255,' };
     } else {
-      return {
-        purple: 'rgba(100,60,200,',
-        blue:   'rgba(30,90,200,',
-        white:  'rgba(20,50,140,'
-      };
+      return { purple: 'rgba(100,60,200,',  blue: 'rgba(30,90,200,',   white: 'rgba(20,50,140,' };
     }
   }
 
   function initStars() {
     stars = [];
-    var C = getStarColors();
+    var C     = getStarColors();
     var count = Math.floor((W * H) / 3800);
     for (var i = 0; i < count; i++) {
-      stars.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.3 + 0.2,
-        a: Math.random() * 0.8 + 0.1,
-        speed: Math.random() * 0.25 + 0.04,
-        twinkle: Math.random() * Math.PI * 2,
-        twinkleSpeed: Math.random() * 0.012 + 0.003,
-        color: Math.random() < 0.12 ? C.purple : Math.random() < 0.12 ? C.blue : C.white
-      });
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.3+0.2, a: Math.random()*0.8+0.1, speed: Math.random()*0.25+0.04, twinkle: Math.random()*Math.PI*2, twinkleSpeed: Math.random()*0.012+0.003, color: Math.random()<0.12?C.purple:Math.random()<0.12?C.blue:C.white });
     }
-    // bright stars
     var BC = getStarColors();
     for (var j = 0; j < 12; j++) {
-      stars.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.6 + 1.0,
-        a: 0.85,
-        speed: 0.015,
-        twinkle: Math.random() * Math.PI * 2,
-        twinkleSpeed: 0.005,
-        color: BC.white,
-        glow: true
-      });
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.6+1.0, a: 0.85, speed: 0.015, twinkle: Math.random()*Math.PI*2, twinkleSpeed: 0.005, color: BC.white, glow: true });
     }
   }
 
@@ -1472,65 +1392,41 @@ document.addEventListener('click', function(e) {
       s.twinkle += s.twinkleSpeed;
       var alpha = s.a * (0.45 + 0.55 * Math.sin(s.twinkle));
       if (s.glow) {
-        var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4);
+        var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*4);
         g.addColorStop(0, s.color + alpha + ')');
         g.addColorStop(1, 'transparent');
         ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r*4, 0, Math.PI*2); ctx.fill();
       }
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = s.color + alpha + ')';
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.color + alpha + ')'; ctx.fill();
       s.y -= s.speed * 0.15;
-      if (s.y < -2) { s.y = H + 2; s.x = Math.random() * W; }
+      if (s.y < -2) { s.y = H+2; s.x = Math.random()*W; }
     });
-    animFrame = requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
   }
 
-  resize();
-  initStars();
-  draw();
-
-  // Expose initStars for theme toggle
+  resize(); initStars(); draw();
   window.initStars = initStars;
-
   var rt;
-  window.addEventListener('resize', function() {
-    clearTimeout(rt);
-    rt = setTimeout(function() { resize(); initStars(); }, 200);
-  });
+  window.addEventListener('resize', function() { clearTimeout(rt); rt = setTimeout(function(){ resize(); initStars(); }, 200); });
 
   /* ── SHOOTING STARS ── */
   function spawnShootingStar() {
     var el = document.createElement('div');
     el.className = 'shooting-star';
     document.body.appendChild(el);
-    var startX = Math.random() * W * 0.7;
-    var startY = Math.random() * H * 0.4;
-    var angle  = Math.random() * 30 + 20; // degrees
-    var dist   = Math.random() * 200 + 150;
-    var dx = Math.cos(angle * Math.PI / 180) * dist;
-    var dy = Math.sin(angle * Math.PI / 180) * dist;
-    var dur = Math.random() * 600 + 500;
-
-    el.style.cssText = 'left:' + startX + 'px;top:' + startY + 'px;opacity:0;transform:translate(0,0) rotate(' + angle + 'deg);transition:transform ' + dur + 'ms linear,opacity ' + (dur * 0.3) + 'ms ease;';
-
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        el.style.opacity = '1';
-        el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + angle + 'deg)';
-        setTimeout(function() {
-          el.style.opacity = '0';
-          setTimeout(function() { el.remove(); }, 400);
-        }, dur * 0.6);
-      });
-    });
-
-    // Schedule next
-    setTimeout(spawnShootingStar, Math.random() * 6000 + 3000);
+    var startX = Math.random()*W*0.7, startY = Math.random()*H*0.4;
+    var angle  = Math.random()*30+20;
+    var dist   = Math.random()*200+150;
+    var dx = Math.cos(angle*Math.PI/180)*dist, dy = Math.sin(angle*Math.PI/180)*dist;
+    var dur = Math.random()*600+500;
+    el.style.cssText = 'left:'+startX+'px;top:'+startY+'px;opacity:0;transform:translate(0,0) rotate('+angle+'deg);transition:transform '+dur+'ms linear,opacity '+(dur*0.3)+'ms ease;';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      el.style.opacity='1'; el.style.transform='translate('+dx+'px,'+dy+'px) rotate('+angle+'deg)';
+      setTimeout(function(){ el.style.opacity='0'; setTimeout(function(){ el.remove(); }, 400); }, dur*0.6);
+    }); });
+    setTimeout(spawnShootingStar, Math.random()*6000+3000);
   }
   setTimeout(spawnShootingStar, 2000);
 })();
@@ -1545,17 +1441,11 @@ function toggleSA(el) {
 /* ── MODALS ── */
 function openModal(id) {
   var el = document.getElementById('modal-' + id);
-  if (el) {
-    el.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
+  if (el) { el.classList.add('active'); document.body.style.overflow = 'hidden'; }
 }
 function closeModal(id) {
   var el = document.getElementById(id);
-  if (el) {
-    el.classList.remove('active');
-    document.body.style.overflow = '';
-  }
+  if (el) { el.classList.remove('active'); document.body.style.overflow = ''; }
 }
 function closeModalOutside(e, id) {
   if (e.target === document.getElementById(id)) closeModal(id);
@@ -1568,100 +1458,6 @@ document.addEventListener('keydown', function(e) {
     document.body.style.overflow = '';
   }
 });
-
-/* ── LINK INJECTOR (reads from admin panel config) ── */
-(function() {
-  var STORAGE_KEY = 'eternant_links_v1';
-  var defaults = {
-    nav_login:       '#',
-    nav_get_started: '#',
-    hero_start_free: '#',
-    hero_how_it_works: '#',
-    service_01:      '#',
-    service_02:      '#',
-    service_03:      '#',
-    service_04:      '#',
-    service_05:      '#',
-    service_06:      '#',
-    hiw_01:          '#',
-    hiw_02:          '#',
-    hiw_03:          '#',
-    hiw_04:          '#',
-    hiw_05:          '#',
-    hiw_06:          '#',
-    drawer_home:       '#',
-    drawer_publishers: '#',
-    drawer_advertisers:'#',
-    drawer_it:         '#',
-    drawer_influencers:'#',
-    drawer_giveaways:  '#',
-    drawer_contact:    '#',
-    footer_contact:    '#',
-    follow_section_visible: 'true',
-    follow_label: '',
-    follow_instagram: '#', follow_instagram_visible: 'true',
-    follow_youtube:   '#', follow_youtube_visible:   'true',
-    follow_telegram:  '#', follow_telegram_visible:  'true',
-    follow_whatsapp:  '#', follow_whatsapp_visible:  'true',
-    follow_x:         '#', follow_x_visible:         'true',
-    follow_linkedin:  '#', follow_linkedin_visible:  'true',
-    follow_facebook:  '#', follow_facebook_visible:  'true',
-    follow_discord:   '#', follow_discord_visible:   'true'
-  };
-
-  var stored = {};
-  try { stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) {}
-  var cfg = Object.assign({}, defaults, stored);
-
-  function setLink(el, href) {
-    if (el && href && href !== '#') el.setAttribute('href', href);
-  }
-
-  // Nav
-  setLink(document.querySelector('nav:first-of-type .btn-login'),       cfg.nav_login);
-  setLink(document.querySelector('nav:first-of-type .btn-signup'),      cfg.nav_get_started);
-
-  // Hero CTAs
-  var heroCTAs = document.querySelectorAll('.hero-cta a');
-  if (heroCTAs[0]) setLink(heroCTAs[0], cfg.hero_start_free);
-  if (heroCTAs[1]) setLink(heroCTAs[1], cfg.hero_how_it_works);
-
-  // Service accordion CTAs
-  var saCTAs = document.querySelectorAll('.sa-cta');
-  var serviceKeys = ['service_01','service_02','service_03','service_04','service_05','service_06'];
-  saCTAs.forEach(function(el, i) { if (serviceKeys[i]) setLink(el, cfg[serviceKeys[i]]); });
-
-  // How it works ghost buttons
-  var hiwCTAs = document.querySelectorAll('.sa-cta-ghost');
-  var hiwKeys = ['hiw_01','hiw_02','hiw_03','hiw_04','hiw_05','hiw_06'];
-  hiwCTAs.forEach(function(el, i) { if (hiwKeys[i]) setLink(el, cfg[hiwKeys[i]]); });
-
-  // Drawer links
-  var drawerLinks = document.querySelectorAll('.drawer a');
-  var drawerKeys  = ['drawer_home','drawer_publishers','drawer_advertisers','drawer_it','drawer_influencers','drawer_giveaways','drawer_contact'];
-  drawerLinks.forEach(function(el, i) { if (drawerKeys[i]) setLink(el, cfg[drawerKeys[i]]); });
-
-  // Footer contact
-  var footerLinks = document.querySelectorAll('.footer-links a');
-  if (footerLinks[2]) setLink(footerLinks[2], cfg.footer_contact);
-
-  // Follow Us section
-  var followSection = document.getElementById('followSection');
-  if (cfg.follow_section_visible === 'false') {
-    if (followSection) followSection.style.display = 'none';
-  }
-  if (cfg.follow_label) {
-    var sub = document.getElementById('followSub');
-    if (sub) sub.textContent = cfg.follow_label;
-  }
-  var platforms = ['instagram','youtube','telegram','whatsapp','x','linkedin','facebook','discord'];
-  platforms.forEach(function(p) {
-    var chip = document.getElementById('fc-' + p);
-    if (!chip) return;
-    if (cfg['follow_' + p] && cfg['follow_' + p] !== '#') chip.setAttribute('href', cfg['follow_' + p]);
-    if (cfg['follow_' + p + '_visible'] === 'false') chip.classList.add('hidden');
-  });
-})();
 </script>
 </body>
 </html>
