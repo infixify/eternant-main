@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — Eternant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#03050d;--bg-card:#070c1a;--bg-nav:rgba(3,5,13,0.90);--border:#141f38;--border-lt:#1e3058;--text:#d8e6ff;--text-sub:#8aa4c8;--muted:#4a6080;--accent:#6eb5ff;--accent2:#a78bfa;--glow:rgba(110,181,255,0.18);color-scheme:dark}
+[data-theme="light"]{--bg:#f0f4ff;--bg-card:#ffffff;--bg-nav:rgba(240,244,255,0.92);--border:#d0daf0;--border-lt:#b8c8e8;--text:#0d1832;--text-sub:#3a5080;--muted:#6a82a8;--accent:#2a7fd4;--accent2:#7c54e8;--glow:rgba(42,127,212,0.14);color-scheme:light}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);height:64px;background:var(--bg-nav);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--text);letter-spacing:4px;text-decoration:none}
+.logo:hover{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.btn-home{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:7px 18px;border-radius:8px;border:1px solid var(--border-lt);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-home:hover{background:var(--bg-card);color:var(--text);border-color:var(--accent)}
+.theme-toggle{display:flex;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:100px;padding:3px;cursor:pointer;width:60px;height:28px;position:relative}
+.toggle-track{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 5px}
+.toggle-icon{font-size:11px;z-index:1;line-height:1}
+.toggle-thumb{position:absolute;top:1px;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 2px 8px var(--glow);transition:left 0.3s cubic-bezier(0.4,0,0.2,1);left:2px}
+[data-theme="light"] .toggle-thumb{left:calc(100% - 22px)}
+.page-wrap{max-width:780px;margin:0 auto;padding:60px clamp(20px,4vw,48px) 100px}
+.page-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;border:1px solid var(--border-lt);background:rgba(167,139,250,0.06);font-size:11px;font-family:'Space Mono',monospace;color:var(--accent2);margin-bottom:24px;letter-spacing:0.5px}
+.page-title{font-size:clamp(28px,5vw,42px);font-weight:800;color:var(--text);letter-spacing:-1px;margin-bottom:10px;line-height:1.1}
+.page-meta{font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.page-meta span{color:var(--accent2)}
+.section{margin-bottom:36px}
+.section h2{font-size:16px;font-weight:700;color:var(--accent2);margin-bottom:12px;display:flex;align-items:center;gap:10px;letter-spacing:0.2px}
+.section h2::before{content:'';width:3px;height:16px;background:linear-gradient(to bottom,var(--accent2),var(--accent));border-radius:2px;flex-shrink:0}
+.section p{font-size:14px;color:var(--text-sub);line-height:1.8;margin-bottom:10px}
+.section ul{margin:10px 0 0 0;padding-left:0;list-style:none}
+.section ul li{font-size:14px;color:var(--text-sub);line-height:1.8;padding:4px 0 4px 20px;position:relative}
+.section ul li::before{content:'→';position:absolute;left:0;color:var(--accent2);font-size:12px;top:5px}
+.section a{color:var(--accent);text-decoration:none}
+.section a:hover{text-decoration:underline}
+.page-footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.page-footer p{font-size:12px;color:var(--muted)}
+.page-footer a{font-size:12px;color:var(--muted);text-decoration:none}
+.page-footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">ETERNANT</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb"></div>
+      </div>
+    </button>
+    <a href="/" class="btn-home">← Home</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-badge">📄 Legal</div>
+  <h1 class="page-title">Terms of Service</h1>
+  <p class="page-meta">Last updated: <span>October 2026</span> &nbsp;·&nbsp; Governing law: India &nbsp;·&nbsp; Eternant Technologies Pvt. Ltd.</p>
+
+  <div class="section">
+    <h2>1. Acceptance of Terms</h2>
+    <p>By accessing or using the Eternant platform, you agree to be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Eligibility</h2>
+    <p>You must be at least 18 years of age to create an account and use the platform. By registering, you confirm that the information you provide is accurate and up to date.</p>
+  </div>
+
+  <div class="section">
+    <h2>3. Platform Services</h2>
+    <p>Eternant provides tools for publisher monetization, advertiser campaign management, web and app development services, influencer connections, giveaway management, and analytics. Services are subject to change, and we reserve the right to modify or discontinue any feature with reasonable notice.</p>
+  </div>
+
+  <div class="section">
+    <h2>4. User Accounts</h2>
+    <p>You are responsible for maintaining the confidentiality of your account credentials. Any activity under your account is your responsibility. Notify us immediately at <a href="mailto:support@eternant.com">support@eternant.com</a> if you suspect unauthorised access.</p>
+    <p>When signing in with Google, you authorise Eternant to access your basic Google profile information (name, email, and profile photo) for authentication purposes only.</p>
+  </div>
+
+  <div class="section">
+    <h2>5. Prohibited Conduct</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Use the platform for unlawful, fraudulent, or harmful purposes</li>
+      <li>Upload content that infringes intellectual property rights</li>
+      <li>Reverse engineer, scrape, or interfere with platform infrastructure</li>
+      <li>Create fake accounts or misrepresent your identity</li>
+      <li>Distribute spam, malware, or unsolicited communications</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>6. Intellectual Property</h2>
+    <p>All platform content, branding, and software are the property of Eternant Technologies Pvt. Ltd. You retain ownership of content you upload, but grant Eternant a non-exclusive licence to use it to operate and improve the platform.</p>
+  </div>
+
+  <div class="section">
+    <h2>7. Payments &amp; Refunds</h2>
+    <p>All transactions are processed securely. Fees for paid services are non-refundable unless otherwise specified or required by applicable law. Disputed charges must be raised within 30 days of the transaction date.</p>
+  </div>
+
+  <div class="section">
+    <h2>8. Limitation of Liability</h2>
+    <p>To the maximum extent permitted by law, Eternant shall not be liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability shall not exceed the amount paid by you in the three months preceding the claim.</p>
+  </div>
+
+  <div class="section">
+    <h2>9. Termination</h2>
+    <p>We reserve the right to suspend or terminate your account if you violate these terms, engage in fraudulent activity, or if continued access poses risk to the platform or other users.</p>
+  </div>
+
+  <div class="section">
+    <h2>10. Governing Law</h2>
+    <p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.</p>
+  </div>
+
+  <div class="section">
+    <h2>11. Contact</h2>
+    <p>For any queries regarding these terms, contact us at <a href="mailto:legal@eternant.com">legal@eternant.com</a>.</p>
+  </div>
+
+  <div class="page-footer">
+    <p>© 2026 Eternant Technologies Pvt. Ltd.</p>
+    <a href="/privacy.html">Privacy Policy →</a>
+  </div>
+</div>
+
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  var isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('et_theme', isDark ? 'light' : 'dark');
+}
+var saved = localStorage.getItem('et_theme');
+if (saved) document.documentElement.setAttribute('data-theme', saved);
+</script>
+</body>
+</html>
