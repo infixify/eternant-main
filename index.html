@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Eternant — Publisher, Brand & Tech Platform</title>
+<title>Grow with Eternant — Publishers & Advertisers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── DARK THEME (default) ── */
 :root,
 [data-theme="dark"] {
   --bg:           #03050d;
@@ -31,13 +30,11 @@
   --star-color:   rgba(216,230,255,1);
   --nebula1-bg:   rgba(110,181,255,0.07);
   --nebula2-bg:   rgba(167,139,250,0.06);
-  --about-bg:     linear-gradient(135deg, #070c1a, rgba(110,181,255,0.025));
   --footer-bg:    transparent;
   --shooting-star: rgba(180,210,255,0.9);
   color-scheme: dark;
 }
 
-/* ── LIGHT THEME ── */
 [data-theme="light"] {
   --bg:           #f0f4ff;
   --bg-card:      #ffffff;
@@ -57,18 +54,12 @@
   --star-color:   rgba(42,90,160,1);
   --nebula1-bg:   rgba(42,127,212,0.06);
   --nebula2-bg:   rgba(124,84,232,0.05);
-  --about-bg:     linear-gradient(135deg, #ffffff, rgba(42,127,212,0.04));
   --footer-bg:    transparent;
   --shooting-star: rgba(42,100,200,0.8);
   color-scheme: light;
 }
 
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-  max-width: 100%;
-}
-
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
 body {
   font-family: 'Syne', sans-serif;
   background: var(--bg);
@@ -80,868 +71,457 @@ body {
 }
 
 /* ── STARFIELD ── */
-#starfield {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  transition: opacity 0.5s;
-}
+#starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; transition: opacity 0.5s; }
 [data-theme="light"] #starfield { opacity: 0.35; }
 
-/* ── NEBULA BLOBS ── */
 .nebula {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(90px);
-  pointer-events: none;
-  z-index: 0;
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); pointer-events: none; z-index: 0;
   transition: background 0.4s, opacity 0.4s;
 }
-.nebula-1 {
-  width: 700px; height: 700px;
-  top: -250px; right: -120px;
-  background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%);
-}
-.nebula-2 {
-  width: 550px; height: 550px;
-  bottom: 50px; left: -180px;
-  background: radial-gradient(circle, var(--nebula2-bg) 0%, transparent 70%);
-}
-.nebula-3 {
-  width: 400px; height: 400px;
-  top: 55%; left: 45%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%);
-}
+.nebula-1 { width: 700px; height: 700px; top: -250px; right: -120px; background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
+.nebula-2 { width: 550px; height: 550px; bottom: 50px; left: -180px; background: radial-gradient(circle, var(--nebula2-bg) 0%, transparent 70%); }
+.nebula-3 { width: 400px; height: 400px; top: 55%; left: 45%; transform: translate(-50%,-50%); background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
 
-/* ── SHOOTING STAR ── */
 .shooting-star {
-  position: fixed;
-  top: 0; left: 0;
+  position: fixed; top: 0; left: 0;
   width: 2px; height: 2px;
-  background: var(--shooting-star);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
+  background: var(--shooting-star); border-radius: 50%;
+  pointer-events: none; z-index: 1; opacity: 0;
 }
 .shooting-star::after {
-  content: '';
-  position: absolute;
-  top: 50%; right: 0;
-  transform: translateY(-50%);
-  width: 80px; height: 1px;
+  content: ''; position: absolute; top: 50%; right: 0;
+  transform: translateY(-50%); width: 80px; height: 1px;
   background: linear-gradient(to left, var(--shooting-star), transparent);
 }
 
 /* ── NAV ── */
 nav {
-  position: sticky;
-  top: 0; z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 clamp(14px, 4vw, 36px);
-  height: 64px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(14px, 4vw, 36px); height: 64px;
   background: var(--bg-nav);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
   transition: background 0.4s, border-color 0.4s;
-  overflow: visible;
-  width: 100%;
-  min-width: 0;
+  overflow: visible; width: 100%; min-width: 0;
 }
-
 .logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: 4px;
-  text-decoration: none;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: color 0.4s;
-  flex-shrink: 0;
-  white-space: nowrap;
+  font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800;
+  color: var(--text); letter-spacing: 4px; text-decoration: none;
+  text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+  transition: color 0.4s; flex-shrink: 0; white-space: nowrap;
 }
-.logo-icon {
-  position: relative;
-  width: 24px; height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.logo-ring {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid var(--accent);
-  opacity: 0.5;
-  position: absolute;
-  animation: logo-rotate 12s linear infinite;
-}
-.logo-ring-2 {
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  border: 1px solid var(--accent2);
-  opacity: 0.4;
-  position: absolute;
-  animation: logo-rotate 8s linear infinite reverse;
-}
-.logo-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(110,181,255,0.4);
-  position: relative;
-  z-index: 1;
-  animation: pulse-dot 3s ease-in-out infinite;
-}
-@keyframes logo-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 12px var(--accent); }
-  50% { opacity: 0.6; transform: scale(0.75); box-shadow: 0 0 6px var(--accent); }
-}
+.logo-icon { position: relative; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.logo-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--accent); opacity: 0.5; position: absolute; animation: logo-rotate 12s linear infinite; }
+.logo-ring-2 { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--accent2); opacity: 0.4; position: absolute; animation: logo-rotate 8s linear infinite reverse; }
+.logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(110,181,255,0.4); position: relative; z-index: 1; animation: pulse-dot 3s ease-in-out infinite; }
+@keyframes logo-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); box-shadow:0 0 12px var(--accent); } 50% { opacity:0.6; transform:scale(0.75); box-shadow:0 0 6px var(--accent); } }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow: visible;
-  position: relative;
-  flex-shrink: 0;
-}
-
-/* ── THEME TOGGLE ── */
+.nav-right { display: flex; align-items: center; gap: 8px; overflow: visible; position: relative; flex-shrink: 0; }
 .theme-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 3px;
-  cursor: pointer;
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 3px; cursor: pointer;
   transition: border-color 0.2s, background 0.4s;
-  position: relative;
-  width: 68px; height: 30px;
+  position: relative; width: 68px; height: 30px;
 }
 .theme-toggle:hover { border-color: var(--border-lt); }
-.toggle-track {
-  position: relative;
-  width: 100%; height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 5px;
-}
-.toggle-icon {
-  font-size: 12px;
-  z-index: 1;
-  transition: opacity 0.3s;
-  line-height: 1;
-}
-.toggle-thumb {
-  position: absolute;
-  top: 1px;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 2px 8px var(--glow);
-  transition: left 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s;
-  left: 2px;
-}
-[data-theme="light"] .toggle-thumb {
-  left: calc(100% - 24px);
-}
+.toggle-track { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 5px; }
+.toggle-icon { font-size: 12px; z-index: 1; transition: opacity 0.3s; line-height: 1; }
+.toggle-thumb { position: absolute; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 2px 8px var(--glow); transition: left 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s; left: 2px; }
+[data-theme="light"] .toggle-thumb { left: calc(100% - 24px); }
 
-.btn-login {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px; font-weight: 500;
-  padding: 8px 20px;
-  border-radius: 8px;
-  border: 1px solid var(--border-lt);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  text-decoration: none;
-  display: inline-block;
-}
+.btn-login { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 20px; border-radius: 8px; border: 1px solid var(--border-lt); background: transparent; color: var(--muted); cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; text-decoration: none; display: inline-block; }
 .btn-login:hover { background: var(--bg-hover); color: var(--text); border-color: var(--accent); }
-
-.btn-signup {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px; font-weight: 600;
-  padding: 8px 22px;
-  border-radius: 8px;
-  border: 1px solid rgba(110,181,255,0.4);
-  background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.08));
-  color: var(--accent);
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-}
-.btn-signup::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(110,181,255,0.2), rgba(167,139,250,0.15));
-  opacity: 0; transition: opacity 0.2s;
-}
+.btn-signup { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; padding: 8px 22px; border-radius: 8px; border: 1px solid rgba(110,181,255,0.4); background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.08)); color: var(--accent); cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; position: relative; overflow: hidden; }
+.btn-signup::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(110,181,255,0.2), rgba(167,139,250,0.15)); opacity: 0; transition: opacity 0.2s; }
 .btn-signup:hover::before { opacity: 1; }
 .btn-signup:hover { border-color: var(--accent); box-shadow: 0 0 24px var(--glow); }
-
-.hamburger {
-  display: flex; flex-direction: column; justify-content: center; gap: 5px;
-  width: 38px; height: 38px; padding: 9px;
-  cursor: pointer; margin-left: 2px;
-  border-radius: 8px; border: 1px solid var(--border);
-  background: transparent;
-  transition: border-color 0.2s, background 0.2s;
-}
+.hamburger { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 38px; height: 38px; padding: 9px; cursor: pointer; margin-left: 2px; border-radius: 8px; border: 1px solid var(--border); background: transparent; transition: border-color 0.2s, background 0.2s; }
 .hamburger:hover { border-color: var(--border-lt); background: var(--bg-card); }
-.hamburger span {
-  display: block; height: 1.5px;
-  background: var(--text); border-radius: 2px;
-  transition: transform 0.25s, opacity 0.25s;
-}
+.hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ── DRAWER ── */
 .drawer {
-  position: fixed;
-  top: 64px; right: 0;
-  width: min(280px, 80vw);
-  height: calc(100vh - 64px);
-  background: var(--bg-drawer);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border-left: 1px solid var(--border);
-  z-index: 99;
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s;
-  padding: 20px 16px;
-  display: flex; flex-direction: column;
-  gap: 4px;
+  position: fixed; top: 64px; right: 0;
+  width: min(280px, 80vw); height: calc(100vh - 64px);
+  background: var(--bg-drawer); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid var(--border); z-index: 99;
+  transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s;
+  padding: 20px 16px; display: flex; flex-direction: column; gap: 4px;
 }
 .drawer.open { transform: translateX(0); }
-.drawer a {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 14px;
-  font-size: 13px; font-weight: 500;
-  color: var(--muted);
-  text-decoration: none;
-  border-radius: 8px;
-  border: none;
-  transition: color 0.15s, background 0.15s, padding-left 0.2s;
-}
-.drawer a:last-child { border: none; }
+.drawer a { display: flex; align-items: center; gap: 10px; padding: 9px 14px; font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; border-radius: 8px; border: none; transition: color 0.15s, background 0.15s, padding-left 0.2s; }
 .drawer a:hover { color: var(--text); background: var(--bg-hover); padding-left: 20px; }
 .drawer a .d-icon { font-size: 14px; min-width: 16px; color: var(--accent); opacity: 0.6; transition: opacity 0.15s; display: flex; }
 .drawer a .d-icon svg { width: 14px; height: 14px; }
 .drawer a:hover .d-icon { opacity: 1; }
+.drawer-theme-row { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 8px; }
+.drawer-theme-row .d-icon { flex-shrink: 0; opacity: 0.5; }
+.drawer-theme-toggle { background: none; border: none; cursor: pointer; padding: 0; }
 
 /* ── MAIN ── */
-main {
-  position: relative; z-index: 1;
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 0 clamp(18px,4vw,28px) 100px;
+main { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 0 clamp(16px,4vw,28px) 80px; width: 100%; }
+
+/* ── ACCORDION SERVICES ── */
+.services { display: flex; flex-direction: column; gap: 8px; margin-bottom: 0; }
+.sa {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
+.sa:hover { border-color: var(--border-lt); }
+.sa.open { border-color: rgba(110,181,255,0.28); box-shadow: 0 4px 24px var(--glow2); }
+.sa.active-page { border-color: rgba(110,181,255,0.35); }
+.sa-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; gap: 12px;
+}
+.sa-left { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+.si-num {
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; color: var(--muted); flex-shrink: 0;
+}
+.si-icon {
+  width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+}
+.si-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.sa.active-page .si-icon { background: rgba(110,181,255,0.14); border-color: rgba(110,181,255,0.3); }
+.si-text { min-width: 0; }
+.si-name { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.si-desc { font-size: 11.5px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sa-chevron { width: 20px; height: 20px; flex-shrink: 0; }
+.sa-chevron svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.25s; }
+.sa.open .sa-chevron svg { transform: rotate(180deg); stroke: var(--accent); }
+.sa-body { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sa.open .sa-body { max-height: 2000px; }
+.sa-inner { padding: 0 20px 22px; }
+.sa-inner > p { font-size: 13px; line-height: 1.75; color: var(--text-sub); margin-bottom: 14px; }
+.sa-points { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.sa-points li { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--text-sub); line-height: 1.5; }
+.sa-points li::before { content: '→'; color: var(--accent); font-size: 11px; flex-shrink: 0; margin-top: 2px; }
+.sa-cta-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.sa-cta {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  padding: 9px 18px; border-radius: 8px; text-decoration: none;
+  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
+  color: var(--accent); border: 1px solid rgba(110,181,255,0.25);
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.sa-cta:hover { background: linear-gradient(135deg, rgba(110,181,255,0.25), rgba(167,139,250,0.18)); box-shadow: 0 0 20px var(--glow); }
+.sa-cta-ghost {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 9px 16px; border-radius: 8px; text-decoration: none;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.sa-cta-ghost:hover { color: var(--text); border-color: var(--border-lt); background: var(--bg-hover); }
+.sa-cta-ghost svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.sa-coming {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); border: 1px dashed var(--border);
+  border-radius: 8px; padding: 8px 14px;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  padding: 18px 0 0;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--muted);
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); fill: none; flex-shrink: 0; }
+.breadcrumb span { color: var(--accent); }
 
 /* ── HERO ── */
 .hero {
-  padding: 100px 0 80px;
+  padding: 60px 0 72px;
   border-bottom: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
+.hero-orbit-wrap { position: absolute; right: -60px; top: 20px; pointer-events: none; }
+.ho-ring { position: absolute; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.ho-ring-1 { width: 320px; height: 320px; border: 1px solid rgba(110,181,255,0.08); animation: orbit-spin 40s linear infinite; }
+.ho-ring-2 { width: 220px; height: 220px; border: 1px solid rgba(167,139,250,0.06); animation: orbit-spin 28s linear infinite reverse; }
+.ho-ring-3 { width: 140px; height: 140px; border: 1px solid rgba(110,181,255,0.05); animation: orbit-spin 18s linear infinite; }
+@keyframes orbit-spin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
 
-.hero-orbit-wrap {
-  position: absolute;
-  right: -60px; top: 30px;
-  pointer-events: none;
-}
-.ho-ring {
-  position: absolute;
-  border-radius: 50%;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-.ho-ring-1 {
-  width: 320px; height: 320px;
-  border: 1px solid rgba(110,181,255,0.08);
-  animation: orbit-spin 40s linear infinite;
-}
-.ho-ring-2 {
-  width: 220px; height: 220px;
-  border: 1px solid rgba(167,139,250,0.06);
-  animation: orbit-spin 28s linear infinite reverse;
-}
-.ho-ring-3 {
-  width: 140px; height: 140px;
-  border: 1px solid rgba(110,181,255,0.05);
-  animation: orbit-spin 18s linear infinite;
-}
 .ho-planet { position: absolute; border-radius: 50%; }
-.ho-p1 {
-  width: 7px; height: 7px;
-  background: var(--accent); box-shadow: 0 0 14px var(--accent);
-  top: 0; left: 50%; transform: translate(-50%, -50%);
-  animation: orbit-dot-1 40s linear infinite;
-  transform-origin: 0 160px;
-}
-.ho-p2 {
-  width: 5px; height: 5px;
-  background: var(--accent2); box-shadow: 0 0 10px var(--accent2);
-  top: 0; left: 50%; transform: translate(-50%, -50%);
-  animation: orbit-dot-2 28s linear infinite reverse;
-  transform-origin: 0 110px;
-}
-
-@keyframes orbit-spin {
-  from { transform: translate(-50%,-50%) rotate(0deg); }
-  to   { transform: translate(-50%,-50%) rotate(360deg); }
-}
-@keyframes orbit-dot-1 {
-  from { transform: translate(-50%,-50%) rotate(0deg) translateX(160px); }
-  to   { transform: translate(-50%,-50%) rotate(360deg) translateX(160px); }
-}
-@keyframes orbit-dot-2 {
-  from { transform: translate(-50%,-50%) rotate(0deg) translateX(110px); }
-  to   { transform: translate(-50%,-50%) rotate(-360deg) translateX(110px); }
-}
+.ho-p1 { width: 8px; height: 8px; background: var(--accent); opacity: 0.7; box-shadow: 0 0 12px var(--accent); top: calc(50% - 160px); left: 50%; transform: translateX(-50%); animation: orbit-p1 40s linear infinite; }
+.ho-p2 { width: 5px; height: 5px; background: var(--accent2); opacity: 0.6; box-shadow: 0 0 8px var(--accent2); top: calc(50% - 110px); left: 50%; transform: translateX(-50%); animation: orbit-p2 28s linear infinite reverse; }
+@keyframes orbit-p1 { from { transform: rotate(0deg) translateX(160px); } to { transform: rotate(360deg) translateX(160px); } }
+@keyframes orbit-p2 { from { transform: rotate(0deg) translateX(110px); } to { transform: rotate(360deg) translateX(110px); } }
 
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 14px 6px 10px;
-  border-radius: 100px;
-  border: 1px solid rgba(110,181,255,0.25);
-  background: rgba(110,181,255,0.06);
-  margin-bottom: 32px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.9;
+  border: 1px solid rgba(110,181,255,0.2); border-radius: 100px;
+  padding: 5px 14px; margin-bottom: 24px;
+  background: rgba(110,181,255,0.05);
 }
-.hero-badge-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
-.hero-badge span {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px; color: var(--accent);
-  letter-spacing: 1.5px; text-transform: uppercase;
-}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse-dot 2.5s ease-in-out infinite; }
 
 .hero h1 {
-  font-size: clamp(32px, 5.5vw, 54px);
-  font-weight: 800; line-height: 1.08;
-  letter-spacing: -1.5px;
-  color: var(--text);
-  max-width: 600px;
-  margin-bottom: 24px;
+  font-size: clamp(28px, 6.5vw, 52px);
+  font-weight: 800; line-height: 1.1; letter-spacing: -1.5px;
+  color: var(--text); margin-bottom: 20px; max-width: 680px;
 }
-.hero h1 em {
-  font-style: normal;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero > p {
+  font-size: clamp(14px, 2vw, 16px); line-height: 1.7; color: var(--text-sub);
+  max-width: 520px; margin-bottom: 36px;
 }
 
-.hero p {
-  font-size: 16px; font-weight: 400;
-  color: var(--text-sub);
-  max-width: 460px; line-height: 1.8;
-  margin-bottom: 44px;
-}
-
-.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
-
+.hero-cta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .cta-primary {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 600;
-  padding: 13px 30px;
-  border-radius: 10px; border: none;
-  background: linear-gradient(135deg, #4a9eff, #7b5ef7);
-  color: #fff; cursor: pointer;
-  text-decoration: none; display: inline-block;
-  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 24px rgba(74,158,255,0.3), 0 0 0 0 rgba(74,158,255,0);
-  position: relative; overflow: hidden;
-}
-.cta-primary::after {
-  content: '';
-  position: absolute; inset: -1px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-  pointer-events: none;
-}
-.cta-primary:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 10px 36px rgba(74,158,255,0.4); }
-
-.cta-secondary {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 500;
-  padding: 13px 24px;
-  border-radius: 10px; border: 1px solid var(--border-lt);
-  background: transparent; color: var(--muted);
-  cursor: pointer; text-decoration: none;
   display: inline-flex; align-items: center; gap: 8px;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  padding: 13px 28px; border-radius: 10px; text-decoration: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #03050d; border: none; cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 0 0 rgba(110,181,255,0);
 }
-.cta-secondary:hover { color: var(--text); border-color: var(--muted); background: var(--bg-hover); }
-.cta-secondary svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+.cta-primary:hover { box-shadow: 0 0 32px var(--glow), 0 4px 20px rgba(110,181,255,0.3); transform: translateY(-1px); }
+.cta-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+  padding: 12px 24px; border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border-lt); color: var(--text-sub);
+  background: transparent; cursor: pointer; transition: all 0.2s;
+}
+.cta-secondary svg { width: 14px; height: 14px; fill: currentColor; }
+.cta-secondary:hover { color: var(--text); border-color: var(--accent); background: var(--accent-dim); }
 
-/* ── STATS ── */
-.stats-row {
-  display: flex; gap: 0;
-  margin-top: 64px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--bg-card);
-  transition: background 0.4s, border-color 0.4s;
-}
-.stat-item {
-  flex: 1; padding: 28px 20px;
-  border-right: 1px solid var(--border);
-  transition: background 0.2s;
-  position: relative;
-}
-.stat-item:last-child { border-right: none; }
-.stat-item::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0; transition: opacity 0.3s;
-}
-.stat-item:hover::before { opacity: 0.5; }
-.stat-item:hover { background: var(--bg-hover); }
-.stat-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 26px; font-weight: 700;
-  margin-bottom: 6px;
-  background: linear-gradient(135deg, var(--text), var(--accent));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.stat-label {
-  font-size: 11px; color: var(--muted);
-  font-family: 'Space Mono', monospace;
-  letter-spacing: 1px; text-transform: uppercase;
-}
+
 
 /* ── SECTION LABEL ── */
 .section-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px; color: var(--muted);
-  letter-spacing: 3px; text-transform: uppercase;
-  margin: 72px 0 36px;
-  display: flex; align-items: center; gap: 16px;
-}
-.section-label::after {
-  content: ''; flex: 1; height: 1px;
-  background: linear-gradient(to right, var(--border), transparent);
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); padding: 44px 0 18px;
 }
 
-/* ── SERVICES ACCORDION ── */
-.services { position: relative; display: flex; flex-direction: column; gap: 10px; }
-
-.sa {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--bg-card);
-  overflow: hidden;
-  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
-}
-.sa:hover { border-color: var(--border-lt); }
-.sa.open {
-  border-color: rgba(110,181,255,0.4);
-  box-shadow: 0 0 28px rgba(110,181,255,0.06);
-}
-
-.sa-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px; cursor: pointer; gap: 16px; user-select: none;
-}
-.sa-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
-
-.si-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px; color: var(--border-lt);
-  min-width: 20px; transition: color 0.2s; flex-shrink: 0;
-}
-.sa.open .si-num { color: var(--accent); }
-
-.si-icon {
-  width: 42px; height: 42px; border-radius: 11px;
-  border: 1px solid var(--border); background: var(--bg-hover);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-}
-.si-icon svg {
-  width: 17px; height: 17px;
-  stroke: var(--accent); fill: none;
-  stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-  opacity: 0.65; transition: opacity 0.2s;
-}
-.sa.open .si-icon {
-  border-color: rgba(110,181,255,0.35);
-  background: rgba(110,181,255,0.07);
-  box-shadow: 0 0 16px rgba(110,181,255,0.1);
-}
-.sa.open .si-icon svg { opacity: 1; }
-
-.si-text { min-width: 0; }
-.si-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; letter-spacing: -0.3px; }
-.si-desc { font-size: 12.5px; color: var(--text-sub); white-space: normal; line-height: 1.5; }
-
-.sa-chevron {
-  flex-shrink: 0; color: var(--muted);
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), color 0.2s;
-  display: flex;
-}
-.sa-chevron svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.sa.open .sa-chevron { transform: rotate(180deg); color: var(--accent); }
-
-.sa-body {
-  max-height: 0; overflow: hidden;
-  transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1);
-}
-.sa.open .sa-body { max-height: 260px; }
-
-.sa-inner {
-  padding: 0 20px 20px;
-  border-top: 1px solid var(--border);
-  padding-top: 18px;
-}
-.sa-inner p {
-  font-size: 13px; color: var(--text-sub); line-height: 1.7; margin-bottom: 14px;
-}
-.sa-points {
-  list-style: none; margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px;
-}
-.sa-points li {
-  font-size: 12.5px; color: var(--text);
+/* ── ROLE TOGGLE ── */
+.role-toggle-wrap {
   display: flex; align-items: center; gap: 8px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 5px; width: fit-content;
+  margin-bottom: 32px;
 }
-.sa-points li::before {
-  content: '';
-  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent);
+.role-btn {
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 8px 20px; border-radius: 9px; border: none; cursor: pointer;
+  transition: all 0.2s; background: transparent; color: var(--muted);
+  display: flex; align-items: center; gap: 7px;
 }
-.sa-cta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.sa-cta {
-  display: inline-block; font-family: 'Syne', sans-serif;
-  font-size: 12px; font-weight: 600; padding: 8px 18px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
-  border: 1px solid rgba(110,181,255,0.3);
-  color: var(--accent); text-decoration: none;
-  transition: background 0.2s, box-shadow 0.2s;
-}
-.sa-cta:hover { background: linear-gradient(135deg, rgba(110,181,255,0.25), rgba(167,139,250,0.18)); box-shadow: 0 0 16px rgba(110,181,255,0.15); }
-.sa-cta-ghost {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Syne', sans-serif;
-  font-size: 12px; font-weight: 500; padding: 8px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border-lt);
-  background: transparent; color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
-}
-.sa-cta-ghost svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.sa-cta-ghost:hover { color: var(--text); border-color: var(--muted); background: var(--bg-hover); }
+.role-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.role-btn.active { background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1)); color: var(--accent); border: 1px solid rgba(110,181,255,0.25); }
 
-/* ── FOLLOW US ── */
-.follow-section { margin-top: 72px; }
-.follow-header {
+/* ── AD FORMAT TABS ── */
+.format-tabs-wrap { margin-bottom: 32px; }
+.format-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border); padding-bottom: 0;
+  margin-bottom: 28px;
+}
+.fmt-tab {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 9px 16px; border-radius: 8px 8px 0 0;
+  border: 1px solid transparent; border-bottom: none;
+  background: transparent; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; position: relative; bottom: -1px;
+}
+.fmt-tab.active {
+  color: var(--accent); background: var(--bg-card);
+  border-color: var(--border); border-bottom-color: var(--bg-card);
+}
+.fmt-tab:not(.active):hover { color: var(--text-sub); background: var(--bg-hover); }
+
+.fmt-panel { display: none; }
+.fmt-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ── FORMAT CARD ── */
+.fmt-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  cursor: default; position: relative; overflow: hidden;
+}
+.fmt-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-dim), transparent);
+  opacity: 0; transition: opacity 0.25s;
+}
+.fmt-card:hover { border-color: var(--border-lt); box-shadow: 0 4px 24px var(--glow2); transform: translateY(-2px); }
+.fmt-card:hover::before { opacity: 1; }
+
+.fmt-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.fmt-icon svg { width: 18px; height: 18px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.fmt-card-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.1px; }
+.fmt-card-desc { font-size: 12px; line-height: 1.6; color: var(--text-sub); margin-bottom: 14px; }
+.fmt-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px;
+  background: rgba(110,181,255,0.08); border: 1px solid rgba(110,181,255,0.18);
+  color: var(--accent);
+}
+.fmt-badge-green { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2); color: #34d399; }
+.fmt-badge-purple { background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.2); color: var(--accent2); }
+
+
+
+/* ── TARGETING TABLE ── */
+.target-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 4px;
+}
+.target-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 13px; padding: 18px 16px;
+  transition: border-color 0.2s;
+}
+.target-card:hover { border-color: var(--border-lt); }
+.target-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); opacity: 0.85; margin-bottom: 10px;
+}
+.target-card h4 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.target-card p { font-size: 12px; line-height: 1.6; color: var(--text-sub); }
+.target-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.tag {
+  font-size: 10.5px; font-weight: 600; padding: 3px 9px;
+  border-radius: 100px; background: var(--accent-dim);
+  border: 1px solid rgba(110,181,255,0.12); color: var(--text-sub);
+}
+
+
+
+/* ── TRAFFIC TYPES ── */
+.traffic-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-top: 4px;
+}
+.traffic-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 16px; text-align: center;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.traffic-card:hover { border-color: var(--border-lt); transform: translateY(-2px); }
+.traffic-icon {
+  width: 44px; height: 44px; border-radius: 12px; margin: 0 auto 12px;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+}
+.traffic-icon svg { width: 20px; height: 20px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.traffic-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.traffic-desc { font-size: 11.5px; line-height: 1.5; color: var(--text-sub); }
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 44px 36px;
+  text-align: center; margin-top: 52px; position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: ''; position: absolute; inset: 0; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.04), rgba(167,139,250,0.03));
+  pointer-events: none;
+}
+.cta-banner-badge {
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+  opacity: 0.85; margin-bottom: 16px;
+}
+.cta-banner h2 { font-size: clamp(20px, 4vw, 30px); font-weight: 800; color: var(--text); letter-spacing: -0.8px; margin-bottom: 12px; }
+.cta-banner p { font-size: 14px; color: var(--text-sub); line-height: 1.7; max-width: 440px; margin: 0 auto 28px; }
+.cta-banner-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.faq-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.faq-item:hover { border-color: var(--border-lt); }
+.faq-item.open { border-color: rgba(110,181,255,0.25); }
+.faq-q {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+  padding: 16px 18px; font-size: 13.5px; font-weight: 600; color: var(--text);
 }
-.follow-title {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px; color: var(--muted);
-  letter-spacing: 3px; text-transform: uppercase;
-  display: flex; align-items: center; gap: 16px;
+.faq-chevron { width: 18px; height: 18px; stroke: var(--muted); fill: none; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); stroke: var(--accent); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+  font-size: 13px; color: var(--text-sub); line-height: 1.7;
 }
-.follow-title::after {
-  content: ''; width: 40px; height: 1px;
-  background: linear-gradient(to right, var(--border), transparent);
-}
-.follow-sub { font-size: 12px; color: var(--muted); }
-.follow-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-.follow-chip {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-sub);
-  text-decoration: none;
-  font-size: 13px; font-weight: 500;
-  transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
-  position: relative; overflow: hidden;
-}
-.follow-chip::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--chip-glow, transparent);
-  opacity: 0; transition: opacity 0.2s;
-}
-.follow-chip:hover { color: var(--text); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-.follow-chip:hover::before { opacity: 1; }
-.follow-chip:hover { border-color: var(--chip-color, var(--border-lt)); }
-.follow-chip svg { width: 16px; height: 16px; flex-shrink: 0; }
-.follow-chip[data-platform="instagram"] { --chip-color: #e1306c; --chip-glow: rgba(225,48,108,0.06); }
-.follow-chip[data-platform="youtube"]   { --chip-color: #ff0000; --chip-glow: rgba(255,0,0,0.06); }
-.follow-chip[data-platform="telegram"]  { --chip-color: #2aabee; --chip-glow: rgba(42,171,238,0.06); }
-.follow-chip[data-platform="whatsapp"]  { --chip-color: #25d366; --chip-glow: rgba(37,211,102,0.06); }
-.follow-chip[data-platform="x"]        { --chip-color: #e7e9ea; --chip-glow: rgba(231,233,234,0.04); }
-.follow-chip[data-platform="linkedin"]  { --chip-color: #0a66c2; --chip-glow: rgba(10,102,194,0.06); }
-.follow-chip[data-platform="facebook"]  { --chip-color: #1877f2; --chip-glow: rgba(24,119,242,0.06); }
-.follow-chip[data-platform="discord"]   { --chip-color: #5865f2; --chip-glow: rgba(88,101,242,0.06); }
-.follow-chip.hidden { display: none; }
-
-/* ── ABOUT STRIP ── */
-.about-strip {
-  margin-top: 72px; padding: 40px 36px;
-  border-radius: 18px; border: 1px solid var(--border);
-  background: var(--about-bg);
-  position: relative; overflow: hidden;
-  transition: background 0.4s, border-color 0.4s;
-}
-.about-strip::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
-  opacity: 0.4;
-}
-.about-strip::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent2), transparent);
-  opacity: 0.15;
-}
-.about-strip h2 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 12px; letter-spacing: -0.4px; }
-.about-strip p { font-size: 14px; color: var(--text-sub); line-height: 1.8; max-width: 530px; }
-.about-accent {
-  position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
-  font-family: 'Space Mono', monospace;
-  font-size: 80px; font-weight: 700;
-  color: var(--accent); opacity: 0.04;
-  letter-spacing: -6px;
-  pointer-events: none; user-select: none;
-}
+.faq-a-inner { padding: 0 18px 16px; }
+.faq-item.open .faq-a { max-height: 200px; }
 
 /* ── FOOTER ── */
 footer {
   position: relative; z-index: 1;
-  border-top: 1px solid var(--border);
-  padding: 28px clamp(18px,4vw,36px);
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 12px;
-  transition: border-color 0.4s;
+  padding: clamp(16px,3vw,24px) clamp(16px,4vw,36px);
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--muted);
+  background: var(--footer-bg);
 }
-.footer-left { display: flex; align-items: center; gap: 16px; }
-footer p { font-size: 12px; color: var(--muted); }
-.footer-signal {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 11px; color: var(--muted);
-  font-family: 'Space Mono', monospace;
-}
-.footer-signal-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: #4ade80; box-shadow: 0 0 8px #4ade80;
-  animation: blink 2.5s ease-in-out infinite;
-}
-@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
-footer a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.15s; }
-footer a:hover { color: var(--text); }
-.footer-links { display: flex; gap: 20px; }
+.footer-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.footer-signal { display: flex; align-items: center; gap: 6px; }
+.footer-signal-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px rgba(52,211,153,0.5); animation: pulse-dot 3s ease-in-out infinite; }
+.footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.footer-links a { color: var(--muted); text-decoration: none; transition: color 0.15s; font-size: 12px; }
+.footer-links a:hover { color: var(--accent); }
 
-/* ── PLANET DECO ── */
-.planet-deco {
-  position: absolute; right: 20px; bottom: 80px;
-  width: 90px; height: 90px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #1e3a7a 0%, #050d1e 60%, #020810 100%);
-  box-shadow: 0 0 0 1px rgba(110,181,255,0.08), 0 4px 40px rgba(0,0,50,0.4), inset 0 1px 0 rgba(110,181,255,0.1);
-  pointer-events: none;
-  display: flex; align-items: center; justify-content: center;
-  overflow: visible;
-}
-.planet-ring-outer {
-  position: absolute; width: 148px; height: 38px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(110,181,255,0.18);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) rotateX(72deg);
-  box-shadow: 0 0 12px rgba(110,181,255,0.06);
-}
-[data-theme="light"] .planet-deco { opacity: 0.4; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 640px) {
-  nav {
-    height: 60px;
-    padding: 0 14px;
-  }
-  .logo {
-    font-size: 14px;
-    letter-spacing: 2.5px;
-    gap: 8px;
-  }
-  .nav-right {
-    gap: 6px;
-  }
-  .theme-toggle {
-    width: 56px;
-    height: 26px;
-  }
-  .toggle-thumb {
-    width: 18px;
-    height: 18px;
-    top: 2px;
-    left: 2px;
-  }
-  [data-theme="light"] .toggle-thumb {
-    left: calc(100% - 20px);
-  }
-  .toggle-icon { font-size: 10px; }
-  .hero { padding: 72px 0 56px; }
-  .hero-orbit-wrap, .planet-deco { display: none; }
-  .stats-row { flex-wrap: wrap; border-radius: 10px; }
-  .stat-item { flex: 1 1 40%; border-bottom: 1px solid var(--border); }
-  .stat-item:nth-child(odd) { border-right: 1px solid var(--border); }
-  .stat-item:nth-last-child(-n+2) { border-bottom: none; }
-  .about-accent { display: none; }
-  .btn-login { display: none; }
-  .btn-signup {
-    font-size: 12px;
-    padding: 7px 14px;
-  }
-  .about-strip { padding: 28px 22px; }
-  .drawer {
-    top: 60px;
-    height: calc(100vh - 60px);
-  }
-  /* Logged-in avatar: hide name on mobile */
-  .user-avatar-name { display: none; }
-  .user-avatar-btn { padding: 4px 8px 4px 4px; }
-  /* Dropdown should not overflow left edge */
-  .user-dropdown { right: 0; min-width: 170px; }
-}
-
-@media (max-width: 380px) {
-  .logo { font-size: 13px; letter-spacing: 1.5px; }
-  .btn-signup { display: none; }
-}
-
-/* ── USER AVATAR (after login) ── */
-.user-avatar-btn {
-  display: none; align-items: center; gap: 8px;
-  padding: 5px 12px 5px 5px;
-  border-radius: 100px;
-  border: 1px solid var(--border-lt);
-  background: var(--bg-card);
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  position: relative;
-}
-.user-avatar-btn:hover { border-color: var(--accent); background: var(--bg-hover); }
-.user-avatar-img {
-  width: 28px; height: 28px; border-radius: 50%;
-  object-fit: cover; border: 1px solid var(--border-lt);
-  background: var(--bg-hover);
-}
-.user-avatar-initial {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: #fff; font-family: 'Syne', sans-serif;
-  flex-shrink: 0;
-}
-.user-avatar-name { font-size: 12px; font-weight: 600; color: var(--text); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.user-dropdown {
-  position: absolute; top: calc(100% + 10px); right: 0;
-  background: var(--bg-card); border: 1px solid var(--border-lt);
-  border-radius: 12px; padding: 8px;
-  min-width: 190px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-  opacity: 0; pointer-events: none;
-  transform: translateY(-6px);
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 200;
-}
-.user-avatar-btn.open .user-dropdown { opacity: 1; pointer-events: auto; transform: translateY(0); }
-.user-dropdown-email { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; padding: 6px 10px 10px; border-bottom: 1px solid var(--border); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.user-dropdown-btn { width: 100%; text-align: left; padding: 8px 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-sub); font-family: 'Syne', sans-serif; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s, color 0.15s; }
-.user-dropdown-btn:hover { background: rgba(248,113,113,0.06); color: #f87171; }
-
-/* ── GOOGLE AUTH MODAL ── */
+/* ── AUTH MODAL ── */
 .auth-modal-overlay {
   position: fixed; inset: 0; z-index: 500;
   background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
   display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.25s;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s;
 }
 .auth-modal-overlay.active { opacity: 1; pointer-events: auto; }
 .auth-modal-wrap { position: relative; width: 100%; max-width: 380px; }
 .auth-modal {
   background: var(--bg-card); border: 1px solid var(--border-lt);
-  border-radius: 20px; padding: 40px 36px;
-  width: 100%;
+  border-radius: 20px; padding: 40px 36px; width: 100%;
   box-shadow: 0 24px 60px rgba(0,0,0,0.4);
-  transform: translateY(12px) scale(0.98);
-  transition: transform 0.25s;
-  text-align: center;
+  transform: translateY(12px) scale(0.98); transition: transform 0.25s; text-align: center;
 }
 .auth-modal-overlay.active .auth-modal { transform: translateY(0) scale(1); }
-.auth-modal-logo {
-  width: 48px; height: 48px; margin: 0 auto 20px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
-  border: 1px solid rgba(110,181,255,0.3);
-  display: flex; align-items: center; justify-content: center;
-}
+.auth-modal-logo { width: 48px; height: 48px; margin: 0 auto 20px; border-radius: 12px; background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1)); border: 1px solid rgba(110,181,255,0.3); display: flex; align-items: center; justify-content: center; }
 .auth-modal-logo svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .auth-modal h2 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -0.4px; }
 .auth-modal p { font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 28px; }
-.btn-google {
-  width: 100%; padding: 12px 20px;
-  border-radius: 10px; border: 1px solid var(--border-lt);
-  background: var(--bg-hover);
-  color: var(--text); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-}
+.btn-google { width: 100%; padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border-lt); background: var(--bg-hover); color: var(--text); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
 .btn-google:hover { border-color: var(--accent); background: var(--bg-card); box-shadow: 0 4px 20px var(--glow); }
 .btn-google:disabled { opacity: 0.6; pointer-events: none; }
 .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
-.auth-modal-close {
-  position: absolute; top: 14px; right: 14px;
-  width: 28px; height: 28px; border-radius: 50%;
-  background: var(--bg-hover); border: 1px solid var(--border);
-  color: var(--muted); font-size: 16px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: color 0.15s, background 0.15s;
-  line-height: 1;
-}
+.auth-modal-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-hover); border: 1px solid var(--border); color: var(--muted); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.15s, background 0.15s; line-height: 1; }
 .auth-modal-close:hover { color: var(--text); background: var(--border); }
 .auth-modal-note { font-size: 11px; color: var(--muted); line-height: 1.6; margin-top: 18px; }
 .auth-modal-note a { color: var(--accent); text-decoration: none; }
@@ -950,69 +530,249 @@ footer a:hover { color: var(--text); }
 .auth-loading.show { display: flex; }
 .auth-spinner { width: 32px; height: 32px; border: 3px solid var(--border-lt); border-top-color: var(--accent); border-radius: 50%; animation: auth-spin 0.8s linear infinite; }
 @keyframes auth-spin { to { transform: rotate(360deg); } }
-@media (max-width: 420px) {
-  .hero h1 { letter-spacing: -0.8px; }
-  .btn-signup { padding: 8px 14px; font-size: 12px; }
-  .theme-toggle { display: none; }
-}
-/* ── Mobile nav fixes ── */
-@media (max-width: 640px) {
-  .btn-signup { padding: 8px 14px; font-size: 12px; }
-  .btn-login  { display: none; }
-  .user-avatar-name { display: none; } /* sirf photo dikhao mobile pe */
-  .user-avatar-btn { padding: 3px; border-radius: 50%; gap: 0; }
-  .user-dropdown { right: -8px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; animation: none !important; }
-}
 
 /* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.25s;
-}
+.modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
-.modal-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border-lt); border-radius: 16px;
-  width: 100%; max-width: 580px; max-height: 80vh;
-  display: flex; flex-direction: column;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(110,181,255,0.06);
-  transform: translateY(12px); transition: transform 0.25s;
-  overflow: hidden;
-}
+.modal-box { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: 16px; width: 100%; max-width: 580px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 24px 80px rgba(0,0,0,0.5); transform: translateY(12px); transition: transform 0.25s; overflow: hidden; }
 .modal-overlay.active .modal-box { transform: translateY(0); }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-}
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .modal-header h2 { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
-.modal-header h2 span { color: var(--accent); font-size: 14px; }
-.modal-close {
-  width: 30px; height: 30px; border-radius: 8px;
-  border: 1px solid var(--border); background: transparent;
-  color: var(--muted); cursor: pointer; font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s, color 0.15s;
-}
+.modal-close { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
 .modal-close:hover { background: var(--bg-hover); color: var(--text); }
 .modal-meta { padding: 10px 24px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; flex-shrink: 0; }
 .modal-body { overflow-y: auto; padding: 20px 24px 28px; font-size: 13.5px; line-height: 1.85; color: var(--text-sub); scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-.modal-body::-webkit-scrollbar { width: 4px; }
-.modal-body::-webkit-scrollbar-thumb { background: var(--border-lt); border-radius: 4px; }
-.modal-body h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 20px 0 6px; letter-spacing: -0.1px; }
+.modal-body h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 20px 0 6px; }
 .modal-body h3:first-child { margin-top: 0; }
 .modal-body p { margin-bottom: 10px; }
 .modal-body ul { padding-left: 18px; margin-bottom: 10px; }
 .modal-body ul li { margin-bottom: 4px; }
 .modal-body a { color: var(--accent); text-decoration: none; }
 .modal-body a:hover { text-decoration: underline; }
+
+/* ══ HOW IT WORKS ══ */
+.hiw-wrap { margin-bottom: 0; }
+
+.hiw-bubbles {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 28px; padding: 4px 0;
+}
+
+.hiw-bubble {
+  font-family: 'Syne', sans-serif; font-size: 12.5px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 18px; border-radius: 100px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  position: relative; overflow: hidden;
+}
+.hiw-bubble::before {
+  content: ''; position: absolute; inset: 0; border-radius: 100px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.18), rgba(167,139,250,0.12));
+  opacity: 0; transition: opacity 0.22s;
+}
+.hiw-bubble:hover { color: var(--text); border-color: var(--border-lt); }
+.hiw-bubble:hover::before { opacity: 1; }
+.hiw-bubble.active {
+  color: var(--accent); border-color: rgba(110,181,255,0.45);
+  background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.07));
+  box-shadow: 0 0 20px var(--glow2);
+}
+.hiw-bubble.active::before { opacity: 1; }
+.hiw-bubble-icon { display: flex; align-items: center; flex-shrink: 0; }
+.hiw-bubble-icon svg { stroke: currentColor; }
+
+/* Panels */
+.hiw-panel {
+  display: none;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 18px; padding: clamp(22px,4vw,36px);
+  animation: hiw-fadein 0.28s ease;
+}
+.hiw-panel.active { display: block; }
+@keyframes hiw-fadein { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.hiw-panel-header {
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px;
+  padding-bottom: 22px; border-bottom: 1px solid var(--border);
+}
+.hiw-panel-icon {
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+}
+.hiw-panel-icon svg { stroke: var(--accent); }
+.hiw-panel-eyebrow {
+  font-family: 'Space Mono', monospace; font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  opacity: 0.75; margin-bottom: 5px;
+}
+.hiw-panel-title {
+  font-size: clamp(15px,3vw,19px); font-weight: 800; color: var(--text);
+  letter-spacing: -0.4px; line-height: 1.2;
+}
+
+/* Steps */
+.hiw-steps {
+  display: flex; flex-direction: column; gap: 0;
+  margin-bottom: 28px; position: relative;
+}
+.hiw-steps::before {
+  content: ''; position: absolute; left: 19px; top: 28px;
+  bottom: 28px; width: 1px;
+  background: linear-gradient(to bottom, rgba(110,181,255,0.3), transparent);
+}
+.hiw-step {
+  display: flex; gap: 18px; align-items: flex-start;
+  padding: 16px 0;
+  position: relative;
+}
+.hiw-step:not(:last-child) { border-bottom: 1px solid rgba(110,181,255,0.07); }
+.hiw-step-num {
+  font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; color: var(--bg);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px var(--glow); position: relative; z-index: 1;
+}
+.hiw-step-body { flex: 1; min-width: 0; padding-top: 8px; }
+.hiw-step-title {
+  font-size: 13.5px; font-weight: 700; color: var(--text);
+  margin-bottom: 5px; letter-spacing: -0.1px;
+}
+.hiw-step-desc { font-size: 12.5px; line-height: 1.7; color: var(--text-sub); }
+
+.hiw-cta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .btn-signup { padding: 7px 12px; font-size: 11px; white-space: nowrap; }
+  .btn-login { display: none; }
+  .nav-theme-toggle { display: none; }
+  .fmt-panel.active { grid-template-columns: 1fr; }
+
+
+  .traffic-grid { grid-template-columns: 1fr 1fr; }
+  .target-grid { grid-template-columns: 1fr; }
+
+
+}
+@media (min-width: 641px) { .drawer-theme-row { display: none; } }
+@media (max-width: 420px) {
+  .hero h1 { letter-spacing: -0.8px; }
+  .btn-signup { padding: 8px 14px; font-size: 12px; }
+  .theme-toggle { display: none; }
+  .format-tabs { overflow-x: auto; flex-wrap: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* ── AUTH TABS ── */
+.auth-tabs {
+  display: flex; gap: 0; margin-bottom: 18px;
+  background: var(--bg); border-radius: 10px; padding: 3px;
+  border: 1px solid var(--border);
+}
+.auth-tab {
+  flex: 1; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer;
+  background: transparent; color: var(--muted);
+  transition: background 0.2s, color 0.2s;
+}
+.auth-tab.active {
+  background: linear-gradient(135deg, rgba(110,181,255,0.18), rgba(167,139,250,0.12));
+  color: var(--accent);
+}
+.auth-tab:not(.active):hover { color: var(--text); }
+
+/* ── AUTH DIVIDER ── */
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 16px 0 14px; font-size: 11px; color: var(--muted);
+  font-family: 'Space Mono', monospace; letter-spacing: 0.08em;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── AUTH FIELDS ── */
+.auth-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.auth-field label {
+  font-size: 11.5px; font-weight: 600; color: var(--text-sub);
+  letter-spacing: 0.04em;
+}
+.auth-field input {
+  font-family: 'Syne', sans-serif; font-size: 13px;
+  padding: 10px 13px; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--bg);
+  color: var(--text); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-field input::placeholder { color: var(--muted); }
+.auth-field input:focus {
+  border-color: rgba(110,181,255,0.5);
+  box-shadow: 0 0 0 3px rgba(110,181,255,0.08);
+}
+
+/* ── FORGOT ROW ── */
+.auth-forgot-row { display: flex; justify-content: flex-end; margin-top: -4px; margin-bottom: 14px; }
+.auth-back-row { margin-bottom: 14px; }
+.auth-link-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--accent); padding: 0; transition: opacity 0.2s;
+}
+.auth-link-btn:hover { opacity: 0.75; }
+
+/* ── SUBMIT BUTTON ── */
+.auth-submit-btn {
+  width: 100%; font-family: 'Syne', sans-serif; font-size: 13.5px; font-weight: 700;
+  padding: 11px 20px; border-radius: 9px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #03050d; margin-top: 4px;
+  transition: box-shadow 0.2s, transform 0.15s, opacity 0.2s;
+}
+.auth-submit-btn:hover {
+  box-shadow: 0 0 28px var(--glow), 0 4px 16px rgba(110,181,255,0.25);
+  transform: translateY(-1px);
+}
+.auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── EMAIL VERIFY BOX ── */
+.auth-verify-box {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 8px 0 4px;
+}
+.auth-verify-icon { font-size: 40px; margin-bottom: 12px; }
+.auth-verify-title {
+  font-size: 16px; font-weight: 800; color: var(--text);
+  letter-spacing: -0.3px; margin-bottom: 10px;
+}
+.auth-verify-desc {
+  font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 6px;
+}
+.auth-verify-desc strong { color: var(--accent); }
+.auth-verify-sub {
+  font-size: 11.5px; color: var(--muted); line-height: 1.6; margin-bottom: 18px;
+}
+.auth-verify-actions { width: 100%; }
+.auth-resend-timer {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  color: var(--muted); margin-top: 10px; letter-spacing: 0.04em;
+}
+
+/* ── AUTH ERROR / SUCCESS ── */
+.auth-error {
+  font-size: 12px; color: #ff6b6b; min-height: 0;
+  margin-bottom: 4px; display: none; line-height: 1.5;
+}
+.auth-error.show { display: block; }
+.auth-success {
+  font-size: 12px; color: #6bffb0; min-height: 0;
+  margin-bottom: 4px; display: none; line-height: 1.5;
+}
+.auth-success.show { display: block; }
 </style>
 </head>
 <body>
@@ -1024,7 +784,7 @@ footer a:hover { color: var(--text); }
 
 <!-- Nav -->
 <nav>
-  <a href="#" class="logo">
+  <a href="/" class="logo">
     <div class="logo-icon">
       <div class="logo-ring"></div>
       <div class="logo-ring-2"></div>
@@ -1033,7 +793,7 @@ footer a:hover { color: var(--text); }
     ETERNANT
   </a>
   <div class="nav-right">
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+    <button class="theme-toggle nav-theme-toggle" id="themeToggle" aria-label="Toggle theme">
       <div class="toggle-track">
         <span class="toggle-icon">🌙</span>
         <span class="toggle-icon">☀️</span>
@@ -1042,19 +802,6 @@ footer a:hover { color: var(--text); }
     </button>
     <a href="#" class="btn-login" id="nav-login-btn">Log in</a>
     <a href="#" class="btn-signup" id="nav-signup-btn">Get started</a>
-    <!-- User Avatar (shown after login) -->
-    <button class="user-avatar-btn" id="userAvatarBtn" onclick="toggleUserMenu(event)" style="display:none">
-      <div class="user-avatar-initial" id="userAvatarInitial">U</div>
-      <img class="user-avatar-img" id="userAvatarImg" src="" alt="" style="display:none">
-      <span class="user-avatar-name" id="userAvatarName"></span>
-      <div class="user-dropdown" id="userDropdown">
-        <div class="user-dropdown-email" id="userDropdownEmail"></div>
-        <button class="user-dropdown-btn" onclick="signOut(event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Sign out
-        </button>
-      </div>
-    </button>
     <button class="hamburger" id="hbtn" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
@@ -1063,74 +810,94 @@ footer a:hover { color: var(--text); }
 
 <!-- Drawer -->
 <nav class="drawer" id="drawer" aria-label="Site navigation">
-  <a href="#" id="drawer-home">
-    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+  <a href="/">
+    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
     Home
   </a>
-  <a href="#" id="drawer-publishers">
+  <a href="#">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
     Publishers
   </a>
-  <a href="#" id="drawer-advertisers">
-    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+  <a href="#" style="color:var(--accent);">
+    <span class="d-icon" style="opacity:1;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
     Advertisers
   </a>
-  <a href="#" id="drawer-it">
+  <a href="#">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
     IT Solutions
   </a>
-  <a href="#" id="drawer-influencers">
-    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-    Influencers
-  </a>
-  <a href="#" id="drawer-giveaways">
-    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+  <a href="#">
+    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/></svg></span>
     Giveaways
   </a>
   <a href="#" id="drawer-contact">
     <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
     Contact
   </a>
+  <div class="drawer-theme-row">
+    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+    <span style="flex:1;font-size:14px;color:var(--text-sub);">Theme</span>
+    <button class="theme-toggle drawer-theme-toggle" id="themeToggleDrawer" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb" id="toggleThumbDrawer"></div>
+      </div>
+    </button>
+  </div>
 </nav>
 
 <main>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="/">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Grow with Eternant</span>
+  </div>
+
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-orbit-wrap">
+    <div class="hero-orbit-wrap" style="width:320px;height:320px;">
       <div class="ho-ring ho-ring-1"></div>
       <div class="ho-ring ho-ring-2"></div>
       <div class="ho-ring ho-ring-3"></div>
       <div class="ho-planet ho-p1"></div>
       <div class="ho-planet ho-p2"></div>
     </div>
-    <div class="planet-deco"><div class="planet-ring-outer"></div></div>
+
     <div class="hero-badge">
       <div class="hero-badge-dot"></div>
-      <span>Multi-service platform</span>
+      <span>Publishers &amp; Advertisers</span>
     </div>
-    <h1>Publishers, brands and tech — <em>one orbit</em></h1>
-    <p>Monetize content, run campaigns, ship digital products, and connect with creators. Everything your business needs to grow — in one place.</p>
+    <h1>Earn more. <em>Reach further.</em></h1>
+    <p>Whether you own traffic or want to buy it — Eternant connects publishers and advertisers across web, mobile, Telegram, and social. Real-time tracking, zero bot traffic, every rupee accountable.</p>
     <div class="hero-cta">
-      <a href="#" class="cta-primary" id="hero-start-btn">Start for free</a>
-      <a href="#" class="cta-secondary" id="hero-hiw-btn">
+      <a href="#" class="cta-primary" id="hero-start-btn">Get Started →</a>
+      <a href="#hiw-section" class="cta-secondary" id="hero-hiw-btn" onclick="event.preventDefault();document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         See how it works
       </a>
     </div>
+
+
   </section>
 
+  <!-- Services Accordion (moved above HIW) -->
+  <div id="services-section"></div>
   <div class="section-label">Services</div>
 
-  <section class="services">
-    <!-- 01 -->
-    <div class="sa" onclick="toggleSA(this)">
+  <section class="services" id="services-acc">
+
+    <!-- 01 Publishers -->
+    <div class="sa" id="acc-pub" onclick="toggleSA(this)">
       <div class="sa-header">
         <div class="sa-left">
           <span class="si-num">01</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
           <div class="si-text">
-            <div class="si-name">Publishers (WEBSITES & APPS)</div>
-            <div class="si-desc">Earn revenue from your content and traffic</div>
+            <div class="si-name">Publishers — Earn Using Your Traffic</div>
+            <div class="si-desc">Earn revenue from your content and userbase</div>
           </div>
         </div>
         <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
@@ -1140,71 +907,54 @@ footer a:hover { color: var(--text); }
           <p>Turn your web traffic, apps, or mobile views into steady automated revenue streams with high-yielding ad formats and a global advertiser network.</p>
           <ul class="sa-points">
             <li>High eCPM global ad inventory</li>
-            <li>Multiple Ad Formats</li>
+            <li>Multiple ad formats — push, popunder, in-page, native</li>
             <li>Real-time tracking and reporting dashboard</li>
+            <li>Weekly payouts, $5 minimum withdrawal</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-01" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-01" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();openAuthModal('signup')">Get Started →</a>
+            <a href="#hiw-section" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();selectHIW(document.querySelector('[onclick*=\'hiw-pub\']'),'hiw-pub');setTimeout(function(){document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})},50);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 02 -->
-    <div class="sa" onclick="toggleSA(this)">
+    <!-- 02 Advertisers -->
+    <div class="sa active-page" id="acc-adv" onclick="toggleSA(this)">
       <div class="sa-header">
         <div class="sa-left">
           <span class="si-num">02</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
           <div class="si-text">
             <div class="si-name">Advertiser Campaigns</div>
-            <div class="si-desc">Launch, track and scale your brand campaigns</div>
+            <div class="si-desc">Launch, track and scale your ad campaigns globally</div>
           </div>
         </div>
         <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
       <div class="sa-body">
         <div class="sa-inner">
-          <p>Scale your brand, app installs, or offers through targeted global ad networks with advanced anti-fraud filters and precise audience controls.</p>
+          <p>Scale your brand, drive app installs, or promote your offers through targeted global ad networks — with advanced anti-fraud filters, precise audience controls, and real-time ROI tracking. Every rupee, accountable.</p>
           <ul class="sa-points">
-            <li>Precise geo and device targeting</li>
-            <li>Self-serve campaign budget control</li>
-            <li>Zero bot traffic guaranteed</li>
+            <li>8+ ad formats — push, popunder, in-page, native, video, CPA, PTC, SmartLink</li>
+            <li>Precise geo, device, OS, browser, and category targeting</li>
+            <li>Self-serve campaign builder with real-time budget control</li>
+            <li>Zero bot traffic — multi-layer anti-fraud guaranteed</li>
+            <li>Pixel &amp; postback conversion tracking for CPA campaigns</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-02" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-02" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();openAuthModal('signup')">Launch Campaign →</a>
+            <a href="#advertise-formats" class="sa-cta-ghost" onclick="event.stopPropagation();document.getElementById('advertise-formats').scrollIntoView({behavior:'smooth'});"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>See all formats</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 03 -->
-    <div class="sa" onclick="toggleSA(this)">
+    <!-- 03 IT / Dev -->
+    <div class="sa" id="acc-dev" onclick="toggleSA(this)">
       <div class="sa-header">
         <div class="sa-left">
           <span class="si-num">03</span>
-          <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <div class="si-text">
-            <div class="si-name">Social Influencers Hub</div>
-            <div class="si-desc">Monetize your audience across any platform</div>
-          </div>
-        </div>
-        <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-      </div>
-      <div class="sa-body">
-        <div class="sa-inner">
-          <p>Whether you're a YouTuber, Instagram creator, or you own a WhatsApp or Telegram group and channel — turn your existing audience and content into a steady income stream without starting from scratch.</p>
-          <ul class="sa-points">
-            <li>YouTubers, Instagrammers &amp; all social creators</li>
-            <li>WhatsApp &amp; Telegram group / channel owners</li>
-            <li>Earn directly from your audience — no brand deals needed</li>
-          </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-03" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-03" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 04 -->
-    <div class="sa" onclick="toggleSA(this)">
-      <div class="sa-header">
-        <div class="sa-left">
-          <span class="si-num">04</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
           <div class="si-text">
             <div class="si-name">Web &amp; App Development</div>
@@ -1221,16 +971,19 @@ footer a:hover { color: var(--text); }
             <li>Optimized for speed and SEO</li>
             <li>Dedicated maintenance and scaling support</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-04" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-04" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();openAuthModal('signup')">Get Started →</a>
+            <a href="#hiw-section" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();selectHIW(document.querySelector('[onclick*=\'hiw-dev\']'),'hiw-dev');setTimeout(function(){document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})},50);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 05 -->
-    <div class="sa" onclick="toggleSA(this)">
+    <!-- 04 Giveaways -->
+    <div class="sa" id="acc-give" onclick="toggleSA(this)">
       <div class="sa-header">
         <div class="sa-left">
-          <span class="si-num">05</span>
+          <span class="si-num">04</span>
           <div class="si-icon"><svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
           <div class="si-text">
             <div class="si-name">Giveaways &amp; Promos</div>
@@ -1247,85 +1000,512 @@ footer a:hover { color: var(--text); }
             <li>Automated winner selection algorithms</li>
             <li>Instant reward distribution system</li>
           </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-05" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-05" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();openAuthModal('signup')">Get Started →</a>
+            <a href="#hiw-section" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();selectHIW(document.querySelector('[onclick*=\'hiw-give\']'),'hiw-give');setTimeout(function(){document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})},50);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 06 -->
-    <div class="sa" onclick="toggleSA(this)">
-      <div class="sa-header">
-        <div class="sa-left">
-          <span class="si-num">06</span>
-          <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-          <div class="si-text">
-            <div class="si-name">Analytics &amp; Reporting</div>
-            <div class="si-desc">Real-time data across all your services</div>
-          </div>
-        </div>
-        <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-      </div>
-      <div class="sa-body">
-        <div class="sa-inner">
-          <p>Unified dashboards giving you live insights across all your campaigns, publisher revenue, influencer deals, and platform activity in one place.</p>
-          <ul class="sa-points">
-            <li>Live cross-platform dashboards</li>
-            <li>Exportable reports (CSV, PDF)</li>
-            <li>Custom alerts and performance goals</li>
-          </ul>
-          <div class="sa-cta-row"><a href="#" class="sa-cta" id="svc-cta-06" onclick="event.stopPropagation()">Get Started →</a><a href="#" class="sa-cta-ghost" id="svc-hiw-06" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a></div>
-        </div>
-      </div>
-    </div>
 
   </section>
 
-  <!-- Follow Us -->
-  <div class="follow-section" id="followSection">
-    <div class="follow-header">
-      <span class="follow-title">Follow Us</span>
-      <span class="follow-sub" id="followSub"></span>
+  <!-- ══ HOW IT WORKS ══ -->
+  <div id="hiw-section"></div>
+  <div class="section-label" style="padding-top:52px;">How It Works</div>
+
+  <section class="hiw-wrap">
+    <!-- Bubble Grid -->
+    <div class="hiw-bubbles" id="hiwBubbles">
+        <button class="hiw-bubble active" onclick="selectHIW(this,'hiw-pub')" data-label="Publishers">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+          <span>Publishers</span>
+        </button>
+        <button class="hiw-bubble" onclick="selectHIW(this,'hiw-adv')" data-label="Advertiser">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
+          <span>Advertiser</span>
+        </button>
+        <button class="hiw-bubble" onclick="selectHIW(this,'hiw-dev')" data-label="Web / App Dev">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+          <span>Web / App Dev</span>
+        </button>
+        <button class="hiw-bubble" onclick="selectHIW(this,'hiw-give')" data-label="Giveaways">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+          <span>Giveaways</span>
+        </button>
+
     </div>
-    <div class="follow-grid" id="followGrid">
-      <a href="#" class="follow-chip" data-platform="instagram" id="fc-instagram" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        Instagram
-      </a>
-      <a href="#" class="follow-chip" data-platform="youtube" id="fc-youtube" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
-        YouTube
-      </a>
-      <a href="#" class="follow-chip" data-platform="telegram" id="fc-telegram" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 4.8 2.8 11.6c-1.2.5-1.2 1.2 0 1.5l4.6 1.4 1.8 5.6c.3.8.7.9 1.2.6l2.8-2.3 4.7 3.5c.9.5 1.5.2 1.7-.8L22 6c.3-1.3-.4-1.8-1.6-1.2z"/><path d="M7.4 14.5 17 9"/></svg>
-        Telegram
-      </a>
-      <a href="#" class="follow-chip" data-platform="whatsapp" id="fc-whatsapp" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-        WhatsApp
-      </a>
-      <a href="#" class="follow-chip" data-platform="x" id="fc-x" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        X (Twitter)
-      </a>
-      <a href="#" class="follow-chip" data-platform="linkedin" id="fc-linkedin" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        LinkedIn
-      </a>
-      <a href="#" class="follow-chip" data-platform="facebook" id="fc-facebook" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-        Facebook
-      </a>
-      <a href="#" class="follow-chip" data-platform="discord" id="fc-discord" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M7.5 7.5c2.5-1 6.5-1 9 0M7.5 16.5c2.5 1 6.5 1 9 0"/><path d="M8.5 4.5A15.5 15.5 0 0 0 3 9.5s1 5 3.5 7c1 .5 2.5.5 2.5.5l.5-1.5"/><path d="M15.5 4.5A15.5 15.5 0 0 1 21 9.5s-1 5-3.5 7c-1 .5-2.5.5-2.5.5l-.5-1.5"/></svg>
-        Discord
-      </a>
+
+    <!-- Content Panels -->
+
+    <!-- PUBLISHERS -->
+    <div class="hiw-panel active" id="hiw-pub">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Publishers Earn</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Create a Free Account</div>
+            <p class="hiw-step-desc">Sign up in under 60 seconds with Google. No approval queue — your dashboard is ready instantly.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Add Your Traffic Source</div>
+            <p class="hiw-step-desc">Register your Website, App, Telegram, Whatsapp, or Social page. We support web, mobile, APK, Groups, Channles and bot traffic.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Get verified and place Ads</div>
+            <p class="hiw-step-desc">Verify your traffic source and add Ads to your source.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Earn & Withdraw</div>
+            <p class="hiw-step-desc">Revenue accumulates in real time on your dashboard. Withdraw to UPI, bank, online wallets or crypto — minimum just $5.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="#" class="sa-cta" onclick="event.preventDefault();openAuthModal()">Start Earning →</a>
+        <a href="#" class="sa-cta-ghost" onclick="event.preventDefault();document.querySelector('.sa').dispatchEvent(new Event('click'))">See Publisher Plans</a>
+      </div>
+    </div>
+
+    <!-- ADVERTISER -->
+    <div class="hiw-panel" id="hiw-adv">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Advertisers Launch Campaigns</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Sign Up & Top Up Balance</div>
+            <p class="hiw-step-desc">Create your account and fund it via UPI, card, crypto, or bank transfer. Indian advertisers pay in INR — no international fees.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Build Your Campaign</div>
+            <p class="hiw-step-desc">Choose ad format, set targeting (country, device, OS, browser, niche), upload creatives, and define your daily budget and bid.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Pass Review & Go Live</div>
+            <p class="hiw-step-desc">Our team reviews creatives in 1–2 hours. Self-serve campaigns go live almost immediately. First impressions within minutes of activation.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Track ROI in Real Time</div>
+            <p class="hiw-step-desc">Monitor clicks, conversions, and spend live. Use pixel or postback tracking for CPA campaigns. Pause, scale, or adjust bids anytime.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="#" class="sa-cta" onclick="event.preventDefault();openAuthModal()">Launch Campaign →</a>
+        <a href="#advertise-formats" class="sa-cta-ghost" onclick="event.preventDefault();document.getElementById('advertise-formats').scrollIntoView({behavior:'smooth'})">See Ad Formats</a>
+      </div>
+    </div>
+
+    <!-- WEB / APP DEV -->
+    <div class="hiw-panel" id="hiw-dev">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Web & App Development Works</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Share Your Requirements</div>
+            <p class="hiw-step-desc">Tell us what you're building — a web app, mobile app, SaaS tool, or custom software. We'll align on scope and timeline in a free consultation call.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Get a Proposal & Roadmap</div>
+            <p class="hiw-step-desc">Our engineers deliver a tech plan, stack recommendation (React, Node, Flutter), milestones, and transparent fixed pricing — no surprises.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Build, Review & Iterate</div>
+            <p class="hiw-step-desc">We develop in sprints with regular demos and feedback rounds. You have full visibility at every stage — no black-box development.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Launch & Ongoing Support</div>
+            <p class="hiw-step-desc">We deploy, optimise for speed and SEO, and provide dedicated maintenance and scaling support post-launch — so your product keeps growing.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="mailto:dev@eternant.com" class="sa-cta">Talk to Our Team →</a>
+        <a href="#" class="sa-cta-ghost" onclick="event.preventDefault();openAuthModal()">Get Started</a>
+      </div>
+    </div>
+
+    <!-- GIVEAWAYS -->
+    <div class="hiw-panel" id="hiw-give">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Giveaways & Promos Work</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Define Your Campaign Goal</div>
+            <p class="hiw-step-desc">Choose what you want to drive — followers, sign-ups, referrals, or app downloads. Set your prize, timeline, and entry conditions.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Configure Viral Sharing Rules</div>
+            <p class="hiw-step-desc">Set up referral chains and sharing incentives — users earn extra entries for every friend they bring in. Our system tracks every referral automatically.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Launch Across Your Channels</div>
+            <p class="hiw-step-desc">Embed the giveaway widget on your website, share via Telegram, or run it natively on the Eternant platform. We'll amplify it to our publisher network.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Auto-Select Winners & Distribute Rewards</div>
+            <p class="hiw-step-desc">Our verified random algorithm picks winners transparently. Rewards are distributed instantly — crypto, vouchers, or custom prizes — with full audit trail.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="#" class="sa-cta" onclick="event.preventDefault();openAuthModal()">Run a Giveaway →</a>
+        <a href="mailto:ads@eternant.com" class="sa-cta-ghost">Talk to Us</a>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+
+
+  </section>
+
+  <!-- Ad Formats -->
+  <div id="advertise-formats"></div>
+  <div class="section-label">Ad Formats</div>
+
+  <div class="format-tabs-wrap">
+    <div class="format-tabs" id="fmtTabs">
+      <button class="fmt-tab active" onclick="switchTab(this,'tab-push')">Push &amp; In-Page</button>
+      <button class="fmt-tab" onclick="switchTab(this,'tab-display')">Display &amp; Banners</button>
+      <button class="fmt-tab" onclick="switchTab(this,'tab-native')">Native &amp; Social</button>
+      <button class="fmt-tab" onclick="switchTab(this,'tab-cpa')">Offerwall / CPA</button>
+    </div>
+
+    <!-- Push & In-Page -->
+    <div class="fmt-panel active" id="tab-push">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="fmt-card-name">Push Notifications</div>
+        <div class="fmt-card-desc">Deliver clickable alerts directly to a user's device or browser — even when they're not on your site. High visibility and consistent CTR across all verticals.</div>
+        <div class="fmt-badge fmt-badge-green">High CTR</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="fmt-card-name">In-Page Push</div>
+        <div class="fmt-card-desc">Push-style ads that appear inside the webpage itself — no subscription required. Works on iOS and all browsers. Blends naturally with page content.</div>
+        <div class="fmt-badge">iOS Compatible</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="fmt-card-name">Vignette / Interstitial</div>
+        <div class="fmt-card-desc">Full-screen ads that appear between page transitions or content loads. Maximum visibility with controlled frequency capping to avoid user fatigue.</div>
+        <div class="fmt-badge fmt-badge-purple">Max Visibility</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="fmt-card-name">Telegram Push Ads</div>
+        <div class="fmt-card-desc">Broadcast sponsored messages to verified, active Telegram channels and groups. Your ad reaches real crypto and niche communities — pay per broadcast.</div>
+        <div class="fmt-badge">Real communities</div>
+      </div>
+    </div>
+
+    <!-- Display & Banners -->
+    <div class="fmt-panel" id="tab-display">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+        <div class="fmt-card-name">Popunder / Pop Ads</div>
+        <div class="fmt-card-desc">Full-tab ads that open behind the main window on user click. Historically the highest CPM ad format on the network. Every visitor is monetized.</div>
+        <div class="fmt-badge fmt-badge-green">Top CPM</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg></div>
+        <div class="fmt-card-name">Display Banners</div>
+        <div class="fmt-card-desc">Standard IAB banner formats (300×250, 728×90, 320×50) across premium publisher inventory. Ideal for brand awareness and retargeting campaigns.</div>
+        <div class="fmt-badge">Standard IAB</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+        <div class="fmt-card-name">Video Pre-roll</div>
+        <div class="fmt-card-desc">Skippable and non-skippable video ads placed before content. Drive brand recall with rich creative — optimised for completion rate across mobile and desktop.</div>
+        <div class="fmt-badge fmt-badge-purple">Video</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="fmt-card-name">Mobile Sticky Banner</div>
+        <div class="fmt-card-desc">Always-visible banner fixed to the top or bottom of mobile screens. Persistent exposure without interrupting content — high impressions at low CPM.</div>
+        <div class="fmt-badge">Mobile first</div>
+      </div>
+    </div>
+
+    <!-- Native & Social -->
+    <div class="fmt-panel" id="tab-native">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="fmt-card-name">Native In-Feed</div>
+        <div class="fmt-card-desc">Ads that match the look and feel of editorial content — headlines, images, descriptions — placed inline in news feeds, article pages, and content listings.</div>
+        <div class="fmt-badge fmt-badge-green">Non-intrusive</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="fmt-card-name">SmartLink</div>
+        <div class="fmt-card-desc">A single intelligent link that auto-detects user device, GEO, OS and browser — then routes to the highest-paying offer available for that traffic segment in real time.</div>
+        <div class="fmt-badge fmt-badge-purple">AI routing</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="fmt-card-name">Influencer Placements</div>
+        <div class="fmt-card-desc">Sponsored posts and shoutouts placed by verified social influencers across Instagram, YouTube, Telegram, and Discord. Real audiences, authentic reach.</div>
+        <div class="fmt-badge">Verified creators</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+        <div class="fmt-card-name">Social Media Ads</div>
+        <div class="fmt-card-desc">Managed ad buying on Facebook, Instagram and X/Twitter — creative strategy, audience building, and campaign management handled end to end by our team.</div>
+        <div class="fmt-badge fmt-badge-green">Managed service</div>
+      </div>
+    </div>
+
+    <!-- Offerwall / CPA -->
+    <div class="fmt-panel" id="tab-cpa">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+        <div class="fmt-card-name">CPA Offers</div>
+        <div class="fmt-card-desc">Pay only per confirmed conversion — app installs, sign-ups, deposits, purchases. Your offer is shown on publisher offerwalls and earn platforms to motivated users.</div>
+        <div class="fmt-badge fmt-badge-green">Pay per conversion</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div class="fmt-card-name">PTC Ads (Paid-to-Click)</div>
+        <div class="fmt-card-desc">Users on the Eternant earn network are incentivised to view and click your ad. Guaranteed engagement from real users — ideal for awareness, survey traffic, and app promos.</div>
+        <div class="fmt-badge">Guaranteed clicks</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="fmt-card-name">Survey &amp; Task Ads</div>
+        <div class="fmt-card-desc">Get users to complete market research surveys, app tasks, or verification flows. Pay only when the task is fully completed and verified — zero wasted spend.</div>
+        <div class="fmt-badge fmt-badge-purple">Verified completions</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="fmt-card-name">Offerwall Embed</div>
+        <div class="fmt-card-desc">List your offer directly inside publisher offerwalls — crypto earn sites, Web3 platforms, and reward apps. Get in front of action-ready users already looking to earn.</div>
+        <div class="fmt-badge">Web3 &amp; crypto</div>
+      </div>
     </div>
   </div>
 
-  <div class="about-strip">
-    <h2>Built for the long run</h2>
-    <p>Eternant brings publishers, advertisers, developers, and creators into one constellation. Whether you're monetizing a blog, scaling a brand, or building the next product — you're already home.</p>
-    <div class="about-accent">∞</div>
+
+
+  <!-- Traffic Sources -->
+  <div class="section-label">Traffic Sources</div>
+  <div class="traffic-grid">
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <div class="traffic-name">Websites</div>
+      <div class="traffic-desc">High-traffic blogs, tools, news, and niche content sites.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+      <div class="traffic-name">Mobile Apps</div>
+      <div class="traffic-desc">In-app placements across Android and iOS applications.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M21.2 4.8 2.8 11.6c-1.2.5-1.2 1.2 0 1.5l4.6 1.4 1.8 5.6c.3.8.7.9 1.2.6l2.8-2.3 4.7 3.5c.9.5 1.5.2 1.7-.8L22 6c.3-1.3-.4-1.8-1.6-1.2z"/></svg></div>
+      <div class="traffic-name">Telegram</div>
+      <div class="traffic-desc">Channels, groups, bots, and Telegram Mini Apps.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></div>
+      <div class="traffic-name">Social &amp; YouTube</div>
+      <div class="traffic-desc">Influencer audiences across Instagram, X, and YouTube.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+      <div class="traffic-name">APK &amp; Web3</div>
+      <div class="traffic-desc">Android APK installs and crypto / blockchain earn sites.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <div class="traffic-name">Paid &amp; Remnant</div>
+      <div class="traffic-desc">Paid media, DSP traffic, and remnant inventory top-up.</div>
+    </div>
+  </div>
+
+  <!-- Targeting -->
+  <div class="section-label">Targeting Capabilities</div>
+  <div class="target-grid">
+    <div class="target-card">
+      <div class="target-label">Geographic</div>
+      <h4>Country &amp; City Targeting</h4>
+      <p>Reach users in specific countries, regions, or cities. Build separate campaigns for Tier 1, 2 and 3 GEOs with custom bids.</p>
+      <div class="target-tags">
+        <span class="tag">195+ countries</span>
+        <span class="tag">City level</span>
+        <span class="tag">Tier segmentation</span>
+      </div>
+    </div>
+    <div class="target-card">
+      <div class="target-label">Device &amp; OS</div>
+      <h4>Device, OS &amp; Browser</h4>
+      <p>Target by device type (mobile/desktop/tablet), operating system (Android, iOS, Windows), and browser (Chrome, Safari, Firefox).</p>
+      <div class="target-tags">
+        <span class="tag">Mobile / Desktop</span>
+        <span class="tag">Android / iOS</span>
+        <span class="tag">Browser</span>
+      </div>
+    </div>
+    <div class="target-card">
+      <div class="target-label">Timing</div>
+      <h4>Dayparting &amp; Frequency</h4>
+      <p>Schedule your ads to run at specific hours or days. Set impression frequency caps per user to optimise reach without burning budget on repeat views.</p>
+      <div class="target-tags">
+        <span class="tag">Hour of day</span>
+        <span class="tag">Day of week</span>
+        <span class="tag">Freq cap</span>
+      </div>
+    </div>
+    <div class="target-card">
+      <div class="target-label">Audience</div>
+      <h4>Niche &amp; Category</h4>
+      <p>Select specific publisher categories — crypto, gaming, news, entertainment — or exclude verticals irrelevant to your offer for maximum conversion quality.</p>
+      <div class="target-tags">
+        <span class="tag">Crypto &amp; Web3</span>
+        <span class="tag">Gaming</span>
+        <span class="tag">Category exclude</span>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- FAQ -->
+  <div class="section-label">Frequently Asked Questions</div>
+  <div class="faq-list">
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What is the minimum budget to start advertising?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">You can launch a CPM or push notification campaign with as little as $10. CPA campaigns require a minimum $50 deposit. Managed service campaigns start at $500/month. All budgets are fully controllable — daily caps and total limits are enforced to the cent.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        How do you prevent bot traffic and click fraud?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Every impression and click is validated by our multi-layer anti-fraud system — IP reputation scoring, device fingerprinting, behavioural analysis, and publisher quality scores. Suspicious traffic is filtered before billing. We offer full transparency with raw traffic logs available on request.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        Can I target specific countries or niches?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Yes. You can target by country, region, or city (195+ GEOs), device type, OS, browser, language, and publisher category (crypto, gaming, news, entertainment, etc.). You can also blacklist specific publishers or domains that underperform for your offer.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What creatives do I need to provide?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Requirements vary by format. Push notifications need a title (30 chars), message (45 chars), icon (192×192 px) and optional banner image. Banners need standard IAB sizes (JPG/PNG/GIF). CPA offers just need your landing page URL and payout details. Our managed service team can build creatives for you.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        How quickly can my campaign go live?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Self-serve campaigns are reviewed and activated within 1–2 hours of submission. Managed campaigns require an onboarding call and go live within 24–48 hours. Push notification campaigns typically see first impressions within minutes of activation.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What payment methods are accepted?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">We accept credit/debit cards, UPI, net banking, crypto (BTC, USDT, ETH), and wire transfer for larger accounts. All transactions are processed securely. Indian advertisers can pay in INR with UPI or bank transfer — no international fees apply.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        How do publishers get paid?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Publishers receive weekly payouts with a minimum withdrawal of just $5. We support UPI, bank transfer, PayPal, and crypto (BTC, USDT). Earnings are calculated on verified, fraud-free traffic only — you always see exactly what you earned and why.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What kind of traffic can I monetise as a publisher?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">We accept websites, mobile apps, Telegram channels and bots, social media pages, and APK-based traffic. As long as your traffic is real and your content complies with our guidelines, you can monetise it across all our ad formats — push, popunder, in-page, native, and more.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div class="cta-banner-badge">∞ Eternant Platform</div>
+    <h2>Publisher or advertiser — start in minutes.</h2>
+    <p>Thousands of publishers are already earning. Thousands of advertisers are already reaching them. One account, one dashboard, both sides of the network.</p>
+    <div class="cta-banner-btns">
+      <a href="#" class="cta-primary" onclick="openAuthModal()">Create Free Account →</a>
+      <a href="mailto:ads@eternant.com" class="cta-secondary">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Talk to us
+      </a>
+    </div>
   </div>
 
 </main>
@@ -1339,432 +1519,506 @@ footer a:hover { color: var(--text); }
     </div>
   </div>
   <div class="footer-links">
-    <a href="/privacy.html">Privacy</a>
-    <a href="/terms.html">Terms</a>
-    <a href="#" id="footer-contact-link">Contact</a>
+    <a href="https://eternant.c0m.to/privacy.html" target="_blank">Privacy</a>
+    <a href="https://eternant.c0m.to/terms.html" target="_blank">Terms</a>
+    <a href="mailto:support@eternant.com">Contact</a>
   </div>
 </footer>
 
-<!-- Privacy Modal -->
-<div class="modal-overlay" id="modal-privacy" onclick="closeModalOutside(event,'modal-privacy')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2><span>🔒</span> Privacy Policy</h2>
-      <button class="modal-close" onclick="closeModal('modal-privacy')">✕</button>
-    </div>
-    <div class="modal-meta">Last updated: October 2026 &nbsp;·&nbsp; Effective immediately</div>
-    <div class="modal-body">
-      <h3>1. Who We Are</h3>
-      <p>Eternant is a multi-service platform connecting publishers, advertisers, developers, and creators. We operate under Eternant Technologies Pvt. Ltd. and are committed to protecting the privacy of everyone who uses our platform.</p>
-      <h3>2. What We Collect</h3>
-      <p>We collect information you provide directly — such as name, email address, and payment details when you register or transact on the platform. We also collect:</p>
-      <ul><li>Usage data (pages visited, features used, time spent)</li><li>Device and browser information</li><li>IP address and approximate location</li><li>Campaign and content performance metrics for publishers and advertisers</li></ul>
-      <h3>3. How We Use Your Data</h3>
-      <p>Your data is used to operate and improve the platform, send service-related communications, personalise your experience, process payments, and comply with legal obligations. We do not sell your personal data to third parties.</p>
-      <h3>4. Cookies</h3>
-      <p>We use cookies and similar tracking technologies to maintain sessions, remember preferences, and understand how the platform is used. You may disable cookies in your browser settings, though some features may not function correctly as a result.</p>
-      <h3>5. Data Sharing</h3>
-      <p>We may share data with trusted service providers (hosting, analytics, payment processors) strictly for the purpose of operating our services. All third parties are contractually bound to protect your data and may not use it for their own purposes.</p>
-      <h3>6. Data Retention</h3>
-      <p>We retain your data for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data at any time by contacting us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
-      <h3>7. Your Rights</h3>
-      <p>Depending on your jurisdiction, you may have the right to access, correct, export, or delete your data. To exercise any of these rights, contact us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
-      <h3>8. Security</h3>
-      <p>We implement industry-standard security measures including encryption in transit and at rest, access controls, and regular audits. However, no system is completely immune to breaches, and we encourage responsible handling of your credentials.</p>
-      <h3>9. Changes to This Policy</h3>
-      <p>We may update this policy periodically. Significant changes will be communicated via email or a notice on the platform. Continued use of the platform after changes constitutes acceptance.</p>
-      <h3>10. Contact</h3>
-      <p>For any privacy-related queries, reach us at <a href="mailto:privacy@eternant.com">privacy@eternant.com</a>.</p>
-    </div>
-  </div>
-</div>
 
-<!-- Terms Modal -->
-<div class="modal-overlay" id="modal-terms" onclick="closeModalOutside(event,'modal-terms')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2><span>📄</span> Terms &amp; Conditions</h2>
-      <button class="modal-close" onclick="closeModal('modal-terms')">✕</button>
-    </div>
-    <div class="modal-meta">Last updated: October 2026 &nbsp;·&nbsp; Governing law: India</div>
-    <div class="modal-body">
-      <h3>1. Acceptance of Terms</h3>
-      <p>By accessing or using the Eternant platform, you agree to be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
-      <h3>2. Eligibility</h3>
-      <p>You must be at least 18 years of age to create an account and use the platform. By registering, you confirm that the information you provide is accurate and up to date.</p>
-      <h3>3. Platform Services</h3>
-      <p>Eternant provides tools for publisher monetization, advertiser campaign management, web and app development services, influencer connections, giveaway management, and analytics. Services are subject to change, and we reserve the right to modify or discontinue any feature with reasonable notice.</p>
-      <h3>4. User Accounts</h3>
-      <p>You are responsible for maintaining the confidentiality of your account credentials. Any activity under your account is your responsibility. Notify us immediately at <a href="mailto:support@eternant.com">support@eternant.com</a> if you suspect unauthorised access.</p>
-      <h3>5. Prohibited Conduct</h3>
-      <p>You agree not to:</p>
-      <ul><li>Use the platform for unlawful, fraudulent, or harmful purposes</li><li>Upload content that infringes intellectual property rights</li><li>Reverse engineer, scrape, or interfere with platform infrastructure</li><li>Create fake accounts or misrepresent your identity</li><li>Distribute spam, malware, or unsolicited communications</li></ul>
-      <h3>6. Intellectual Property</h3>
-      <p>All platform content, branding, and software are the property of Eternant Technologies Pvt. Ltd. You retain ownership of content you upload, but grant Eternant a non-exclusive licence to use it to operate and improve the platform.</p>
-      <h3>7. Payments &amp; Refunds</h3>
-      <p>All transactions are processed securely. Fees for paid services are non-refundable unless otherwise specified or required by applicable law. Disputed charges must be raised within 30 days of the transaction date.</p>
-      <h3>8. Limitation of Liability</h3>
-      <p>To the maximum extent permitted by law, Eternant shall not be liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability shall not exceed the amount paid by you in the three months preceding the claim.</p>
-      <h3>9. Termination</h3>
-      <p>We reserve the right to suspend or terminate your account if you violate these terms, engage in fraudulent activity, or if continued access poses risk to the platform or other users.</p>
-      <h3>10. Governing Law</h3>
-      <p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.</p>
-      <h3>11. Contact</h3>
-      <p>For any queries regarding these terms, contact us at <a href="mailto:legal@eternant.com">legal@eternant.com</a>.</p>
-    </div>
-  </div>
-</div>
 
-<!-- ── GOOGLE AUTH MODAL ── -->
+
+
+<!-- Auth Modal -->
 <div class="auth-modal-overlay" id="authModal" onclick="authModalOutsideClick(event)">
   <div class="auth-modal-wrap">
     <div class="auth-modal">
-      <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Close">&#x2715;</button>
-      <!-- Sign In form -->
+      <button class="auth-modal-close" onclick="closeAuthModal()">&#x2715;</button>
+
+      <!-- Main Auth Form -->
       <div id="authForm">
         <div class="auth-modal-logo">
           <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
-        <h2>Welcome to Eternant</h2>
-        <p>Sign in to access your account and explore everything Eternant has to offer.</p>
+        <h2 id="authTitle">Welcome to Eternant</h2>
+        <p id="authSubtitle">Sign in to access your dashboard — publish, advertise, or manage services.</p>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+          <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Google Button -->
         <button class="btn-google" id="btnGoogleSignIn" onclick="signInWithGoogle()">
-          <!-- Google G logo SVG -->
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
-          Continue with Google
+          <span id="googleBtnText">Continue with Google</span>
         </button>
-        <p class="auth-modal-note">
-          By signing in, you agree to our
-          <a href="/terms.html" target="_blank">Terms of Service</a> and
-          <a href="/privacy.html" target="_blank">Privacy Policy</a>.
-        </p>
+
+        <div class="auth-divider"><span>or</span></div>
+
+        <!-- Login Panel -->
+        <div id="panelLogin">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="auth-forgot-row">
+            <button class="auth-link-btn" onclick="switchAuthTab('forgot')">Forgot password?</button>
+          </div>
+          <div class="auth-error" id="loginError"></div>
+          <button class="auth-submit-btn" onclick="handleEmailLogin()">Login →</button>
+        </div>
+
+        <!-- Signup Panel -->
+        <div id="panelSignup" style="display:none;">
+          <!-- Step 1: Form -->
+          <div id="signupFormStep">
+            <div class="auth-field">
+              <label>Email</label>
+              <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <div class="auth-field">
+              <label>Password</label>
+              <input type="password" id="signupPassword" placeholder="Min. 8 characters" autocomplete="new-password">
+            </div>
+            <div class="auth-field">
+              <label>Confirm Password</label>
+              <input type="password" id="signupConfirm" placeholder="Repeat password" autocomplete="new-password">
+            </div>
+            <div class="auth-error" id="signupError"></div>
+            <button class="auth-submit-btn" id="signupSubmitBtn" onclick="handleEmailSignup()">Create Account →</button>
+          </div>
+          <!-- Step 2: Verify Email -->
+          <div id="signupVerifyStep" style="display:none;">
+            <div class="auth-verify-box">
+              <div class="auth-verify-icon">✉️</div>
+              <h3 class="auth-verify-title">Verify your email</h3>
+              <p class="auth-verify-desc">We've sent a confirmation link to<br><strong id="signupEmailSent"></strong></p>
+              <p class="auth-verify-sub">Click the link in your inbox to activate your account. Check spam if you don't see it.</p>
+              <div class="auth-verify-actions">
+                <button class="auth-submit-btn" id="resendBtn" onclick="handleResendEmail()">Resend Email</button>
+                <div class="auth-resend-timer" id="resendTimer" style="display:none;">Resend in <span id="resendCount">60</span>s</div>
+              </div>
+              <button class="auth-link-btn" style="margin-top:14px;display:block;text-align:center;width:100%;" onclick="switchAuthTab('login')">← Back to Login</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forgot Password Panel -->
+        <div id="panelForgot" style="display:none;">
+          <div class="auth-back-row">
+            <button class="auth-link-btn" onclick="switchAuthTab('login')">← Back to Login</button>
+          </div>
+          <div class="auth-field">
+            <label>Your Email</label>
+            <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="auth-error" id="forgotError"></div>
+          <div class="auth-success" id="forgotSuccess"></div>
+          <button class="auth-submit-btn" onclick="handleForgotPassword()">Send Reset Link →</button>
+        </div>
+
+        <p class="auth-modal-note">By continuing you agree to our <a href="https://eternant.c0m.to/terms.html" target="_blank">Terms</a> and <a href="https://eternant.c0m.to/privacy.html" target="_blank">Privacy Policy</a>.</p>
       </div>
-      <!-- Loading state -->
+
+      <!-- Loading -->
       <div class="auth-loading" id="authLoading">
         <div class="auth-spinner"></div>
-        <p>Signing you in…</p>
+        <p id="authLoadingText">Signing you in…</p>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-/* ════════════════════════════════════════════
-   SUPABASE CONFIG
-   ════════════════════════════════════════════ */
-var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
-var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
-var CACHE_KEY     = 'eternant_links_v1';
-var CACHE_TTL     = 5 * 60 * 1000; // 5 min cache
+/* ── ACCORDION ── */
+function toggleSA(el) {
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.sa.open').forEach(function(a) {
+    a.classList.remove('open');
+    var body = a.querySelector('.sa-body');
+    if (body) body.style.maxHeight = '0';
+  });
+  if (!isOpen) {
+    el.classList.add('open');
+    var body = el.querySelector('.sa-body');
+    if (body) body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
 
 /* ── THEME ── */
 var htmlEl = document.documentElement;
-var saved  = localStorage.getItem('et-theme');
+var saved = localStorage.getItem('et-theme');
 if (saved) htmlEl.setAttribute('data-theme', saved);
 
-document.getElementById('themeToggle').addEventListener('click', function() {
-  var next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+function applyTheme(next) {
   htmlEl.setAttribute('data-theme', next);
   localStorage.setItem('et-theme', next);
   if (window.initStars) initStars();
+}
+
+document.getElementById('themeToggle').addEventListener('click', function() {
+  applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+var drawerToggle = document.getElementById('themeToggleDrawer');
+if (drawerToggle) drawerToggle.addEventListener('click', function() {
+  applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 });
 
-/* ── DRAWER ── */
-var drawer = document.getElementById('drawer');
-var hbtn   = document.getElementById('hbtn');
-var menuOpen = false;
+/* ── MENU ── */
 function toggleMenu() {
-  menuOpen = !menuOpen;
-  drawer.classList.toggle('open', menuOpen);
-  hbtn.classList.toggle('open', menuOpen);
-  hbtn.setAttribute('aria-expanded', menuOpen);
+  var btn = document.getElementById('hbtn');
+  var drawer = document.getElementById('drawer');
+  var open = drawer.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
 }
 document.addEventListener('click', function(e) {
-  if (menuOpen && !drawer.contains(e.target) && !hbtn.contains(e.target)) {
-    menuOpen = false;
+  var drawer = document.getElementById('drawer');
+  var btn = document.getElementById('hbtn');
+  if (drawer.classList.contains('open') && !drawer.contains(e.target) && !btn.contains(e.target)) {
     drawer.classList.remove('open');
-    hbtn.classList.remove('open');
-    hbtn.setAttribute('aria-expanded', false);
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', false);
   }
 });
 
-/* ════════════════════════════════════════════
-   LINK INJECTION — Supabase-powered
-   ════════════════════════════════════════════ */
-function applyConfig(cfg) {
-  function setLink(el, href) {
-    if (el && href && href !== '#') el.setAttribute('href', href);
-  }
-  // Nav
-  setLink(document.getElementById('nav-login-btn'),  cfg.nav_login);
-  setLink(document.getElementById('nav-signup-btn'), cfg.nav_get_started);
-  // Hero
-  setLink(document.getElementById('hero-start-btn'), cfg.hero_start_free);
-  setLink(document.getElementById('hero-hiw-btn'),   cfg.hero_how_it_works);
-  // Services CTAs
-  for (var i = 1; i <= 6; i++) {
-    var n = ('0' + i).slice(-2);
-    setLink(document.getElementById('svc-cta-' + n), cfg['service_' + n]);
-    setLink(document.getElementById('svc-hiw-' + n), cfg['hiw_' + n]);
-  }
-  // Drawer
-  setLink(document.getElementById('drawer-home'),        cfg.drawer_home);
-  setLink(document.getElementById('drawer-publishers'),  cfg.drawer_publishers);
-  setLink(document.getElementById('drawer-advertisers'), cfg.drawer_advertisers);
-  setLink(document.getElementById('drawer-it'),          cfg.drawer_it);
-  setLink(document.getElementById('drawer-influencers'), cfg.drawer_influencers);
-  setLink(document.getElementById('drawer-giveaways'),   cfg.drawer_giveaways);
-  setLink(document.getElementById('drawer-contact'),     cfg.drawer_contact);
-  // Footer
-  setLink(document.getElementById('footer-contact-link'), cfg.footer_contact);
-  // Follow Us
-  if (cfg.follow_section_visible === 'false') {
-    var fs = document.getElementById('followSection');
-    if (fs) fs.style.display = 'none';
-  }
-  if (cfg.follow_label) {
-    var sub = document.getElementById('followSub');
-    if (sub) sub.textContent = cfg.follow_label;
-  }
-  ['instagram','youtube','telegram','whatsapp','x','linkedin','facebook','discord'].forEach(function(p) {
-    var chip = document.getElementById('fc-' + p);
-    if (!chip) return;
-    if (cfg['follow_' + p] && cfg['follow_' + p] !== '#') chip.setAttribute('href', cfg['follow_' + p]);
-    if (cfg['follow_' + p + '_visible'] === 'false') chip.classList.add('hidden');
-  });
+/* ── HOW IT WORKS ── */
+function selectHIW(btn, panelId) {
+  document.querySelectorAll('.hiw-bubble').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.hiw-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
 }
 
-async function loadConfig() {
-  // 1) Try localStorage cache first (fast paint)
-  try {
-    var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    if (cached && cached._ts && (Date.now() - cached._ts) < CACHE_TTL) {
-      applyConfig(cached);
-      return; // fresh cache — skip network
-    }
-    if (cached) applyConfig(cached); // stale but apply immediately, refresh below
-  } catch(e) {}
-
-  // 2) Fetch fresh from Supabase
-  try {
-    var res = await fetch(
-      SUPABASE_URL + '/rest/v1/site_config?select=key,value',
-      { headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' } }
-    );
-    if (!res.ok) return;
-    var rows = await res.json();
-    var cfg  = { _ts: Date.now() };
-    rows.forEach(function(r) { cfg[r.key] = r.value; });
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cfg));
-    applyConfig(cfg);
-  } catch(e) {
-    // Network failed — cached version already applied above
-  }
+/* ── FORMAT TABS ── */
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.fmt-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.fmt-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
 }
 
-loadConfig();
+/* ── FAQ ── */
+function toggleFAQ(el) {
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(f) { f.classList.remove('open'); });
+  if (!isOpen) el.classList.add('open');
+}
 
-/* ════════════════════════════════════════════
-   GOOGLE OAUTH — Supabase Auth
-   ════════════════════════════════════════════ */
+/* ── MODALS ── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeAuthModal();
+    document.body.style.overflow = '';
+  }
+});
 
+/* ── AUTH MODAL ── */
+var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
 var currentUser = null;
+var currentAuthTab = 'login';
 
-/* Check session on page load */
-(async function initAuth() {
-  // Handle error query params (e.g. user cancelled Google login)
-  var qp = new URLSearchParams(window.location.search);
-  if (qp.get('error')) {
-    // Clean URL silently — no need to show error for user-cancelled flow
-    history.replaceState(null, '', window.location.pathname);
-    // Clear any stale session
-    localStorage.removeItem('et_user_session');
-    currentUser = null;
-    updateUserUI();
+/* ── SESSION CHECK ON PAGE LOAD ── */
+(function() {
+  // 1) OAuth / Email-verify callback: URL hash mein access_token hota hai
+  var hash = window.location.hash;
+  if (hash && hash.indexOf('access_token=') !== -1) {
+    window.location.replace('publisher-dashboard.html' + hash);
     return;
   }
 
-  // Check URL for OAuth callback (hash params from Supabase)
-  var hash = window.location.hash;
-  if (hash && hash.includes('access_token')) {
-    var params = new URLSearchParams(hash.substring(1));
-    var accessToken  = params.get('access_token');
-    var refreshToken = params.get('refresh_token');
-    var expiresIn    = parseInt(params.get('expires_in') || '3600');
-    if (accessToken) {
-      // Get user info
-      try {
-        var res = await fetch(SUPABASE_URL + '/auth/v1/user', {
-          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + accessToken }
-        });
-        var userData = await res.json();
-        if (userData && userData.id) {
-          var sessionData = {
-            access_token:  accessToken,
-            refresh_token: refreshToken,
-            expires_at:    Date.now() + (expiresIn * 1000),
-            user: {
-              id:         userData.id,
-              email:      userData.email,
-              name:       userData.user_metadata && userData.user_metadata.full_name || userData.email.split('@')[0],
-              avatar_url: userData.user_metadata && userData.user_metadata.avatar_url || ''
-            }
-          };
-          localStorage.setItem('et_user_session', JSON.stringify(sessionData));
-          currentUser = sessionData;
-          // Clean URL
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-          updateUserUI();
-        }
-      } catch(e) {}
-    }
-  } else {
-    // Try stored session
-    try {
-      var stored = JSON.parse(localStorage.getItem('et_user_session') || 'null');
-      if (stored && stored.access_token && stored.expires_at > Date.now()) {
-        currentUser = stored;
-        updateUserUI();
+  // 2) Pehle se logged-in session check karo (localStorage mein Supabase token)
+  try {
+    var stored = null;
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('supabase.auth.token') !== -1) {
+        stored = JSON.parse(localStorage.getItem(key));
+        break;
       }
-    } catch(e) {}
-  }
+    }
+    if (stored && stored.currentSession && stored.currentSession.access_token) {
+      var exp = stored.currentSession.expires_at;
+      if (!exp || (exp * 1000) > Date.now()) {
+        // Valid session hai — publisher dashboard pe bhejo
+        window.location.replace('publisher-dashboard.html');
+        return;
+      }
+    }
+  } catch(e) {}
 })();
 
-/* Update nav UI based on login state */
-function updateUserUI() {
-  var loginBtn  = document.getElementById('nav-login-btn');
-  var signupBtn = document.getElementById('nav-signup-btn');
-  var avatarBtn = document.getElementById('userAvatarBtn');
-
-  if (currentUser && currentUser.user) {
-    var u = currentUser.user;
-    // Hide login/signup buttons
-    if (loginBtn)  loginBtn.style.display  = 'none';
-    if (signupBtn) signupBtn.style.display = 'none';
-    // Show avatar button
-    if (avatarBtn) {
-      avatarBtn.style.display = 'flex';
-      document.getElementById('userAvatarName').textContent = u.name ? u.name.split(' ')[0] : u.email.split('@')[0];
-      document.getElementById('userDropdownEmail').textContent = u.email;
-      if (u.avatar_url) {
-        var img = document.getElementById('userAvatarImg');
-        img.src = u.avatar_url;
-        img.style.display = 'block';
-        document.getElementById('userAvatarInitial').style.display = 'none';
-        img.onerror = function() {
-          img.style.display = 'none';
-          var init = document.getElementById('userAvatarInitial');
-          init.style.display = 'flex';
-          init.textContent = (u.name || u.email).charAt(0).toUpperCase();
-        };
-      } else {
-        var initial = (u.name || u.email).charAt(0).toUpperCase();
-        document.getElementById('userAvatarInitial').textContent = initial;
-      }
-    }
-  } else {
-    if (loginBtn)  loginBtn.style.display  = '';
-    if (signupBtn) signupBtn.style.display = '';
-    if (avatarBtn) avatarBtn.style.display = 'none';
-  }
-}
-
-/* Toggle user dropdown */
-function toggleUserMenu(e) {
-  e.stopPropagation();
-  var btn = document.getElementById('userAvatarBtn');
-  btn.classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-  var btn = document.getElementById('userAvatarBtn');
-  if (btn && !btn.contains(e.target)) btn.classList.remove('open');
-});
-
-/* Open auth modal */
-function openAuthModal() {
+function openAuthModal(defaultTab) {
+  if (currentUser) return;
+  switchAuthTab(defaultTab || 'login');
   document.getElementById('authModal').classList.add('active');
   document.body.style.overflow = 'hidden';
-  // Reset to form state
-  document.getElementById('authForm').style.display   = 'block';
-  document.getElementById('authLoading').classList.remove('show');
 }
 function closeAuthModal() {
   document.getElementById('authModal').classList.remove('active');
   document.body.style.overflow = '';
+  document.getElementById('authForm').style.display = '';
+  document.getElementById('authLoading').classList.remove('show');
+  // Reset signup verify step
+  if (document.getElementById('signupFormStep')) {
+    document.getElementById('signupFormStep').style.display = '';
+    document.getElementById('signupVerifyStep').style.display = 'none';
+    var btn = document.getElementById('signupSubmitBtn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account →'; btn.style.background = ''; }
+  }
+  if (resendTimerInterval) { clearInterval(resendTimerInterval); resendTimerInterval = null; }
+  clearAuthErrors();
 }
 function authModalOutsideClick(e) {
   if (e.target === document.getElementById('authModal')) closeAuthModal();
 }
 
-/* Google Sign In via Supabase OAuth */
+function clearAuthErrors() {
+  ['loginError','signupError','forgotError','forgotSuccess'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.classList.remove('show'); }
+  });
+}
+
+function showError(id, msg) {
+  var el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+function showSuccess(id, msg) {
+  var el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+function switchAuthTab(tab) {
+  currentAuthTab = tab;
+  var isForgot = tab === 'forgot';
+
+  // Tab bar visibility
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+
+  // Panels
+  document.getElementById('panelLogin').style.display  = tab === 'login'  ? '' : 'none';
+  document.getElementById('panelSignup').style.display = tab === 'signup' ? '' : 'none';
+  document.getElementById('panelForgot').style.display = tab === 'forgot' ? '' : 'none';
+  // Reset signup verify step on tab switch
+  if (tab !== 'signup' && document.getElementById('signupFormStep')) {
+    document.getElementById('signupFormStep').style.display = '';
+    document.getElementById('signupVerifyStep').style.display = 'none';
+    var sb = document.getElementById('signupSubmitBtn');
+    if (sb) { sb.disabled = false; sb.textContent = 'Create Account →'; sb.style.background = ''; }
+    if (resendTimerInterval) { clearInterval(resendTimerInterval); resendTimerInterval = null; }
+  }
+
+  // Title / subtitle
+  var titles = { login: 'Welcome back', signup: 'Create your account', forgot: 'Reset password' };
+  var subs   = {
+    login:  'Sign in to access your dashboard.',
+    signup: 'Join Eternant — publish, advertise, or manage services.',
+    forgot: 'Enter your email and we\'ll send a reset link.'
+  };
+  document.getElementById('authTitle').textContent    = titles[tab] || 'Welcome to Eternant';
+  document.getElementById('authSubtitle').textContent = subs[tab]   || '';
+
+  // Google button text
+  document.getElementById('googleBtnText').textContent = tab === 'signup' ? 'Sign up with Google' : 'Continue with Google';
+
+  // Hide Google + divider on forgot
+  document.getElementById('btnGoogleSignIn').style.display = isForgot ? 'none' : '';
+  document.querySelector('.auth-divider').style.display     = isForgot ? 'none' : '';
+  document.querySelector('.auth-tabs').style.display        = isForgot ? 'none' : '';
+
+  clearAuthErrors();
+}
+
+/* ── GOOGLE ── */
 async function signInWithGoogle() {
   document.getElementById('authForm').style.display = 'none';
+  document.getElementById('authLoadingText').textContent = 'Redirecting to Google…';
   document.getElementById('authLoading').classList.add('show');
+  try {
+    var redirectTo = window.location.origin + '/publisher-dashboard.html';
+    var res = await fetch(SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo), {
+      method: 'GET', headers: { 'apikey': SUPABASE_ANON }
+    });
+    if (res.url) window.location.href = res.url;
+  } catch(e) {
+    document.getElementById('authForm').style.display = '';
+    document.getElementById('authLoading').classList.remove('show');
+  }
+}
 
-  var redirectTo = window.location.origin + window.location.pathname;
+/* ── EMAIL LOGIN ── */
+async function handleEmailLogin() {
+  clearAuthErrors();
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass  = document.getElementById('loginPassword').value;
+  if (!email || !pass) { showError('loginError', 'Please enter your email and password.'); return; }
+
+  var btn = document.querySelector('#panelLogin .auth-submit-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
 
   try {
-    var res = await fetch(SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo), {
-      method: 'GET',
-      headers: { 'apikey': SUPABASE_ANON },
-      redirect: 'manual'
+    var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
     });
-    // Supabase returns redirect URL
-    if (res.type === 'opaqueredirect' || res.status === 302 || res.url) {
-      // Try to get redirect URL from response
-      var authUrl = res.url || (SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo));
-      window.location.href = authUrl;
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error_description || data.msg || 'Login failed.');
+    currentUser = data.user;
+    document.getElementById('authForm').style.display = 'none';
+    document.getElementById('authLoadingText').textContent = 'Signed in! Redirecting to dashboard…';
+    document.getElementById('authLoading').classList.add('show');
+    setTimeout(function() { window.location.href = 'publisher-dashboard.html'; }, 1200);
+  } catch(e) {
+    showError('loginError', e.message);
+    btn.disabled = false; btn.textContent = 'Login →';
+  }
+}
+
+/* ── EMAIL SIGN UP ── */
+var lastSignupEmail = '';
+var resendTimerInterval = null;
+
+async function handleEmailSignup() {
+  clearAuthErrors();
+  var email   = document.getElementById('signupEmail').value.trim();
+  var pass    = document.getElementById('signupPassword').value;
+  var confirm = document.getElementById('signupConfirm').value;
+
+  // Validations
+  if (!email || !pass || !confirm) { showError('signupError', 'Please fill in all fields.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('signupError', 'Please enter a valid email address.'); return; }
+  if (pass.length < 8)  { showError('signupError', 'Password must be at least 8 characters.'); return; }
+  if (pass !== confirm) { showError('signupError', 'Passwords do not match.'); return; }
+
+  var btn = document.getElementById('signupSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/signup', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error_description || data.msg || 'Sign up failed.');
+
+    lastSignupEmail = email;
+
+    // Check if email confirmation needed
+    var needsConfirm = !data.user || !data.user.confirmed_at || data.user.confirmation_sent_at;
+    if (needsConfirm) {
+      // Show verification step
+      document.getElementById('signupFormStep').style.display = 'none';
+      document.getElementById('signupVerifyStep').style.display = '';
+      document.getElementById('signupEmailSent').textContent = email;
+      // Hide Google/divider/tabs since we're in verify state
+      document.getElementById('btnGoogleSignIn').style.display = 'none';
+      document.querySelector('.auth-divider').style.display = 'none';
+      document.querySelector('.auth-tabs').style.display = 'none';
+      document.getElementById('authTitle').textContent = 'Check your inbox';
+      document.getElementById('authSubtitle').textContent = '';
+      startResendTimer();
     } else {
-      // Fallback: direct redirect
-      window.location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
+      // Auto confirmed
+      currentUser = data.user;
+      document.getElementById('authForm').style.display = 'none';
+      document.getElementById('authLoadingText').textContent = 'Account created! Redirecting…';
+      document.getElementById('authLoading').classList.add('show');
+      setTimeout(function() { window.location.href = 'publisher-dashboard.html'; }, 1200);
     }
   } catch(e) {
-    // Direct redirect (CORS blocks fetch for auth redirects — this is expected)
-    window.location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
+    showError('signupError', e.message);
+    btn.disabled = false; btn.textContent = 'Create Account →';
   }
 }
 
-/* Sign Out */
-async function signOut(e) {
-  if (e) e.stopPropagation();
-  var btn = document.getElementById('userAvatarBtn');
-  if (btn) btn.classList.remove('open');
-  try {
-    if (currentUser && currentUser.access_token) {
-      await fetch(SUPABASE_URL + '/auth/v1/logout', {
-        method: 'POST',
-        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + currentUser.access_token }
-      });
+/* ── RESEND EMAIL ── */
+function startResendTimer() {
+  var btn = document.getElementById('resendBtn');
+  var timerEl = document.getElementById('resendTimer');
+  var countEl = document.getElementById('resendCount');
+  btn.style.display = 'none';
+  timerEl.style.display = 'block';
+  var seconds = 60;
+  countEl.textContent = seconds;
+  if (resendTimerInterval) clearInterval(resendTimerInterval);
+  resendTimerInterval = setInterval(function() {
+    seconds--;
+    countEl.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(resendTimerInterval);
+      timerEl.style.display = 'none';
+      btn.style.display = '';
+      btn.disabled = false;
+      btn.textContent = 'Resend Email';
     }
-  } catch(e) {}
-  localStorage.removeItem('et_user_session');
-  currentUser = null;
-  updateUserUI();
+  }, 1000);
 }
 
-/* Hook Log In + Get Started buttons to open auth modal */
-(function hookAuthButtons() {
-  function attachModal(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('click', function(e) {
-      // Only intercept if href is # (not yet set by admin) or is the current origin
-      var href = el.getAttribute('href');
-      if (!href || href === '#' || href.startsWith(window.location.origin)) {
-        if (currentUser) return; // already logged in
-        e.preventDefault();
-        openAuthModal();
-      }
+async function handleResendEmail() {
+  if (!lastSignupEmail) return;
+  var btn = document.getElementById('resendBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    await fetch(SUPABASE_URL + '/auth/v1/resend', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'signup', email: lastSignupEmail })
     });
+  } catch(e) { /* silent fail — timer still starts */ }
+  startResendTimer();
+}
+
+/* ── FORGOT PASSWORD ── */
+async function handleForgotPassword() {
+  clearAuthErrors();
+  var email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { showError('forgotError', 'Please enter your email address.'); return; }
+
+  var btn = document.querySelector('#panelForgot .auth-submit-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/recover', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    });
+    if (!res.ok) {
+      var data = await res.json();
+      throw new Error(data.error_description || data.msg || 'Something went wrong.');
+    }
+    showSuccess('forgotSuccess', '✓ Reset link sent! Check your inbox.');
+    btn.textContent = 'Sent!';
+    btn.style.opacity = '0.6';
+  } catch(e) {
+    showError('forgotError', e.message);
+    btn.disabled = false; btn.textContent = 'Send Reset Link →';
   }
-  attachModal('nav-login-btn');
-  attachModal('nav-signup-btn');
-  attachModal('hero-start-btn');
-})();
+}
+
+[document.getElementById('nav-login-btn'), document.getElementById('nav-signup-btn'), document.getElementById('hero-start-btn')].forEach(function(el) {
+  if (el) el.addEventListener('click', function(e) {
+    e.preventDefault();
+    var isSignup = el.id === 'nav-signup-btn' || el.id === 'hero-start-btn';
+    openAuthModal(isSignup ? 'signup' : 'login');
+  });
+});
 
 /* ── STARFIELD ── */
 (function() {
@@ -1772,24 +2026,16 @@ async function signOut(e) {
   var ctx = canvas.getContext('2d');
   var stars = [];
   var W, H;
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   function getStarColors() {
     var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-    if (isDark) {
-      return { purple: 'rgba(167,139,250,', blue: 'rgba(110,181,255,', white: 'rgba(216,230,255,' };
-    } else {
-      return { purple: 'rgba(100,60,200,',  blue: 'rgba(30,90,200,',   white: 'rgba(20,50,140,' };
-    }
+    return isDark
+      ? { purple: 'rgba(167,139,250,', blue: 'rgba(110,181,255,', white: 'rgba(216,230,255,' }
+      : { purple: 'rgba(100,60,200,', blue: 'rgba(30,90,200,', white: 'rgba(20,50,140,' };
   }
-
   function initStars() {
     stars = [];
-    var C     = getStarColors();
+    var C = getStarColors();
     var count = Math.floor((W * H) / 3800);
     for (var i = 0; i < count; i++) {
       stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.3+0.2, a: Math.random()*0.8+0.1, speed: Math.random()*0.25+0.04, twinkle: Math.random()*Math.PI*2, twinkleSpeed: Math.random()*0.012+0.003, color: Math.random()<0.12?C.purple:Math.random()<0.12?C.blue:C.white });
@@ -1799,7 +2045,6 @@ async function signOut(e) {
       stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.6+1.0, a: 0.85, speed: 0.015, twinkle: Math.random()*Math.PI*2, twinkleSpeed: 0.005, color: BC.white, glow: true });
     }
   }
-
   function draw() {
     ctx.clearRect(0, 0, W, H);
     stars.forEach(function(s) {
@@ -1819,20 +2064,16 @@ async function signOut(e) {
     });
     requestAnimationFrame(draw);
   }
-
   resize(); initStars(); draw();
   window.initStars = initStars;
   var rt;
   window.addEventListener('resize', function() { clearTimeout(rt); rt = setTimeout(function(){ resize(); initStars(); }, 200); });
 
-  /* ── SHOOTING STARS ── */
   function spawnShootingStar() {
-    var el = document.createElement('div');
-    el.className = 'shooting-star';
+    var el = document.createElement('div'); el.className = 'shooting-star';
     document.body.appendChild(el);
     var startX = Math.random()*W*0.7, startY = Math.random()*H*0.4;
-    var angle  = Math.random()*30+20;
-    var dist   = Math.random()*200+150;
+    var angle = Math.random()*30+20, dist = Math.random()*200+150;
     var dx = Math.cos(angle*Math.PI/180)*dist, dy = Math.sin(angle*Math.PI/180)*dist;
     var dur = Math.random()*600+500;
     el.style.cssText = 'left:'+startX+'px;top:'+startY+'px;opacity:0;transform:translate(0,0) rotate('+angle+'deg);transition:transform '+dur+'ms linear,opacity '+(dur*0.3)+'ms ease;';
@@ -1844,34 +2085,6 @@ async function signOut(e) {
   }
   setTimeout(spawnShootingStar, 2000);
 })();
-
-/* ── ACCORDION ── */
-function toggleSA(el) {
-  var isOpen = el.classList.contains('open');
-  document.querySelectorAll('.sa.open').forEach(function(a) { a.classList.remove('open'); });
-  if (!isOpen) el.classList.add('open');
-}
-
-/* ── MODALS ── */
-function openModal(id) {
-  var el = document.getElementById('modal-' + id);
-  if (el) { el.classList.add('active'); document.body.style.overflow = 'hidden'; }
-}
-function closeModal(id) {
-  var el = document.getElementById(id);
-  if (el) { el.classList.remove('active'); document.body.style.overflow = ''; }
-}
-function closeModalOutside(e, id) {
-  if (e.target === document.getElementById(id)) closeModal(id);
-}
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    ['modal-privacy','modal-terms'].forEach(function(id) {
-      document.getElementById(id).classList.remove('active');
-    });
-    document.body.style.overflow = '';
-  }
-});
 </script>
 </body>
 </html>
