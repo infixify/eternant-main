@@ -392,8 +392,10 @@ nav {
   font-size: 11px; font-family: 'Space Mono', monospace; padding: 3px 8px;
   border-radius: 6px; cursor: pointer; user-select: none;
 }
-.status-badge.active { background: rgba(74,222,128,0.1); color: var(--success); border: 1px solid rgba(74,222,128,0.2); }
-.status-badge.paused { background: rgba(251,191,36,0.1); color: var(--warning); border: 1px solid rgba(251,191,36,0.2); }
+.status-badge.pending { background: rgba(251,191,36,0.12); color: var(--warning); border: 1px solid rgba(251,191,36,0.3); }
+.status-badge.active { background: rgba(74,222,128,0.12); color: var(--success); border: 1px solid rgba(74,222,128,0.25); }
+.status-badge.paused { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid rgba(148,163,184,0.25); }
+.status-badge.rejected { background: rgba(248,113,113,0.12); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
 
 /* DATA TABLES */
 .table-wrap { overflow-x: auto; width: 100%; }
@@ -653,10 +655,11 @@ nav {
   <!-- Simulator & Quick Control Bar -->
   <div class="control-bar">
     <div class="quick-actions-bar">
-      <div class="quick-action-chip" onclick="openPropertyModal()">➕ Add Property</div>
+      <div class="quick-action-chip" onclick="openPropertyModal()">➕ Submit Property</div>
       <div class="quick-action-chip" onclick="openSmartlinkModal()">🔗 Smartlink Generator</div>
       <div class="quick-action-chip" onclick="switchTab('tools')">👁️ Live Ad Sandbox</div>
       <div class="quick-action-chip" onclick="switchTab('payouts')">💳 Withdraw Funds</div>
+      
     </div>
     <div class="sim-switch-wrap">
       <span>⚡ Live Traffic Simulation:</span>
@@ -751,11 +754,13 @@ nav {
           <option value="Direct Link Locker">Direct Link Locker</option>
         </select>
       </div>
-      <div style="width:140px;">
+      <div style="width:160px;">
         <select class="form-select" id="filterStatusSelect" onchange="applyPropertyFilters()">
           <option value="all">All Statuses</option>
-          <option value="Active">Active</option>
-          <option value="Paused">Paused</option>
+          <option value="Pending Review">⏳ Pending Review</option>
+          <option value="Active">● Active / Approved</option>
+          <option value="Paused">❚❚ Paused</option>
+          <option value="Rejected">✕ Rejected</option>
         </select>
       </div>
     </div>
@@ -1082,11 +1087,11 @@ nav {
   </div>
 </div>
 
-<!-- ================= MODAL: ADD PROPERTY ================= -->
+<!-- ================= MODAL: SUBMIT PROPERTY FOR REVIEW ================= -->
 <div class="modal-overlay" id="propertyModal">
   <div class="modal-card">
-    <h2>Add Digital Property / Ad Unit</h2>
-    <p class="modal-sub">Register individual websites, apps, bots, or channels to generate dedicated ad units.</p>
+    <h2>Submit Property for Review</h2>
+    <p class="modal-sub">Submit your website, app, channel, or bot for publisher verification. Our admin team reviews and approves properties for monetization within 2–4 hours.</p>
 
     <!-- Individual Property Type Dropdown -->
     <div class="form-group">
@@ -1152,26 +1157,11 @@ nav {
       </div>
     </div>
 
-    <!-- Individual Ad Format Dropdown -->
+    <!-- Verification Notes & Proof -->
     <div class="form-group">
-      <label class="form-label">Individual Ad Format / Monetization Unit</label>
-      <select class="form-select" id="propFormat">
-        <option value="Display Banner (300x250)">Display Banner (300x250 Medium Rectangle)</option>
-        <option value="Leaderboard Banner (728x90)">Leaderboard Banner (728x90)</option>
-        <option value="Mobile Sticky Banner (320x50)">Mobile Sticky Banner (320x50)</option>
-        <option value="Interstitial Ad">Interstitial (Full-Screen Ad)</option>
-        <option value="Popunder Ad">Popunder (On-Click Ad)</option>
-        <option value="Rewarded Video">Rewarded Video Ad</option>
-        <option value="In-Stream Video">In-Stream Video Ad</option>
-        <option value="Native In-Feed Ad">Native In-Feed Ad</option>
-        <option value="Direct Smartlink">Direct Smartlink (One-Click Monetized URL)</option>
-        <option value="Content Locker">Content &amp; Download Locker</option>
-        <option value="Offer Wall">Offer Wall (Tasks &amp; Rewards)</option>
-        <option value="Push Notification Ad">Push Notification Ad</option>
-        <option value="Telegram Bot Ad">Telegram Bot Sponsored Message</option>
-        <option value="Mini App Sticky Banner">Telegram Mini App Banner</option>
-      </select>
-      <div class="form-hint" id="formatRecommendHint">Recommended for Websites: Display Banner (300x250) or Interstitial Ad.</div>
+      <label class="form-label">Traffic Verification &amp; Notes (Optional)</label>
+      <textarea class="form-textarea" id="propNotes" rows="2" placeholder="e.g. Traffic sources, daily active users, or channel admin handle"></textarea>
+      <div class="form-hint">Our compliance team reviews and approves properties for monetization within 2–4 hours.</div>
     </div>
 
     <!-- Monthly Traffic Scale -->
@@ -1188,7 +1178,7 @@ nav {
 
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closePropertyModal()">Cancel</button>
-      <button class="btn-primary" onclick="saveProperty()">Save Property</button>
+      <button class="btn-primary" onclick="saveProperty()">Submit for Review</button>
     </div>
   </div>
 </div>
@@ -1263,6 +1253,7 @@ nav {
 </div>
 
 <!-- ================= MODAL: GET TAG CODE ================= -->
+<!-- ================= MODAL: GET TAG CODE ================= -->
 <div class="modal-overlay" id="tagModal">
   <div class="modal-card">
     <h2>Ad Unit Code &amp; Integration</h2>
@@ -1273,6 +1264,27 @@ nav {
     </div>
     <div class="modal-actions">
       <button class="btn-primary" onclick="closeTagModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: REVIEW STATUS INSPECTOR ================= -->
+<div class="modal-overlay" id="reviewStatusModal">
+  <div class="modal-card">
+    <h2>Property Verification Status</h2>
+    <p class="modal-sub" id="inspectorPropName">Checking compliance and traffic quality.</p>
+    
+    <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12px; color:var(--text-sub); font-weight:600;">Current Audit Status:</span>
+        <span id="inspectorStatusBadge"></span>
+      </div>
+      <div style="font-size:11.5px; color:var(--muted); line-height:1.6;" id="inspectorStatusDesc"></div>
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-family:'Space Mono', monospace; font-size:11px; color:var(--accent);" id="inspectorTokenRow"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="closeReviewStatusModal()">Close</button>
     </div>
   </div>
 </div>
@@ -1431,13 +1443,16 @@ function getPropertyIcon(type) {
 // Update Top KPI Cards dynamically from real properties
 function updateOverviewStats() {
   let activeProps = properties.filter(p => p.status === 'Active');
+  let pendingProps = properties.filter(p => p.status === 'Pending Review');
   let totalImp = properties.reduce((acc, p) => acc + (p.impressions || 0), 0);
   let totalEarn = properties.reduce((acc, p) => acc + (p.earnings || 0), 0);
   let avgEcpm = totalImp > 0 ? ((totalEarn / totalImp) * 1000).toFixed(2) : '0.00';
   let inrEst = Math.round(totalEarn * 83.5);
 
   document.getElementById('statProperties').textContent = properties.length;
-  document.getElementById('statActiveRatio').textContent = activeProps.length + ' of ' + properties.length;
+  document.getElementById('statActiveRatio').textContent = activeProps.length + ' active • ' + pendingProps.length + ' in review';
+
+
   document.getElementById('statImpressions').textContent = totalImp.toLocaleString();
   document.getElementById('statEarnings').textContent = '$' + totalEarn.toFixed(2);
   document.getElementById('statAvailable').textContent = '$' + totalEarn.toFixed(2);
@@ -1612,9 +1627,7 @@ function renderOverviewProperties() {
           </div>
         </div>
         <div class="prop-card-actions">
-          <span class="status-badge ${isAct ? 'active' : 'paused'}" onclick="togglePropertyStatus('${p.id}')">
-            ${isAct ? '● Active' : '❚❚ Paused'}
-          </span>
+          ${renderPropertyStatusBadge(p)}
           <button class="btn-secondary btn-sm" onclick="openTagModalForProperty('${p.id}')">📋 Tag</button>
         </div>
       </div>
@@ -1689,9 +1702,7 @@ function renderPropertiesManagement() {
           </div>
         </div>
         <div class="prop-card-actions">
-          <span class="status-badge ${isAct ? 'active' : 'paused'}" onclick="togglePropertyStatus('${p.id}')">
-            ${isAct ? '● Active' : '❚❚ Paused'}
-          </span>
+          ${renderPropertyStatusBadge(p)}
           <button class="btn-secondary btn-sm" onclick="openTagModalForProperty('${p.id}')">Get Code</button>
           <button class="btn-secondary btn-sm" style="color:var(--danger);" onclick="deleteProperty('${p.id}')">✕</button>
         </div>
@@ -1733,38 +1744,31 @@ function closePropertyModal() {
 // Dynamic recommendation when individual property type changes
 function onPropTypeChange() {
   var type = document.getElementById('propType').value;
-  var formatEl = document.getElementById('propFormat');
-  var hintEl = document.getElementById('formatRecommendHint');
   var urlEl = document.getElementById('propUrl');
+  if (!urlEl) return;
 
   if (type === 'Website') {
-    formatEl.value = 'Display Banner (300x250)';
-    hintEl.textContent = 'Recommended for Websites: Display Banner (300x250) or Interstitial Ad.';
     urlEl.placeholder = 'https://mysite.com';
   } else if (type === 'Telegram Bot') {
-    formatEl.value = 'Telegram Bot Ad';
-    hintEl.textContent = 'Recommended for Bots: Telegram Bot Sponsored Message or Direct Smartlink.';
     urlEl.placeholder = '@my_telegram_bot';
   } else if (type === 'Telegram Channel' || type === 'Telegram Group') {
-    formatEl.value = 'Direct Smartlink';
-    hintEl.textContent = 'Recommended for Channels/Groups: Direct Smartlink or Content Locker.';
     urlEl.placeholder = 'https://t.me/mychannel';
   } else if (type === 'WhatsApp Channel' || type === 'WhatsApp Group') {
-    formatEl.value = 'Content Locker';
-    hintEl.textContent = 'Recommended for WhatsApp: Content Locker or Direct Smartlink.';
     urlEl.placeholder = 'https://chat.whatsapp.com/...';
   } else if (type === 'Android App' || type === 'iOS App') {
-    formatEl.value = 'Rewarded Video';
-    hintEl.textContent = 'Recommended for Mobile Apps: Rewarded Video or Interstitial.';
     urlEl.placeholder = 'com.myapp.package or App Store URL';
   } else if (type === 'Telegram Mini App') {
-    formatEl.value = 'Mini App Sticky Banner';
-    hintEl.textContent = 'Recommended for TMAs: Telegram Mini App Banner or Rewarded Video.';
     urlEl.placeholder = 'https://t.me/mybot/app';
   } else if (type === 'Direct Link Locker') {
-    formatEl.value = 'Direct Smartlink';
-    hintEl.textContent = 'Recommended for Link Monetization: Direct Smartlink or Content Locker.';
     urlEl.placeholder = 'Destination URL to shorten/lock';
+  } else if (type === 'Discord Server') {
+    urlEl.placeholder = 'https://discord.gg/...';
+  } else if (type === 'Instagram Page') {
+    urlEl.placeholder = 'https://instagram.com/myhandle';
+  } else if (type === 'YouTube Channel') {
+    urlEl.placeholder = 'https://youtube.com/@mychannel';
+  } else if (type === 'X Account') {
+    urlEl.placeholder = 'https://x.com/myhandle';
   }
 }
 
@@ -1774,14 +1778,15 @@ function saveProperty() {
   var url = document.getElementById('propUrl').value.trim();
   var category = document.getElementById('propCategory').value;
   var geo = document.getElementById('propGeo').value;
-  var format = document.getElementById('propFormat').value;
   var volume = document.getElementById('propVolume').value;
+  var notes = document.getElementById('propNotes') ? document.getElementById('propNotes').value.trim() : '';
 
   if (!name) {
     showToast('Please enter a Property Name.');
     return;
   }
 
+  // Newly submitted properties go to "Pending Review" status for admin verification
   var newProp = {
     id: 'prop-' + Date.now(),
     name: name,
@@ -1789,9 +1794,14 @@ function saveProperty() {
     url: url || 'N/A',
     category: category,
     geo: geo,
-    format: format,
+    format: 'Multi-Format (Auto)',
     volume: volume,
-    status: 'Active',
+    notes: notes,
+    status: 'Pending Review',
+    submittedAt: new Date().toISOString(),
+    verifiedAt: null,
+    rejectionReason: null,
+    verificationToken: 'ET-VERIFY-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
     impressions: 0,
     clicks: 0,
     ecpm: 0.00,
@@ -1801,10 +1811,12 @@ function saveProperty() {
   properties.unshift(newProp);
   persistProperties();
   closePropertyModal();
-  showToast('Added ' + name + ' successfully!');
+  showToast('🎉 Property submitted for review! Admin will audit and approve shortly.');
 
+  // Clear modal inputs
   document.getElementById('propName').value = '';
   document.getElementById('propUrl').value = '';
+  if (document.getElementById('propNotes')) document.getElementById('propNotes').value = '';
 }
 
 // ================= AD PREVIEW SANDBOX (INTERACTIVE!) =================
@@ -2412,6 +2424,77 @@ function openSmartlinkModal() {
   }
   setTimeout(spawnShootingStar, 2500);
 })();
+
+
+// Helper function to render status badges
+function renderPropertyStatusBadge(p) {
+  if (p.status === 'Pending Review') {
+    return `<span class="status-badge pending" onclick="openReviewStatusModal('${p.id}')" title="Submitted on ${new Date(p.submittedAt || Date.now()).toLocaleDateString()}. Admin review in progress.">⏳ In Review</span>`;
+  } else if (p.status === 'Active') {
+    return `<span class="status-badge active" onclick="togglePropertyStatus('${p.id}')" title="Click to pause traffic">● Active</span>`;
+  } else if (p.status === 'Paused') {
+    return `<span class="status-badge paused" onclick="togglePropertyStatus('${p.id}')" title="Click to resume traffic">❚❚ Paused</span>`;
+  } else if (p.status === 'Rejected') {
+    return `<span class="status-badge rejected" onclick="openReviewStatusModal('${p.id}')" title="${escapeHtml(p.rejectionReason || 'Does not meet traffic criteria')}">✕ Rejected</span>`;
+  }
+  return `<span class="status-badge pending">⏳ Pending</span>`;
+}
+
+// Review Status Inspector Modal
+function openReviewStatusModal(id) {
+  var p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('inspectorPropName').textContent = p.name + ' (' + p.type + ')';
+  var badgeEl = document.getElementById('inspectorStatusBadge');
+  var descEl = document.getElementById('inspectorStatusDesc');
+  var tokenEl = document.getElementById('inspectorTokenRow');
+
+  badgeEl.innerHTML = renderPropertyStatusBadge(p);
+
+  if (p.status === 'Pending Review') {
+    descEl.innerHTML = 'Your property is currently in the <strong>Admin Review Queue</strong>. Our audit team checks traffic legitimacy, domain/channel ownership, and ad safety compliance.<br><br>⏱️ Estimated approval time: <strong>2 to 4 hours</strong>. Ad tags can be prepared in advance.';
+  } else if (p.status === 'Active') {
+    descEl.innerHTML = '✅ <strong>Approved &amp; Live</strong>. Your property is cleared to serve programmatic ads and monetize traffic. Ad units are active on the global ad server.';
+  } else if (p.status === 'Rejected') {
+    descEl.innerHTML = '❌ <strong>Review Not Approved</strong>.<br>Reason: <em>' + escapeHtml(p.rejectionReason || 'Site content does not meet minimum organic traffic or policy guidelines.') + '</em><br><br>You can re-submit after addressing the issue.';
+  } else {
+    descEl.innerHTML = 'Traffic delivery is currently paused by publisher.';
+  }
+
+  tokenEl.textContent = 'Verification ID: ' + (p.verificationToken || 'ET-VERIFY-PENDING') + ' • Submitted: ' + new Date(p.submittedAt || Date.now()).toLocaleString();
+  document.getElementById('reviewStatusModal').classList.add('active');
+}
+
+function closeReviewStatusModal() {
+  document.getElementById('reviewStatusModal').classList.remove('active');
+}
+
+// Admin Review Portal Modal Handling
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Real-time synchronization: When admin approves/rejects property in admin.html, update dashboard live!
+window.addEventListener('storage', function(e) {
+  if (e.key === 'et_properties_v2') {
+    try {
+      let saved = localStorage.getItem('et_properties_v2');
+      properties = saved ? JSON.parse(saved) : [];
+      persistProperties();
+      showToast('⚡ Property status updated by admin.');
+    } catch(err) {}
+  }
+});
 
 // Initial Render
 persistProperties();
