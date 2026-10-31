@@ -1,0 +1,2616 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script src="webview-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grow with Eternant — Publishers & Advertisers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="dark"] {
+  --bg:           #03050d;
+  --bg-card:      #070c1a;
+  --bg-hover:     #0b1226;
+  --bg-nav:       rgba(3,5,13,0.80);
+  --bg-drawer:    rgba(3,5,13,0.97);
+  --border:       #141f38;
+  --border-lt:    #1e3058;
+  --text:         #d8e6ff;
+  --text-sub:     #8aa4c8;
+  --muted:        #4a6080;
+  --accent:       #6eb5ff;
+  --accent2:      #a78bfa;
+  --accent-dim:   rgba(110,181,255,0.08);
+  --glow:         rgba(110,181,255,0.18);
+  --glow2:        rgba(167,139,250,0.12);
+  --star-color:   rgba(216,230,255,1);
+  --nebula1-bg:   rgba(110,181,255,0.07);
+  --nebula2-bg:   rgba(167,139,250,0.06);
+  --footer-bg:    transparent;
+  --shooting-star: rgba(180,210,255,0.9);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg:           #f0f4ff;
+  --bg-card:      #ffffff;
+  --bg-hover:     #e8eeff;
+  --bg-nav:       rgba(240,244,255,0.88);
+  --bg-drawer:    rgba(240,244,255,0.98);
+  --border:       #d0daf0;
+  --border-lt:    #b8c8e8;
+  --text:         #0d1832;
+  --text-sub:     #3a5080;
+  --muted:        #6a82a8;
+  --accent:       #2a7fd4;
+  --accent2:      #7c54e8;
+  --accent-dim:   rgba(42,127,212,0.08);
+  --glow:         rgba(42,127,212,0.14);
+  --glow2:        rgba(124,84,232,0.08);
+  --star-color:   rgba(42,90,160,1);
+  --nebula1-bg:   rgba(42,127,212,0.06);
+  --nebula2-bg:   rgba(124,84,232,0.05);
+  --footer-bg:    transparent;
+  --shooting-star: rgba(42,100,200,0.8);
+  color-scheme: light;
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  max-width: 100%;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ── STARFIELD ── */
+#starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; transition: opacity 0.5s; }
+[data-theme="light"] #starfield { opacity: 0.35; }
+
+.nebula {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); pointer-events: none; z-index: 0;
+  transition: background 0.4s, opacity 0.4s;
+}
+.nebula-1 { width: 700px; height: 700px; top: -250px; right: -120px; background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
+.nebula-2 { width: 550px; height: 550px; bottom: 50px; left: -180px; background: radial-gradient(circle, var(--nebula2-bg) 0%, transparent 70%); }
+.nebula-3 { width: 400px; height: 400px; top: 55%; left: 45%; transform: translate(-50%,-50%); background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
+
+.shooting-star {
+  position: fixed; top: 0; left: 0;
+  width: 2px; height: 2px;
+  background: var(--shooting-star); border-radius: 50%;
+  pointer-events: none; z-index: 1; opacity: 0;
+}
+.shooting-star::after {
+  content: ''; position: absolute; top: 50%; right: 0;
+  transform: translateY(-50%); width: 80px; height: 1px;
+  background: linear-gradient(to left, var(--shooting-star), transparent);
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(14px, 4vw, 36px); height: 64px;
+  background: var(--bg-nav);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.4s, border-color 0.4s;
+  overflow: visible; width: 100%; min-width: 0;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800;
+  color: var(--text); letter-spacing: 4px; text-decoration: none;
+  text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+  transition: color 0.4s; flex-shrink: 0; white-space: nowrap;
+}
+.logo-icon { position: relative; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.logo-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--accent); opacity: 0.5; position: absolute; animation: logo-rotate 12s linear infinite; }
+.logo-ring-2 { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--accent2); opacity: 0.4; position: absolute; animation: logo-rotate 8s linear infinite reverse; }
+.logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(110,181,255,0.4); position: relative; z-index: 1; animation: pulse-dot 3s ease-in-out infinite; }
+@keyframes logo-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); box-shadow:0 0 12px var(--accent); } 50% { opacity:0.6; transform:scale(0.75); box-shadow:0 0 6px var(--accent); } }
+
+.nav-right { display: flex; align-items: center; gap: 8px; overflow: visible; position: relative; flex-shrink: 0; }
+.theme-toggle {
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 3px; cursor: pointer;
+  transition: border-color 0.2s, background 0.4s;
+  position: relative; width: 68px; height: 30px;
+}
+.theme-toggle:hover { border-color: var(--border-lt); }
+.toggle-track { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 5px; }
+.toggle-icon { font-size: 12px; z-index: 1; transition: opacity 0.3s; line-height: 1; }
+.toggle-thumb { position: absolute; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 2px 8px var(--glow); transition: left 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s; left: 2px; }
+[data-theme="light"] .toggle-thumb { left: calc(100% - 24px); }
+
+.btn-login { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 20px; border-radius: 8px; border: 1px solid var(--border-lt); background: transparent; color: var(--muted); cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; text-decoration: none; display: inline-block; }
+.btn-login:hover { background: var(--bg-hover); color: var(--text); border-color: var(--accent); }
+.btn-signup { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; padding: 8px 22px; border-radius: 8px; border: 1px solid rgba(110,181,255,0.4); background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.08)); color: var(--accent); cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; position: relative; overflow: hidden; }
+.btn-signup::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(110,181,255,0.2), rgba(167,139,250,0.15)); opacity: 0; transition: opacity 0.2s; }
+.btn-signup:hover::before { opacity: 1; }
+.btn-signup:hover { border-color: var(--accent); box-shadow: 0 0 24px var(--glow); }
+.hamburger { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 38px; height: 38px; padding: 9px; cursor: pointer; margin-left: 2px; border-radius: 8px; border: 1px solid var(--border); background: transparent; transition: border-color 0.2s, background 0.2s; }
+.hamburger:hover { border-color: var(--border-lt); background: var(--bg-card); }
+.hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── DRAWER ── */
+.drawer {
+  position: fixed; top: 64px; right: 0;
+  width: min(280px, 80vw); height: calc(100vh - 64px);
+  background: var(--bg-drawer); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid var(--border); z-index: 99;
+  transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s;
+  padding: 20px 16px; display: flex; flex-direction: column; gap: 4px;
+}
+.drawer.open { transform: translateX(0); }
+.drawer a { display: flex; align-items: center; gap: 10px; padding: 9px 14px; font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; border-radius: 8px; border: none; transition: color 0.15s, background 0.15s, padding-left 0.2s; }
+.drawer a:hover { color: var(--text); background: var(--bg-hover); padding-left: 20px; }
+.drawer a .d-icon { font-size: 14px; min-width: 16px; color: var(--accent); opacity: 0.6; transition: opacity 0.15s; display: flex; }
+.drawer a .d-icon svg { width: 14px; height: 14px; }
+.drawer a:hover .d-icon { opacity: 1; }
+.drawer-theme-row { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 8px; }
+.drawer-theme-row .d-icon { flex-shrink: 0; opacity: 0.5; }
+.drawer-theme-toggle { background: none; border: none; cursor: pointer; padding: 0; }
+
+/* ── MAIN ── */
+main { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 0 clamp(16px,4vw,28px) 80px; width: 100%; }
+
+/* ── ACCORDION SERVICES ── */
+.services { display: flex; flex-direction: column; gap: 8px; margin-bottom: 0; }
+.sa {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.sa:hover { border-color: var(--border-lt); }
+.sa.open { border-color: rgba(110,181,255,0.28); box-shadow: 0 4px 24px var(--glow2); }
+.sa.active-page { border-color: rgba(110,181,255,0.35); }
+.sa-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; gap: 12px;
+}
+.sa-left { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+.si-num {
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; color: var(--muted); flex-shrink: 0;
+}
+.si-icon {
+  width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+}
+.si-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.sa.active-page .si-icon { background: rgba(110,181,255,0.14); border-color: rgba(110,181,255,0.3); }
+.si-text { min-width: 0; }
+.si-name { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.si-desc { font-size: 11.5px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sa-chevron { width: 20px; height: 20px; flex-shrink: 0; }
+.sa-chevron svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.25s; }
+.sa.open .sa-chevron svg { transform: rotate(180deg); stroke: var(--accent); }
+.sa-body { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sa.open .sa-body { max-height: 2000px; }
+.sa-inner { padding: 0 20px 22px; }
+.sa-inner > p { font-size: 13px; line-height: 1.75; color: var(--text-sub); margin-bottom: 14px; }
+.sa-points { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.sa-points li { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--text-sub); line-height: 1.5; }
+.sa-points li::before { content: '→'; color: var(--accent); font-size: 11px; flex-shrink: 0; margin-top: 2px; }
+.sa-cta-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.sa-cta {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  padding: 9px 18px; border-radius: 8px; text-decoration: none;
+  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
+  color: var(--accent); border: 1px solid rgba(110,181,255,0.25);
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.sa-cta:hover { background: linear-gradient(135deg, rgba(110,181,255,0.25), rgba(167,139,250,0.18)); box-shadow: 0 0 20px var(--glow); }
+.sa-cta-ghost {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 9px 16px; border-radius: 8px; text-decoration: none;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.sa-cta-ghost:hover { color: var(--text); border-color: var(--border-lt); background: var(--bg-hover); }
+.sa-cta-ghost svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.sa-coming {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); border: 1px dashed var(--border);
+  border-radius: 8px; padding: 8px 14px;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  padding: 18px 0 0;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--muted);
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); fill: none; flex-shrink: 0; }
+.breadcrumb span { color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  padding: 60px 0 72px;
+  border-bottom: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.hero-orbit-wrap { position: absolute; right: -60px; top: 20px; pointer-events: none; }
+.ho-ring { position: absolute; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.ho-ring-1 { width: 320px; height: 320px; border: 1px solid rgba(110,181,255,0.08); animation: orbit-spin 40s linear infinite; }
+.ho-ring-2 { width: 220px; height: 220px; border: 1px solid rgba(167,139,250,0.06); animation: orbit-spin 28s linear infinite reverse; }
+.ho-ring-3 { width: 140px; height: 140px; border: 1px solid rgba(110,181,255,0.05); animation: orbit-spin 18s linear infinite; }
+@keyframes orbit-spin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+.ho-planet { position: absolute; border-radius: 50%; }
+.ho-p1 { width: 8px; height: 8px; background: var(--accent); opacity: 0.7; box-shadow: 0 0 12px var(--accent); top: calc(50% - 160px); left: 50%; transform: translateX(-50%); animation: orbit-p1 40s linear infinite; }
+.ho-p2 { width: 5px; height: 5px; background: var(--accent2); opacity: 0.6; box-shadow: 0 0 8px var(--accent2); top: calc(50% - 110px); left: 50%; transform: translateX(-50%); animation: orbit-p2 28s linear infinite reverse; }
+@keyframes orbit-p1 { from { transform: rotate(0deg) translateX(160px); } to { transform: rotate(360deg) translateX(160px); } }
+@keyframes orbit-p2 { from { transform: rotate(0deg) translateX(110px); } to { transform: rotate(360deg) translateX(110px); } }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.9;
+  border: 1px solid rgba(110,181,255,0.2); border-radius: 100px;
+  padding: 5px 14px; margin-bottom: 24px;
+  background: rgba(110,181,255,0.05);
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse-dot 2.5s ease-in-out infinite; }
+
+.hero h1 {
+  font-size: clamp(28px, 6.5vw, 52px);
+  font-weight: 800; line-height: 1.1; letter-spacing: -1.5px;
+  color: var(--text); margin-bottom: 20px; max-width: 680px;
+}
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero > p {
+  font-size: clamp(14px, 2vw, 16px); line-height: 1.7; color: var(--text-sub);
+  max-width: 520px; margin-bottom: 36px;
+}
+
+.hero-cta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cta-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  padding: 13px 28px; border-radius: 10px; text-decoration: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #03050d; border: none; cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 0 0 rgba(110,181,255,0);
+}
+.cta-primary:hover { box-shadow: 0 0 32px var(--glow), 0 4px 20px rgba(110,181,255,0.3); transform: translateY(-1px); }
+.cta-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+  padding: 12px 24px; border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border-lt); color: var(--text-sub);
+  background: transparent; cursor: pointer; transition: all 0.2s;
+}
+.cta-secondary svg { width: 14px; height: 14px; fill: currentColor; }
+.cta-secondary:hover { color: var(--text); border-color: var(--accent); background: var(--accent-dim); }
+
+
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); padding: 44px 0 18px;
+}
+
+/* ── ROLE TOGGLE ── */
+  transition: all 0.2s; background: transparent; color: var(--muted);
+  display: flex; align-items: center; gap: 7px;
+}
+.role-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.role-btn.active { background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1)); color: var(--accent); border: 1px solid rgba(110,181,255,0.25); }
+
+/* ── AD FORMAT TABS ── */
+.format-tabs-wrap { margin-bottom: 32px; }
+.format-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border); padding-bottom: 0;
+  margin-bottom: 28px;
+}
+.fmt-tab {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 9px 16px; border-radius: 8px 8px 0 0;
+  border: 1px solid transparent; border-bottom: none;
+  background: transparent; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; position: relative; bottom: -1px;
+}
+.fmt-tab.active {
+  color: var(--accent); background: var(--bg-card);
+  border-color: var(--border); border-bottom-color: var(--bg-card);
+}
+.fmt-tab:not(.active):hover { color: var(--text-sub); background: var(--bg-hover); }
+
+.fmt-panel { display: none; }
+.fmt-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ── FORMAT CARD ── */
+.fmt-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  cursor: default; position: relative; overflow: hidden;
+}
+.fmt-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-dim), transparent);
+  opacity: 0; transition: opacity 0.25s;
+}
+.fmt-card:hover { border-color: var(--border-lt); box-shadow: 0 4px 24px var(--glow2); transform: translateY(-2px); }
+.fmt-card:hover::before { opacity: 1; }
+
+.fmt-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.fmt-icon svg { width: 18px; height: 18px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.fmt-card-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.1px; }
+.fmt-card-desc { font-size: 12px; line-height: 1.6; color: var(--text-sub); margin-bottom: 14px; }
+.fmt-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px;
+  background: rgba(110,181,255,0.08); border: 1px solid rgba(110,181,255,0.18);
+  color: var(--accent);
+}
+.fmt-badge-green { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2); color: #34d399; }
+.fmt-badge-purple { background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.2); color: var(--accent2); }
+
+
+
+/* ── TARGETING TABLE ── */
+.target-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 4px;
+}
+.target-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 13px; padding: 18px 16px;
+  transition: border-color 0.2s;
+}
+.target-card:hover { border-color: var(--border-lt); }
+.target-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); opacity: 0.85; margin-bottom: 10px;
+}
+.target-card h4 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.target-card p { font-size: 12px; line-height: 1.6; color: var(--text-sub); }
+.target-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.tag {
+  font-size: 10.5px; font-weight: 600; padding: 3px 9px;
+  border-radius: 100px; background: var(--accent-dim);
+  border: 1px solid rgba(110,181,255,0.12); color: var(--text-sub);
+}
+
+
+
+/* ── TRAFFIC TYPES ── */
+.traffic-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-top: 4px;
+}
+.traffic-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 16px; text-align: center;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.traffic-card:hover { border-color: var(--border-lt); transform: translateY(-2px); }
+.traffic-icon {
+  width: 44px; height: 44px; border-radius: 12px; margin: 0 auto 12px;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+}
+.traffic-icon svg { width: 20px; height: 20px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.traffic-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.traffic-desc { font-size: 11.5px; line-height: 1.5; color: var(--text-sub); }
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 44px 36px;
+  text-align: center; margin-top: 52px; position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: ''; position: absolute; inset: 0; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.04), rgba(167,139,250,0.03));
+  pointer-events: none;
+}
+.cta-banner-badge {
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+  opacity: 0.85; margin-bottom: 16px;
+}
+.cta-banner h2 { font-size: clamp(20px, 4vw, 30px); font-weight: 800; color: var(--text); letter-spacing: -0.8px; margin-bottom: 12px; }
+.cta-banner p { font-size: 14px; color: var(--text-sub); line-height: 1.7; max-width: 440px; margin: 0 auto 28px; }
+.cta-banner-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.faq-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.faq-item:hover { border-color: var(--border-lt); }
+.faq-item.open { border-color: rgba(110,181,255,0.25); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px; font-size: 13.5px; font-weight: 600; color: var(--text);
+}
+.faq-chevron { width: 18px; height: 18px; stroke: var(--muted); fill: none; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); stroke: var(--accent); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+  font-size: 13px; color: var(--text-sub); line-height: 1.7;
+}
+.faq-a-inner { padding: 0 18px 16px; }
+.faq-item.open .faq-a { max-height: 200px; }
+
+/* ── FOOTER ── */
+footer {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  padding: clamp(16px,3vw,24px) clamp(16px,4vw,36px);
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--muted);
+  background: var(--footer-bg);
+}
+.footer-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.footer-signal { display: flex; align-items: center; gap: 6px; }
+.footer-signal-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px rgba(52,211,153,0.5); animation: pulse-dot 3s ease-in-out infinite; }
+.footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.footer-links a { color: var(--muted); text-decoration: none; transition: color 0.15s; font-size: 12px; }
+.footer-links a:hover { color: var(--accent); }
+
+/* ── AUTH MODAL ── */
+.auth-modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.auth-modal-overlay.active { opacity: 1; pointer-events: auto; }
+.auth-modal-wrap { position: relative; width: 100%; max-width: 380px; min-width: 320px; }
+.auth-modal {
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 24px 20px; width: 100%;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  transform: translateY(12px) scale(0.98); transition: transform 0.25s; text-align: center;
+  max-height: 90vh; overflow-y: auto;
+}
+.auth-modal-overlay.active .auth-modal { transform: translateY(0) scale(1); }
+.auth-modal-logo { width: 48px; height: 48px; margin: 0 auto 20px; border-radius: 12px; background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1)); border: 1px solid rgba(110,181,255,0.3); display: flex; align-items: center; justify-content: center; }
+.auth-modal-logo svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.auth-modal h2 { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -0.4px; }
+.auth-modal p { font-size: 12px; color: var(--text-sub); line-height: 1.6; margin-bottom: 20px; }
+.btn-google { width: 100%; padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border-lt); background: var(--bg-hover); color: var(--text); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
+.btn-google:hover { border-color: var(--accent); background: var(--bg-card); box-shadow: 0 4px 20px var(--glow); }
+.btn-google:disabled { opacity: 0.6; pointer-events: none; }
+.btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+.auth-modal-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-hover); border: 1px solid var(--border); color: var(--muted); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.15s, background 0.15s; line-height: 1; }
+.auth-modal-close:hover { color: var(--text); background: var(--border); }
+.auth-modal-note { font-size: 11px; color: var(--muted); line-height: 1.6; margin-top: 18px; }
+.auth-modal-note a { color: var(--accent); text-decoration: none; }
+.auth-modal-note a:hover { text-decoration: underline; }
+.auth-loading { display: none; flex-direction: column; align-items: center; gap: 16px; padding: 10px 0; }
+.auth-loading.show { display: flex; }
+.auth-spinner { width: 32px; height: 32px; border: 3px solid var(--border-lt); border-top-color: var(--accent); border-radius: 50%; animation: auth-spin 0.8s linear infinite; }
+@keyframes auth-spin { to { transform: rotate(360deg); } }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-box { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: 16px; width: 100%; max-width: 580px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 24px 80px rgba(0,0,0,0.5); transform: translateY(12px); transition: transform 0.25s; overflow: hidden; }
+.modal-overlay.active .modal-box { transform: translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.modal-header h2 { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
+.modal-close { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
+.modal-close:hover { background: var(--bg-hover); color: var(--text); }
+.modal-meta { padding: 10px 24px; border-bottom: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; flex-shrink: 0; }
+.modal-body { overflow-y: auto; padding: 20px 24px 28px; font-size: 13.5px; line-height: 1.85; color: var(--text-sub); scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.modal-body h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 20px 0 6px; }
+.modal-body h3:first-child { margin-top: 0; }
+.modal-body p { margin-bottom: 10px; }
+.modal-body ul { padding-left: 18px; margin-bottom: 10px; }
+.modal-body ul li { margin-bottom: 4px; }
+.modal-body a { color: var(--accent); text-decoration: none; }
+.modal-body a:hover { text-decoration: underline; }
+
+/* ══ HOW IT WORKS ══ */
+.hiw-wrap { margin-bottom: 0; }
+
+.hiw-bubbles {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 28px; padding: 4px 0;
+}
+
+.hiw-bubble {
+  font-family: 'Syne', sans-serif; font-size: 12.5px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 18px; border-radius: 100px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  position: relative; overflow: hidden;
+}
+.hiw-bubble::before {
+  content: ''; position: absolute; inset: 0; border-radius: 100px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.18), rgba(167,139,250,0.12));
+  opacity: 0; transition: opacity 0.22s;
+}
+.hiw-bubble:hover { color: var(--text); border-color: var(--border-lt); }
+.hiw-bubble:hover::before { opacity: 1; }
+.hiw-bubble.active {
+  color: var(--accent); border-color: rgba(110,181,255,0.45);
+  background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.07));
+  box-shadow: 0 0 20px var(--glow2);
+}
+.hiw-bubble.active::before { opacity: 1; }
+.hiw-bubble-icon { display: flex; align-items: center; flex-shrink: 0; }
+.hiw-bubble-icon svg { stroke: currentColor; }
+
+/* Panels */
+.hiw-panel {
+  display: none;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 18px; padding: clamp(22px,4vw,36px);
+  animation: hiw-fadein 0.28s ease;
+}
+.hiw-panel.active { display: block; }
+@keyframes hiw-fadein { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.hiw-panel-header {
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px;
+  padding-bottom: 22px; border-bottom: 1px solid var(--border);
+}
+.hiw-panel-icon {
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px;
+  background: var(--accent-dim); border: 1px solid rgba(110,181,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+}
+.hiw-panel-icon svg { stroke: var(--accent); }
+.hiw-panel-eyebrow {
+  font-family: 'Space Mono', monospace; font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  opacity: 0.75; margin-bottom: 5px;
+}
+.hiw-panel-title {
+  font-size: clamp(15px,3vw,19px); font-weight: 800; color: var(--text);
+  letter-spacing: -0.4px; line-height: 1.2;
+}
+
+/* Steps */
+.hiw-steps {
+  display: flex; flex-direction: column; gap: 0;
+  margin-bottom: 28px; position: relative;
+}
+.hiw-steps::before {
+  content: ''; position: absolute; left: 19px; top: 28px;
+  bottom: 28px; width: 1px;
+  background: linear-gradient(to bottom, rgba(110,181,255,0.3), transparent);
+}
+.hiw-step {
+  display: flex; gap: 18px; align-items: flex-start;
+  padding: 16px 0;
+  position: relative;
+}
+.hiw-step:not(:last-child) { border-bottom: 1px solid rgba(110,181,255,0.07); }
+.hiw-step-num {
+  font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; color: var(--bg);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px var(--glow); position: relative; z-index: 1;
+}
+.hiw-step-body { flex: 1; min-width: 0; padding-top: 8px; }
+.hiw-step-title {
+  font-size: 13.5px; font-weight: 700; color: var(--text);
+  margin-bottom: 5px; letter-spacing: -0.1px;
+}
+.hiw-step-desc { font-size: 12.5px; line-height: 1.7; color: var(--text-sub); }
+
+.hiw-cta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .btn-signup { padding: 7px 12px; font-size: 11px; white-space: nowrap; }
+  .btn-login { display: none; }
+  .nav-theme-toggle { display: none; }
+  .fmt-panel.active { grid-template-columns: 1fr; }
+
+
+  .traffic-grid { grid-template-columns: 1fr 1fr; }
+  .target-grid { grid-template-columns: 1fr; }
+
+
+}
+@media (min-width: 641px) { .drawer-theme-row { display: none; } }
+@media (max-width: 420px) {
+  .hero h1 { letter-spacing: -0.8px; }
+  .btn-signup { padding: 8px 14px; font-size: 12px; }
+  .theme-toggle { display: none; }
+  .format-tabs { overflow-x: auto; flex-wrap: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* ── AUTH TABS ── */
+.auth-tabs {
+  display: flex; gap: 0; margin-bottom: 18px;
+  background: var(--bg); border-radius: 10px; padding: 3px;
+  border: 1px solid var(--border);
+}
+.auth-tab {
+  flex: 1; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer;
+  background: transparent; color: var(--muted);
+  transition: background 0.2s, color 0.2s;
+}
+.auth-tab.active {
+  background: linear-gradient(135deg, rgba(110,181,255,0.18), rgba(167,139,250,0.12));
+  color: var(--accent);
+}
+.auth-tab:not(.active):hover { color: var(--text); }
+
+/* ── AUTH DIVIDER ── */
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 16px 0 14px; font-size: 11px; color: var(--muted);
+  font-family: 'Space Mono', monospace; letter-spacing: 0.08em;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── AUTH FIELDS ── */
+.auth-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.auth-field label {
+  font-size: 11.5px; font-weight: 600; color: var(--text-sub);
+  letter-spacing: 0.04em;
+}
+.auth-field input {
+  font-family: 'Syne', sans-serif; font-size: 13px;
+  padding: 10px 13px; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--bg);
+  color: var(--text); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-field input::placeholder { color: var(--muted); }
+.auth-field input:focus {
+  border-color: rgba(110,181,255,0.5);
+  box-shadow: 0 0 0 3px rgba(110,181,255,0.08);
+}
+
+/* ── FORGOT ROW ── */
+.auth-forgot-row { display: flex; justify-content: flex-end; margin-top: -4px; margin-bottom: 14px; }
+.auth-back-row { margin-bottom: 14px; }
+.auth-link-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--accent); padding: 0; transition: opacity 0.2s;
+}
+.auth-link-btn:hover { opacity: 0.75; }
+
+/* ── SUBMIT BUTTON ── */
+.auth-submit-btn {
+  width: 100%; font-family: 'Syne', sans-serif; font-size: 13.5px; font-weight: 700;
+  padding: 11px 20px; border-radius: 9px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #03050d; margin-top: 4px;
+  transition: box-shadow 0.2s, transform 0.15s, opacity 0.2s;
+}
+.auth-submit-btn:hover {
+  box-shadow: 0 0 28px var(--glow), 0 4px 16px rgba(110,181,255,0.25);
+  transform: translateY(-1px);
+}
+.auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── EMAIL VERIFY BOX ── */
+.auth-verify-box {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 8px 0 4px;
+}
+.auth-verify-icon { font-size: 40px; margin-bottom: 12px; }
+.auth-verify-title {
+  font-size: 16px; font-weight: 800; color: var(--text);
+  letter-spacing: -0.3px; margin-bottom: 10px;
+}
+.auth-verify-desc {
+  font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 6px;
+}
+.auth-verify-desc strong { color: var(--accent); }
+.auth-verify-sub {
+  font-size: 11.5px; color: var(--muted); line-height: 1.6; margin-bottom: 18px;
+}
+.auth-verify-actions { width: 100%; }
+.auth-resend-timer {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  color: var(--muted); margin-top: 10px; letter-spacing: 0.04em;
+}
+
+/* ── AUTH ERROR / SUCCESS ── */
+.auth-error {
+  font-size: 12px; color: #ff6b6b; min-height: 0;
+  margin-bottom: 4px; display: none; line-height: 1.5;
+}
+.auth-error.show { display: block; }
+.auth-success {
+  font-size: 12px; color: #6bffb0; min-height: 0;
+  margin-bottom: 4px; display: none; line-height: 1.5;
+}
+.auth-success.show { display: block; }
+
+/* Mobile Auth Modal Fixes */
+@media (max-width: 480px) {
+  .auth-modal-wrap { min-width: auto; width: calc(100% - 40px); }
+  .auth-modal { padding: 20px 16px; max-height: 85vh; }
+  .auth-modal h2 { font-size: 17px; }
+  .auth-modal p { font-size: 11px; }
+  .auth-tab { font-size: 12px; padding: 7px 14px; }
+  .auth-field { margin-bottom: 12px; }
+  .auth-field label { font-size: 10px; }
+  .auth-field input { padding: 9px 10px; font-size: 12px; }
+  .auth-submit-btn { padding: 11px 16px; font-size: 13px; }
+  .btn-google { padding: 11px 16px; font-size: 13px; }
+  .btn-google svg { width: 16px; height: 16px; }
+  .auth-divider { margin: 16px 0; }
+  .auth-divider span { font-size: 11px; }
+  .auth-forgot-row { margin-bottom: 12px; }
+  .auth-link-btn { font-size: 11px; }.auth-verify-box { padding: 16px; }
+  .auth-verify-title { font-size: 16px; }
+  .auth-verify-desc { font-size: 12px; }
+  .auth-verify-sub { font-size: 11px; }
+  .auth-verify-actions { gap: 12px; }
+  .auth-resend-timer { font-size: 11px; }
+}
+
+
+/* Mobile Secondary Navigation */
+.mobile-secondary-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  min-width: 200px;
+  z-index: 100;
+}
+.mobile-secondary-nav a {
+  color: var(--text-sub);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.mobile-secondary-nav a:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <div class="logo-ring"></div>
+      <div class="logo-ring-2"></div>
+      <div class="logo-dot"></div>
+    </div>
+    ETERNANT
+  </a>
+  <div class="nav-right">
+    <button class="theme-toggle nav-theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb" id="toggleThumb"></div>
+      </div>
+    </button>
+    <a href="#" class="btn-login" id="nav-login-btn">Log in</a>
+    <a href="#" class="btn-signup" id="nav-signup-btn">Get started</a>
+    <a href="#" class="btn-login" id="nav-dashboard-btn" onclick="event.preventDefault();window.location.href=getDashboardUrl()" style="display:none;">Dashboard</a>
+    <a href="#" class="btn-signup" id="nav-signout-btn" onclick="event.preventDefault();handleSignOut()" style="display:none;">Sign Out</a>
+    <button class="hamburger" id="hbtn" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu();toggleMobileSecondaryNav();">
+
+    <!-- Mobile Secondary Nav -->
+    <div class="mobile-secondary-nav" id="mobileSecondaryNav" style="display:none;">
+      <a href="/">Home</a>
+      <a href="#ad-formats">Ad Formats</a>
+      <a href="#hiw-section">How it works</a>
+      <a href="mailto:contact.eternant@gmail.com">Contact</a>
+    </div>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Drawer -->
+<nav class="drawer" id="drawer" aria-label="Site navigation">
+  <a href="/">
+    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+    Home
+  </a>
+  <a href="mailto:contact.eternant@gmail.com" id="drawer-contact">
+    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+    Contact
+  </a>
+  <div class="drawer-theme-row">
+    <span class="d-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+    <span style="flex:1;font-size:14px;color:var(--text-sub);">Theme</span>
+    <button class="theme-toggle drawer-theme-toggle" id="themeToggleDrawer" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb" id="toggleThumbDrawer"></div>
+      </div>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="/">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Grow with Eternant</span>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-orbit-wrap" style="width:320px;height:320px;">
+      <div class="ho-ring ho-ring-1"></div>
+      <div class="ho-ring ho-ring-2"></div>
+      <div class="ho-ring ho-ring-3"></div>
+      <div class="ho-planet ho-p1"></div>
+      <div class="ho-planet ho-p2"></div>
+    </div>
+
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span>Publishers &amp; Advertisers</span>
+    </div>
+    <h1>Earn more. <em>Reach further.</em></h1>
+    <p>Whether you own traffic or want to buy it — Eternant connects publishers and advertisers across web, mobile, Telegram, and social. Real-time tracking, zero bot traffic, every rupee accountable.</p>
+    <div class="hero-cta">
+      <a href="#" class="cta-primary" id="hero-start-btn" onclick="event.preventDefault(); if(isLoggedIn()){var dashUrl = getDashboardUrl(); localStorage.setItem('eternant_last_dashboard', dashUrl); window.location.href=dashUrl;}else{openAuthModal('signup');}">Get Started →</a>
+      <a href="#hiw-section" class="cta-secondary" id="hero-hiw-btn" onclick="event.preventDefault();document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        See how it works
+      </a>
+    </div>
+
+
+  </section>
+
+  <!-- Services Accordion (moved above HIW) -->
+  <div id="services-section"></div>
+  <div class="section-label">Services</div>
+
+  <section class="services" id="services-acc">
+
+    <!-- 01 Publishers -->
+    <div class="sa" id="acc-pub" onclick="toggleSA(this)">
+      <div class="sa-header">
+        <div class="sa-left">
+          <span class="si-num">01</span>
+          <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <div class="si-text">
+            <div class="si-name">Publishers — Earn Using Your Traffic</div>
+            <div class="si-desc">Monetize your digital assets and audience</div>
+          </div>
+        </div>
+        <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sa-body">
+        <div class="sa-inner">
+          <p>Turn your web traffic, apps, or mobile views into steady automated revenue streams with high-yielding formats and a global network.</p>
+          <ul class="sa-points">
+            <li>High eCPM global inventory</li>
+            <li>Multiple formats — popunder, in-page, native</li>
+            <li>Real-time tracking and reporting dashboard</li>
+            <li>Weekly payouts, $5 minimum withdrawal</li>
+          </ul>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();if(isLoggedIn()){var dashUrl = getDashboardUrl(); localStorage.setItem('eternant_last_dashboard', dashUrl); window.location.href=dashUrl;}else{openAuthModal('signup');}">Get Started →</a>
+            <a href="#hiw-section" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();selectHIW(document.querySelector('[onclick*=\'hiw-pub\']'),'hiw-pub');setTimeout(function(){document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})},50);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Advertisers -->
+    <div class="sa active-page" id="acc-adv" onclick="toggleSA(this)">
+      <div class="sa-header">
+        <div class="sa-left">
+          <span class="si-num">02</span>
+          <div class="si-icon"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+          <div class="si-text">
+            <div class="si-name">Advertiser Campaigns</div>
+            <div class="si-desc">Launch, track and scale your campaigns globally</div>
+          </div>
+        </div>
+        <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sa-body">
+        <div class="sa-inner">
+          <p>Scale your brand, drive app installs, or promote your offers through targeted global networks — with advanced anti-fraud filters, precise audience controls, and real-time ROI tracking. Every rupee, accountable.</p>
+          <ul class="sa-points">
+            <li>8+ formats — popunder, in-page, native, video, CPA, PTC, SmartLink</li>
+            <li>Precise geo, device, OS, browser, and category targeting</li>
+            <li>Self-serve campaign builder with real-time budget control</li>
+            <li>Zero bot traffic — multi-layer anti-fraud guaranteed</li>
+            <li>Pixel &amp; postback conversion tracking for campaigns</li>
+          </ul>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();if(isLoggedIn()){var dashUrl = getDashboardUrl(); localStorage.setItem('eternant_last_dashboard', dashUrl); window.location.href=dashUrl;}else{openAuthModal('signup');}">Get Started →</a>
+            <a href="#advertise-formats" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();var accPanel=document.getElementById('acc-adv');if(accPanel){accPanel.classList.add('open');accPanel.querySelector('.sa-body').style.display='block';accPanel.scrollIntoView({behavior:'smooth'});}else{document.getElementById('hiw-adv').scrollIntoView({behavior:'smooth'});}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>See all formats</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 IT / Dev -->
+    <div class="sa" id="acc-dev" onclick="toggleSA(this)">
+      <div class="sa-header">
+        <div class="sa-left">
+          <span class="si-num">03</span>
+          <div class="si-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="si-text">
+            <div class="si-name">Web &amp; App Development</div>
+            <div class="si-desc">Custom websites, mobile apps and SaaS solutions</div>
+          </div>
+        </div>
+        <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sa-body">
+        <div class="sa-inner">
+          <p>Custom software engineering, high-performance web apps, and cross-platform mobile solutions built for speed and long-term scalability.</p>
+          <ul class="sa-points">
+            <li>Full-stack development (React, Node, Flutter)</li>
+            <li>Optimized for speed and SEO</li>
+            <li>Dedicated maintenance and scaling support</li>
+          </ul>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();if(isLoggedIn()){var dashUrl = getDashboardUrl(); localStorage.setItem('eternant_last_dashboard', dashUrl); window.location.href=dashUrl;}else{openAuthModal('signup');}">Get Started →</a>
+            <a href="#hiw-section" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();selectHIW(document.querySelector('[onclick*=\'hiw-dev\']'),'hiw-dev');setTimeout(function(){document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})},50);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 Giveaways -->
+    <div class="sa" id="acc-give" onclick="toggleSA(this)">
+      <div class="sa-header">
+        <div class="sa-left">
+          <span class="si-num">04</span>
+          <div class="si-icon"><svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+          <div class="si-text">
+            <div class="si-name">Giveaways &amp; Promos</div>
+            <div class="si-desc">Viral campaigns to grow reach and engagement</div>
+          </div>
+        </div>
+        <div class="sa-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sa-body">
+        <div class="sa-inner">
+          <p>Launch viral marketing campaigns, reward loops, and interactive lucky draws to supercharge user retention and audience growth.</p>
+          <ul class="sa-points">
+            <li>Built-in viral sharing tools</li>
+            <li>Automated winner selection algorithms</li>
+            <li>Instant reward distribution system</li>
+          </ul>
+          <div class="sa-cta-row">
+            <a href="#" class="sa-cta" onclick="event.stopPropagation();event.preventDefault();if(isLoggedIn()){var dashUrl = getDashboardUrl(); localStorage.setItem('eternant_last_dashboard', dashUrl); window.location.href=dashUrl;}else{openAuthModal('signup');}">Get Started →</a>
+            <a href="#hiw-section" class="sa-cta-ghost" onclick="event.stopPropagation();event.preventDefault();selectHIW(document.querySelector('[onclick*=\'hiw-give\']'),'hiw-give');setTimeout(function(){document.getElementById('hiw-section').scrollIntoView({behavior:'smooth'})},50);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>How it works?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <div id="hiw-section"></div>
+  <div class="section-label" style="padding-top:52px;">How It Works</div>
+
+  <section class="hiw-wrap">
+    <!-- Bubble Grid -->
+    <div class="hiw-bubbles" id="hiwBubbles">
+        <button class="hiw-bubble active" onclick="selectHIW(this,'hiw-pub')" data-label="Publishers">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+          <span>Publishers</span>
+        </button>
+        <button class="hiw-bubble" onclick="selectHIW(this,'hiw-adv')" data-label="Advertiser">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
+          <span>Advertiser</span>
+        </button>
+        <button class="hiw-bubble" onclick="selectHIW(this,'hiw-dev')" data-label="Web / App Dev">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+          <span>Web / App Dev</span>
+        </button>
+        <button class="hiw-bubble" onclick="selectHIW(this,'hiw-give')" data-label="Giveaways">
+          <span class="hiw-bubble-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+          <span>Giveaways</span>
+        </button>
+
+    </div>
+
+    <!-- Content Panels -->
+
+    <!-- PUBLISHERS -->
+    <div class="hiw-panel active" id="hiw-pub">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Publishers Earn</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Create a Free Account</div>
+            <p class="hiw-step-desc">Sign up in under 60 seconds with Google. No approval queue — your dashboard is ready instantly.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Add Your Traffic Source</div>
+            <p class="hiw-step-desc">Register your Website, App, Telegram, Whatsapp, or Social page. We support web, mobile, APK, Groups, Channles and bot traffic.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Get verified and place Ads</div>
+            <p class="hiw-step-desc">Verify your traffic source and add Ads to your source.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Earn & Withdraw</div>
+            <p class="hiw-step-desc">Revenue accumulates in real time on your dashboard. Withdraw to UPI, bank, online wallets or crypto — minimum just $5.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="#" class="sa-cta" onclick="event.preventDefault();openAuthModal()">Start Earning →</a>
+        <a href="#" class="sa-cta-ghost" onclick="event.preventDefault();document.querySelector('.sa').dispatchEvent(new Event('click'))">See Publisher Plans</a>
+      </div>
+    </div>
+
+    <!-- ADVERTISER -->
+    <div class="hiw-panel" id="hiw-adv">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Advertisers Launch Campaigns</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Sign Up & Top Up Balance</div>
+            <p class="hiw-step-desc">Create your account and fund it via UPI, card, crypto, or bank transfer. Indian advertisers pay in INR — no international fees.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Build Your Campaign</div>
+            <p class="hiw-step-desc">Choose ad format, set targeting (country, device, OS, browser, niche), upload creatives, and define your daily budget and bid.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Pass Review & Go Live</div>
+            <p class="hiw-step-desc">Our team reviews creatives in 1–2 hours. Self-serve campaigns go live almost immediately. First impressions within minutes of activation.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Track ROI in Real Time</div>
+            <p class="hiw-step-desc">Monitor clicks, conversions, and spend live. Use pixel or postback tracking for CPA campaigns. Pause, scale, or adjust bids anytime.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="#" class="sa-cta" onclick="event.preventDefault();openAuthModal()">Get Started →</a>
+        <a href="#advertise-formats" class="sa-cta-ghost" onclick="event.preventDefault();var accPanel=document.getElementById('acc-adv');if(accPanel){accPanel.classList.add('open');accPanel.querySelector('.sa-body').style.display='block';accPanel.scrollIntoView({behavior:'smooth'});}else{document.getElementById('hiw-adv').scrollIntoView({behavior:'smooth'});}">See Ad Formats</a>
+      </div>
+    </div>
+
+    <!-- WEB / APP DEV -->
+    <div class="hiw-panel" id="hiw-dev">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Web & App Development Works</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Share Your Requirements</div>
+            <p class="hiw-step-desc">Tell us what you're building — a web app, mobile app, SaaS tool, or custom software. We'll align on scope and timeline in a free consultation call.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Get a Proposal & Roadmap</div>
+            <p class="hiw-step-desc">Our engineers deliver a tech plan, stack recommendation (React, Node, Flutter), milestones, and transparent fixed pricing — no surprises.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Build, Review & Iterate</div>
+            <p class="hiw-step-desc">We develop in sprints with regular demos and feedback rounds. You have full visibility at every stage — no black-box development.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Launch & Ongoing Support</div>
+            <p class="hiw-step-desc">We deploy, optimise for speed and SEO, and provide dedicated maintenance and scaling support post-launch — so your product keeps growing.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="mailto:contact.eternant@gmail.com" class="sa-cta">Talk to Our Team →</a>
+        <a href="#" class="sa-cta-ghost" onclick="event.preventDefault();if(isLoggedIn()){var dashUrl = getDashboardUrl(); localStorage.setItem('eternant_last_dashboard', dashUrl); window.location.href=dashUrl;}else{openAuthModal();}">Get Started</a>
+      </div>
+    </div>
+
+    <!-- GIVEAWAYS -->
+    <div class="hiw-panel" id="hiw-give">
+      <div class="hiw-panel-header">
+        <div class="hiw-panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+        <div>
+          <div class="hiw-panel-eyebrow">Step-by-Step</div>
+          <h3 class="hiw-panel-title">How Giveaways & Promos Work</h3>
+        </div>
+      </div>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <div class="hiw-step-num">01</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Define Your Campaign Goal</div>
+            <p class="hiw-step-desc">Choose what you want to drive — followers, sign-ups, referrals, or app downloads. Set your prize, timeline, and entry conditions.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">02</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Configure Viral Sharing Rules</div>
+            <p class="hiw-step-desc">Set up referral chains and sharing incentives — users earn extra entries for every friend they bring in. Our system tracks every referral automatically.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">03</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Launch Across Your Channels</div>
+            <p class="hiw-step-desc">Embed the giveaway widget on your website, share via Telegram, or run it natively on the Eternant platform. We'll amplify it to our publisher network.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">04</div>
+          <div class="hiw-step-body">
+            <div class="hiw-step-title">Auto-Select Winners & Distribute Rewards</div>
+            <p class="hiw-step-desc">Our verified random algorithm picks winners transparently. Rewards are distributed instantly — crypto, vouchers, or custom prizes — with full audit trail.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hiw-cta-row">
+        <a href="#" class="sa-cta" onclick="event.preventDefault();openAuthModal()">Run a Giveaway →</a>
+        <a href="mailto:contact.eternant@gmail.com" class="sa-cta-ghost">Talk to Us</a>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+
+
+  </section>
+
+  <!-- Ad Formats -->
+  <div id="ad-formats"></div>
+  <div class="section-label">Ad Formats</div>
+
+  <div class="format-tabs-wrap">
+    <div class="format-tabs" id="fmtTabs">
+      <button class="fmt-tab active" onclick="switchTab(this,'tab-push')">In-Page &amp; On-Site</button>
+      <button class="fmt-tab" onclick="switchTab(this,'tab-display')">Display &amp; Placements</button>
+      <button class="fmt-tab" onclick="switchTab(this,'tab-native')">Native &amp; Integrated</button>
+      <button class="fmt-tab" onclick="switchTab(this,'tab-cpa')">Performance &amp; CPA</button>
+    </div>
+
+    <!-- In-Page &amp; On-Site -->
+    <div class="fmt-panel active" id="tab-push">
+
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="fmt-card-name">In-Page</div>
+        <div class="fmt-card-desc">Ads that appear inside the webpage itself — no subscription required. Works on iOS and all browsers. Blends naturally with page content.</div>
+        <div class="fmt-badge">iOS Compatible</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="fmt-card-name">Vignette / Interstitial</div>
+        <div class="fmt-card-desc">Full-screen ads that appear between page transitions or content loads. Maximum visibility with controlled frequency capping to avoid user fatigue.</div>
+        <div class="fmt-badge fmt-badge-purple">Max Visibility</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="fmt-card-name">Telegram Ads</div>
+        <div class="fmt-card-desc">Broadcast sponsored messages to verified, active Telegram channels and groups. Your ad reaches real crypto and niche communities — pay per broadcast.</div>
+        <div class="fmt-badge">Real communities</div>
+      </div>
+    </div>
+
+    <!-- Display &amp; Placements -->
+    <div class="fmt-panel" id="tab-display">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+        <div class="fmt-card-name">Popunder / Pop</div>
+        <div class="fmt-card-desc">Full-tab placements that open behind the main window on user click. Historically high performing. Every visitor is engaged.</div>
+        <div class="fmt-badge fmt-badge-green">High Performance</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg></div>
+        <div class="fmt-card-name">Display Placements</div>
+        <div class="fmt-card-desc">Standard placements (300×250, 728×90, 320×50) across premium inventory. Ideal for brand awareness and engagement.</div>
+        <div class="fmt-badge">Standard IAB</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+        <div class="fmt-card-name">Video Pre-roll</div>
+        <div class="fmt-card-desc">Skippable and non-skippable video ads placed before content. Drive brand recall with rich creative — optimised for completion rate across mobile and desktop.</div>
+        <div class="fmt-badge fmt-badge-purple">Video</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="fmt-card-name">Mobile Sticky Banner</div>
+        <div class="fmt-card-desc">Always-visible banner fixed to the top or bottom of mobile screens. Persistent exposure without interrupting content — high impressions at low CPM.</div>
+        <div class="fmt-badge">Mobile first</div>
+      </div>
+    </div>
+
+    <!-- Native &amp; Integrated -->
+    <div class="fmt-panel" id="tab-native">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="fmt-card-name">Native In-Feed</div>
+        <div class="fmt-card-desc">Ads that match the look and feel of editorial content — headlines, images, descriptions — placed inline in news feeds, article pages, and content listings.</div>
+        <div class="fmt-badge fmt-badge-green">Non-intrusive</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="fmt-card-name">SmartLink</div>
+        <div class="fmt-card-desc">A single intelligent link that auto-detects user device, GEO, OS and browser — then routes to the highest-paying offer available for that traffic segment in real time.</div>
+        <div class="fmt-badge fmt-badge-purple">AI routing</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="fmt-card-name">Influencer Placements</div>
+        <div class="fmt-card-desc">Sponsored posts and shoutouts placed by verified social influencers across Instagram, YouTube, Telegram, and Discord. Real audiences, authentic reach.</div>
+        <div class="fmt-badge">Verified creators</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+        <div class="fmt-card-name">Social Media Ads</div>
+        <div class="fmt-card-desc">Managed ad buying on Facebook, Instagram and X/Twitter — creative strategy, audience building, and campaign management handled end to end by our team.</div>
+        <div class="fmt-badge fmt-badge-green">Managed service</div>
+      </div>
+    </div>
+
+    <!-- Performance &amp; CPA -->
+    <div class="fmt-panel" id="tab-cpa">
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+        <div class="fmt-card-name">Performance Offers</div>
+        <div class="fmt-card-desc">Pay only per confirmed action — app installs, sign-ups, deposits, purchases. Your offer is shown on platforms to motivated users.</div>
+        <div class="fmt-badge fmt-badge-green">Pay per conversion</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div class="fmt-card-name">PTC Ads (Paid-to-Click)</div>
+        <div class="fmt-card-desc">Users on the Eternant earn network are incentivised to view and click your ad. Guaranteed engagement from real users — ideal for awareness, survey traffic, and app promos.</div>
+        <div class="fmt-badge">Guaranteed clicks</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="fmt-card-name">Survey &amp; Task Ads</div>
+        <div class="fmt-card-desc">Get users to complete market research surveys, app tasks, or verification flows. Pay only when the task is fully completed and verified — zero wasted spend.</div>
+        <div class="fmt-badge fmt-badge-purple">Verified completions</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="fmt-card-name">Offerwall Embed</div>
+        <div class="fmt-card-desc">List your offer directly inside walls — crypto platforms, Web3 sites, and reward apps. Get in front of action-ready users already looking to earn.</div>
+        <div class="fmt-badge">Web3 &amp; crypto</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Traffic Sources -->
+  <div class="section-label">Traffic Sources</div>
+  <div class="traffic-grid">
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <div class="traffic-name">Websites</div>
+      <div class="traffic-desc">High-traffic blogs, tools, news, and niche content sites.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+      <div class="traffic-name">Mobile Apps</div>
+      <div class="traffic-desc">In-app placements across Android and iOS applications.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M21.2 4.8 2.8 11.6c-1.2.5-1.2 1.2 0 1.5l4.6 1.4 1.8 5.6c.3.8.7.9 1.2.6l2.8-2.3 4.7 3.5c.9.5 1.5.2 1.7-.8L22 6c.3-1.3-.4-1.8-1.6-1.2z"/></svg></div>
+      <div class="traffic-name">Telegram</div>
+      <div class="traffic-desc">Channels, groups, bots, and Telegram Mini Apps.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></div>
+      <div class="traffic-name">Social &amp; YouTube</div>
+      <div class="traffic-desc">Influencer audiences across Instagram, X, and YouTube.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+      <div class="traffic-name">APK &amp; Web3</div>
+      <div class="traffic-desc">Android APK installs and crypto / blockchain earn sites.</div>
+    </div>
+    <div class="traffic-card">
+      <div class="traffic-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <div class="traffic-name">Paid &amp; Remnant</div>
+      <div class="traffic-desc">Paid media, DSP traffic, and remnant inventory top-up.</div>
+    </div>
+  </div>
+
+  <!-- Targeting -->
+  <div class="section-label">Targeting Capabilities</div>
+  <div class="target-grid">
+    <div class="target-card">
+      <div class="target-label">Geographic</div>
+      <h4>Country &amp; City Targeting</h4>
+      <p>Reach users in specific countries, regions, or cities. Build separate campaigns for Tier 1, 2 and 3 GEOs with custom bids.</p>
+      <div class="target-tags">
+        <span class="tag">195+ countries</span>
+        <span class="tag">City level</span>
+        <span class="tag">Tier segmentation</span>
+      </div>
+    </div>
+    <div class="target-card">
+      <div class="target-label">Device &amp; OS</div>
+      <h4>Device, OS &amp; Browser</h4>
+      <p>Target by device type (mobile/desktop/tablet), operating system (Android, iOS, Windows), and browser (Chrome, Safari, Firefox).</p>
+      <div class="target-tags">
+        <span class="tag">Mobile / Desktop</span>
+        <span class="tag">Android / iOS</span>
+        <span class="tag">Browser</span>
+      </div>
+    </div>
+    <div class="target-card">
+      <div class="target-label">Timing</div>
+      <h4>Dayparting &amp; Frequency</h4>
+      <p>Schedule your ads to run at specific hours or days. Set impression frequency caps per user to optimise reach without burning budget on repeat views.</p>
+      <div class="target-tags">
+        <span class="tag">Hour of day</span>
+        <span class="tag">Day of week</span>
+        <span class="tag">Freq cap</span>
+      </div>
+    </div>
+    <div class="target-card">
+      <div class="target-label">Audience</div>
+      <h4>Niche &amp; Category</h4>
+      <p>Select specific publisher categories — crypto, gaming, news, entertainment — or exclude verticals irrelevant to your offer for maximum conversion quality.</p>
+      <div class="target-tags">
+        <span class="tag">Crypto &amp; Web3</span>
+        <span class="tag">Gaming</span>
+        <span class="tag">Category exclude</span>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- FAQ -->
+  <div class="section-label">Frequently Asked Questions</div>
+  <div class="faq-list">
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What is the minimum budget to start advertising?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">You can launch a CPM campaign with as little as $10. CPA campaigns require a minimum $50 deposit. Managed service campaigns start at $500/month. All budgets are fully controllable — daily caps and total limits are enforced to the cent.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        How do you prevent bot traffic and click fraud?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Every impression and click is validated by our multi-layer anti-fraud system — IP reputation scoring, device fingerprinting, behavioural analysis, and publisher quality scores. Suspicious traffic is filtered before billing. We offer full transparency with raw traffic logs available on request.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        Can I target specific countries or niches?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Yes. You can target by country, region, or city (195+ GEOs), device type, OS, browser, language, and publisher category (crypto, gaming, news, entertainment, etc.). You can also blacklist specific publishers or domains that underperform for your offer.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What creatives do I need to provide?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Requirements vary by format. Banners need a title (30 chars), message (45 chars), icon (192×192 px) and optional banner image. Standard IAB sizes (JPG/PNG/GIF) are also supported. CPA offers just need your landing page URL and payout details. Our managed service team can build creatives for you.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        How quickly can my campaign go live?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Self-serve campaigns are reviewed and activated within 1–2 hours of submission. Managed campaigns require an onboarding call and go live within 24–48 hours. Campaigns typically see first impressions within minutes of activation.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What payment methods are accepted?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">We accept credit/debit cards, UPI, net banking, crypto (BTC, USDT, ETH), and wire transfer for larger accounts. All transactions are processed securely. Indian advertisers can pay in INR with UPI or bank transfer — no international fees apply.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        How do publishers get paid?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">Publishers receive weekly payouts with a minimum withdrawal of just $5. We support UPI, bank transfer, PayPal, and crypto (BTC, USDT). Earnings are calculated on verified, fraud-free traffic only — you always see exactly what you earned and why.</div></div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        What kind of traffic can I monetise as a publisher?
+        <svg class="faq-chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">We accept websites, mobile apps, Telegram channels and bots, social media pages, and APK-based traffic. As long as your traffic is real and your content complies with our guidelines, you can monetise it across all our ad formats — push, popunder, in-page, native, and more.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div class="cta-banner-badge">∞ Eternant Platform</div>
+    <h2>Publisher or advertiser — start in minutes.</h2>
+    <p>Thousands of publishers are already earning. Thousands of advertisers are already reaching them. One account, one dashboard, both sides of the network.</p>
+    <div class="cta-banner-btns">
+      <a href="#" class="cta-primary" onclick="openAuthModal()">Create Free Account →</a>
+      <a href="mailto:contact.eternant@gmail.com" class="cta-secondary">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Talk to us
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-left">
+    <p>© 2026 Eternant</p>
+    <div class="footer-signal">
+      <div class="footer-signal-dot"></div>
+      All systems operational
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="https://eternant.c0m.to/privacy.html" target="_blank">Privacy</a>
+    <a href="https://eternant.c0m.to/terms.html" target="_blank">Terms</a>
+    <a href="mailto:contact.eternant@gmail.com">Contact</a>
+  </div>
+</footer>
+
+
+
+
+
+<!-- Auth Modal -->
+<div class="auth-modal-overlay" id="authModal" onclick="authModalOutsideClick(event)">
+  <div class="auth-modal-wrap">
+    <div class="auth-modal">
+      <button class="auth-modal-close" onclick="closeAuthModal()">&#x2715;</button>
+
+      <!-- Main Auth Form -->
+      <div id="authForm">
+        <div class="auth-modal-logo">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h2 id="authTitle">Welcome to Eternant</h2>
+        <p id="authSubtitle">Sign in to access your dashboard — publish, advertise, or manage services.</p>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+          <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Google Button -->
+        <button class="btn-google" id="btnGoogleSignIn" onclick="signInWithGoogle()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span id="googleBtnText">Continue with Google</span>
+        </button>
+
+        <div class="auth-divider"><span>or</span></div>
+
+        <!-- Login Panel -->
+        <div id="panelLogin">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="auth-forgot-row">
+            <button class="auth-link-btn" onclick="switchAuthTab('forgot')">Forgot password?</button>
+          </div>
+          <div class="auth-error" id="loginError"></div>
+          <button class="auth-submit-btn" onclick="handleEmailLogin()">Login →</button>
+        </div>
+
+        <!-- Signup Panel -->
+        <div id="panelSignup" style="display:none;">
+          <!-- Step 1: Form -->
+          <div id="signupFormStep">
+            <div class="auth-field">
+              <label>Email</label>
+              <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <div class="auth-field">
+              <label>Password</label>
+              <input type="password" id="signupPassword" placeholder="Min. 8 characters" autocomplete="new-password">
+            </div>
+            <div class="auth-field">
+              <label>Confirm Password</label>
+              <input type="password" id="signupConfirm" placeholder="Repeat password" autocomplete="new-password">
+            </div>
+            <div class="auth-error" id="signupError"></div>
+            <button class="auth-submit-btn" id="signupSubmitBtn" onclick="handleEmailSignup()">Create Account →</button>
+          </div>
+          <!-- Step 2: Verify Email -->
+          <div id="signupVerifyStep" style="display:none;">
+            <div class="auth-verify-box">
+              <div class="auth-verify-icon">✉️</div>
+              <h3 class="auth-verify-title">Verify your email</h3>
+              <p class="auth-verify-desc">We've sent a confirmation link to<br><strong id="signupEmailSent"></strong></p>
+              <p class="auth-verify-sub">Click the link in your inbox to activate your account. Check spam if you don't see it.</p>
+              <div class="auth-verify-actions">
+                <button class="auth-submit-btn" id="resendBtn" onclick="handleResendEmail()">Resend Email</button>
+                <div class="auth-resend-timer" id="resendTimer" style="display:none;">Resend in <span id="resendCount">60</span>s</div>
+              </div>
+              <button class="auth-link-btn" style="margin-top:14px;display:block;text-align:center;width:100%;" onclick="switchAuthTab('login')">← Back to Login</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forgot Password Panel -->
+        <div id="panelForgot" style="display:none;">
+          <div class="auth-back-row">
+            <button class="auth-link-btn" onclick="switchAuthTab('login')">← Back to Login</button>
+          </div>
+          <div class="auth-field">
+            <label>Your Email</label>
+            <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="auth-error" id="forgotError"></div>
+          <div class="auth-success" id="forgotSuccess"></div>
+          <button class="auth-submit-btn" onclick="handleForgotPassword()">Send Reset Link →</button>
+        </div>
+
+        <!-- Reset Password Panel (shown after clicking email link) -->
+        <div id="panelResetPass" style="display:none;">
+          <div class="auth-field">
+            <label>New Password</label>
+            <input type="password" id="resetNewPass" placeholder="Min. 8 characters" autocomplete="new-password">
+          </div>
+          <div class="auth-field">
+            <label>Confirm New Password</label>
+            <input type="password" id="resetConfirmPass" placeholder="Repeat new password" autocomplete="new-password">
+          </div>
+          <div class="auth-error" id="resetPassError"></div>
+          <div class="auth-success" id="resetPassSuccess"></div>
+          <button class="auth-submit-btn" id="resetPassBtn" onclick="handleResetPassword()">Save New Password →</button>
+        </div>
+
+        <p class="auth-modal-note">By continuing you agree to our <a href="https://eternant.c0m.to/terms.html" target="_blank">Terms</a> and <a href="https://eternant.c0m.to/privacy.html" target="_blank">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- Loading -->
+      <div class="auth-loading" id="authLoading">
+        <div class="auth-spinner"></div>
+        <p id="authLoadingText">Signing you in…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── ACCORDION ── */
+function toggleSA(el) {
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.sa.open').forEach(function(a) {
+    a.classList.remove('open');
+    var body = a.querySelector('.sa-body');
+    if (body) body.style.maxHeight = '0';
+  });
+  if (!isOpen) {
+    el.classList.add('open');
+    var body = el.querySelector('.sa-body');
+    if (body) body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+/* ── THEME ── */
+var htmlEl = document.documentElement;
+var saved = localStorage.getItem('et-theme');
+if (saved) htmlEl.setAttribute('data-theme', saved);
+
+function applyTheme(next) {
+  htmlEl.setAttribute('data-theme', next);
+  localStorage.setItem('et-theme', next);
+  if (window.initStars) initStars();
+}
+
+document.getElementById('themeToggle').addEventListener('click', function() {
+  applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+var drawerToggle = document.getElementById('themeToggleDrawer');
+if (drawerToggle) drawerToggle.addEventListener('click', function() {
+  applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+/* ── MENU ── */
+function toggleMenu() {
+  var btn = document.getElementById('hbtn');
+  var drawer = document.getElementById('drawer');
+  var open = drawer.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+}
+document.addEventListener('click', function(e) {
+  var drawer = document.getElementById('drawer');
+  var btn = document.getElementById('hbtn');
+  if (drawer.classList.contains('open') && !drawer.contains(e.target) && !btn.contains(e.target)) {
+    drawer.classList.remove('open');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', false);
+  }
+});
+
+/* ── HOW IT WORKS ── */
+function selectHIW(btn, panelId) {
+  document.querySelectorAll('.hiw-bubble').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.hiw-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+/* ── FORMAT TABS ── */
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.fmt-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.fmt-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+/* ── FAQ ── */
+function toggleFAQ(el) {
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(f) { f.classList.remove('open'); });
+  if (!isOpen) el.classList.add('open');
+}
+
+/* ── MODALS ── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeAuthModal();
+    document.body.style.overflow = '';
+  }
+});
+
+/* ── AUTH MODAL ── */
+var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
+var currentUser = null;
+var currentAuthTab = 'login';
+/* ── BREVO SMTP CONFIG ── */
+var BREVO_CONFIG = {
+  apiKey: localStorage.getItem('eternant_brevo_api_key') || '',
+  fromEmail: 'contact@eternant.c0m.to',
+  fromName: 'Eternant',
+  supportEmail: 'contact.eternant@gmail.com'
+};
+
+/* ── SET BREVO API KEY FROM ADMIN ── */
+function setBrevoApiKey(key) {
+  if (key && key.trim()) {
+    localStorage.setItem('eternant_brevo_api_key', key.trim());
+    BREVO_CONFIG.apiKey = key.trim();
+    return true;
+  }
+  return false;
+}
+
+/* ── GET BREVO API KEY FROM ADMIN ── */
+function getBrevoApiKey() {
+  return BREVO_CONFIG.apiKey || localStorage.getItem('eternant_brevo_api_key') || '';
+}
+
+/* ── EMAIL SENDING FUNCTION ── */
+async function sendBrevoEmail(to, subject, html, redirectUrl = null) {
+  const apiKey = getBrevoApiKey();
+  if (!apiKey) {
+    console.error('Brevo API key not configured');
+    return null;
+  }
+  try {
+    // If redirect URL is provided, append it to the HTML
+    if (redirectUrl) {
+      html += '<p style="margin-top: 20px; text-align: center;"><a href="' + redirectUrl + '" style="display: inline-block; background: linear-gradient(135deg, #6eb5ff, #a78bfa); color: #03050d; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700;">Return to Eternant</a></p>';
+    }
+    
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'api-key': apiKey
+      },
+      body: JSON.stringify({
+        sender: { name: BREVO_CONFIG.fromName, email: BREVO_CONFIG.fromEmail },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: html
+      })
+    });
+    return await res.json();
+  } catch(e) {
+    console.error('Brevo email error:', e);
+    return null;
+  }
+}
+
+/* ── CONTACT FORM HANDLER ── */
+function setupContactForm() {
+  const form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = form.name ? form.name.value : '';
+      const email = form.email ? form.email.value : '';
+      const message = form.message ? form.message.value : '';
+      
+      if (!email) {
+        alert('Please enter your email address.');
+        return;
+      }
+      
+      const redirectUrl = window.location.origin + window.location.pathname;
+      const result = await sendBrevoEmail(
+        BREVO_CONFIG.supportEmail,
+        'New Contact: ' + (name || email),
+        '<p><strong>Name:</strong> ' + (name || 'N/A') + '</p>' +
+        '<p><strong>Email:</strong> ' + email + '</p>' +
+        '<p><strong>Message:</strong> ' + (message || 'No message') + '</p>',
+        redirectUrl
+      );
+      
+      if (result) {
+        alert('Message sent successfully!');
+        form.reset();
+      } else {
+        alert('Failed to send message.');
+      }
+    });
+  }
+}
+
+
+
+/*  AUTO SIGN OUT ON SESSION EXPIRY  */
+async function checkSessionExpiry() {
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('supabase.auth.token') !== -1) {
+        var stored = JSON.parse(localStorage.getItem(key));
+        if (stored && stored.currentSession && stored.currentSession.access_token) {
+          var exp = stored.currentSession.expires_at;
+          if (exp && (exp * 1000) <= Date.now()) {
+            // Token expired — try to REFRESH it before signing out
+            var refreshToken = stored.currentSession.refresh_token;
+            if (refreshToken) {
+              try {
+                var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+                  method: 'POST',
+                  headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                if (res.ok) {
+                  var data = await res.json();
+                  persistSupabaseSession(data);
+                  updateButtonTextsForLoggedIn();
+                  return; // refreshed — user stays logged in
+                }
+              } catch(e2) {}
+            }
+            // Refresh failed/absent — only now sign out
+            handleSignOut();
+            return;
+          }
+        }
+      }
+    }
+  } catch(e) {}
+}
+
+// Check session every 5 minutes
+setInterval(checkSessionExpiry, 5 * 60 * 1000);
+
+// Also check on page load
+setTimeout(checkSessionExpiry, 2000);
+
+/* ── SIGN OUT ── */
+function handleSignOut() {
+  try {
+    var keys = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('supabase.auth.token') !== -1) keys.push(k);
+    }
+    keys.forEach(function(k) { localStorage.removeItem(k); });
+    localStorage.removeItem('eternant_user_role');
+    sessionStorage.removeItem('eternant_selected_role');
+  } catch(e) {}
+  window.location.href = 'index.html';
+}
+
+console.log('ETERNANT HOME v3 (session-persist fix)');
+
+/* ── SESSION PERSIST (Supabase v1 localStorage format) ── */
+function persistSupabaseSession(data) {
+  try {
+    var expiresIn = data.expires_in || 3600;
+    var session = {
+      currentSession: {
+        access_token:  data.access_token,
+        refresh_token: data.refresh_token || '',
+        token_type:    'bearer',
+        expires_in:    expiresIn,
+        expires_at:    Math.floor(Date.now() / 1000) + expiresIn,
+        user:          data.user
+      },
+      expiresAt: Math.floor(Date.now() / 1000) + expiresIn
+    };
+    localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+  } catch(e) {}
+}
+
+
+/*  CHECK IF LOGGED IN  */
+function isLoggedIn() {
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('supabase.auth.token') !== -1) {
+        var stored = JSON.parse(localStorage.getItem(key));
+        if (stored && stored.currentSession && stored.currentSession.access_token) {
+          var exp = stored.currentSession.expires_at;
+          if (!exp || (exp * 1000) > Date.now()) return true;
+        }
+      }
+    }
+  } catch(e) {}
+  return false;
+}
+
+
+/*  UPDATE BUTTON TEXTS FOR LOGGED IN USERS  */
+function updateButtonTextsForLoggedIn() {
+  if (!isLoggedIn()) return;
+  
+  // Update all buttons with isLoggedIn check to say Dashboard
+  // EXCEPT the nav-dashboard-btn which should already say Dashboard
+  var buttons = document.querySelectorAll('a[onclick*="isLoggedIn"]:not(#nav-dashboard-btn)');
+  buttons.forEach(function(btn) {
+    var text = btn.textContent || btn.innerText;
+    if (text.includes('Get Started') || text.includes('Launch Campaign')) {
+      btn.textContent = text.replace('Get Started', 'Dashboard').replace('Launch Campaign', 'Dashboard');
+    }
+  });
+  
+  // Also update buttons that have the onclick pattern but might not be caught
+  var allButtons = document.querySelectorAll('.sa-cta, .cta-primary, .cta-secondary');
+  allButtons.forEach(function(btn) {
+    // Skip nav-dashboard-btn
+    if (btn.id === 'nav-dashboard-btn') return;
+    var onclick = btn.getAttribute('onclick');
+    if (onclick && onclick.includes('isLoggedIn')) {
+      var text = btn.textContent || btn.innerText;
+      if (text.includes('Get Started') || text.includes('Launch Campaign')) {
+        btn.textContent = text.replace('Get Started', 'Dashboard').replace('Launch Campaign', 'Dashboard');
+      }
+    }
+  });
+}
+
+// Call this on page load after a small delay to ensure DOM is ready
+setTimeout(updateButtonTextsForLoggedIn, 100);
+
+/* ── GET DASHBOARD URL ── */
+function getDashboardUrl() {
+  var lastDashboard = null;
+  try { lastDashboard = localStorage.getItem('eternant_last_dashboard'); } catch(e) {}
+  if (lastDashboard) return lastDashboard;
+  var role = null;
+  try { role = localStorage.getItem('eternant_user_role'); } catch(e) {}
+  // Login/signup ke baad role select hota hai — role na ho to pehle role page
+  if (!role) return 'select-role.html';
+  return role === 'advertiser' ? 'advertiser-dashboard.html' : 'publisher-dashboard.html';
+}
+
+/* ── SESSION CHECK ON PAGE LOAD ── */
+(function() {
+  var hash   = window.location.hash;
+  var search = window.location.search;
+  var urlParams = new URLSearchParams(search);
+
+  // 1) Password reset callback: ?reset=1 + hash has access_token + type=recovery
+  //    Supabase sends user to redirect_to URL with #access_token=...&type=recovery
+  if (
+    (search.indexOf('reset=1') !== -1 || hash.indexOf('type=recovery') !== -1) &&
+    hash.indexOf('access_token=') !== -1
+  ) {
+    // Parse access_token from hash so we can pass it to the reset form
+    var params = {};
+    hash.replace(/^#/, '').split('&').forEach(function(p) {
+      var kv = p.split('='); params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
+    });
+    // Store token so reset form can use it
+    try { sessionStorage.setItem('eternant_reset_token', params['access_token'] || ''); } catch(e) {}
+    // Clean URL then open reset modal
+    history.replaceState(null, '', window.location.pathname);
+    // Script is at bottom of page so DOM is already ready — open modal directly
+    openAuthModal('resetPass');
+    return;
+  }
+
+  // 2) Came from reset.html after successful password change → open login modal
+  if (search.indexOf('login=1') !== -1) {
+    history.replaceState(null, '', window.location.pathname);
+    openAuthModal('login');
+    return;
+  }
+
+  // 3) Came from reset.html expired link → open forgot modal
+  if (search.indexOf('forgot=1') !== -1) {
+    history.replaceState(null, '', window.location.pathname);
+    openAuthModal('forgot');
+    return;
+  }
+
+  // 4) Email confirmation callback: hash has access_token + type=signup
+  //    Supabase ConfirmationURL click ke baad yahan aata hai → dashboard
+  if (hash && hash.indexOf('access_token=') !== -1) {
+    window.location.replace(getDashboardUrl() + hash);
+    return;
+  }
+
+  // 2) Pehle se logged-in session check karo (localStorage mein Supabase token)
+  try {
+    var stored = null;
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('supabase.auth.token') !== -1) {
+        stored = JSON.parse(localStorage.getItem(key));
+        break;
+      }
+    }
+    if (stored && stored.currentSession && stored.currentSession.access_token) {
+      var exp = stored.currentSession.expires_at;
+      if (!exp || (exp * 1000) > Date.now()) {
+        // Logged in — check if role is selected
+        var role = null;
+        try { role = localStorage.getItem('eternant_user_role'); } catch(e) {}
+        if (!role) {
+          // No role selected, redirect to select-role
+          window.location.href = 'select-role.html';
+          return;
+        }
+        // Role selected, show dashboard button in nav
+        var loginBtn = document.getElementById('nav-login-btn');
+        var signupBtn = document.getElementById('nav-signup-btn');
+        var dashBtn = document.getElementById('nav-dashboard-btn');
+        var signoutBtn = document.getElementById('nav-signout-btn');
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (signupBtn) signupBtn.style.display = 'none';
+        if (dashBtn) dashBtn.style.display = '';
+        if (signoutBtn) signoutBtn.style.display = '';
+      }
+    }
+  } catch(e) {}
+  
+  // 3) Returned from select-role.html without a session → open the auth modal directly
+  if (search.indexOf('show_auth=1') !== -1) {
+    history.replaceState(null, '', window.location.pathname);
+    showAuthModal(urlParams.get('tab') || 'login');
+    return;
+  }
+})();
+
+function showAuthModal(defaultTab) {
+  clearAuthErrors();
+  var modal = document.getElementById('authModal');
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  document.getElementById('authForm').style.display = '';
+  document.getElementById('authLoading').classList.remove('show');
+  if (document.getElementById('signupFormStep')) document.getElementById('signupFormStep').style.display = '';
+  if (document.getElementById('signupVerifyStep')) document.getElementById('signupVerifyStep').style.display = 'none';
+  switchAuthTab(defaultTab || 'login');
+}
+
+function openAuthModal(defaultTab) {
+  // Check if user is already logged in
+  if (currentUser || isLoggedIn()) {
+    // Show full screen smooth redirect loading without flashing login modal
+    var modal = document.getElementById('authModal');
+    if (modal) {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('authForm').style.display = 'none';
+      var ld = document.getElementById('authLoading');
+      if (ld) ld.classList.add('show');
+      var txt = document.getElementById('authLoadingText');
+      if (txt) txt.textContent = 'Redirecting to your dashboard…';
+    }
+    setTimeout(function() {
+      window.location.href = getDashboardUrl();
+    }, 200);
+    return;
+  }
+  showAuthModal(defaultTab);
+}
+function closeAuthModal() {
+  document.getElementById('authModal').classList.remove('active');
+  document.body.style.overflow = '';
+  document.getElementById('authForm').style.display = '';
+  document.getElementById('authLoading').classList.remove('show');
+  // Reset signup verify step
+  if (document.getElementById('signupFormStep')) {
+    document.getElementById('signupFormStep').style.display = '';
+    document.getElementById('signupVerifyStep').style.display = 'none';
+    var btn = document.getElementById('signupSubmitBtn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account →'; btn.style.background = ''; }
+  }
+  if (resendTimerInterval) { clearInterval(resendTimerInterval); resendTimerInterval = null; }
+  clearAuthErrors();
+}
+function authModalOutsideClick(e) {
+  if (e.target === document.getElementById('authModal')) closeAuthModal();
+}
+
+function clearAuthErrors() {
+  ['loginError','signupError','forgotError','forgotSuccess','resetPassError','resetPassSuccess'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.classList.remove('show'); }
+  });
+}
+
+function showError(id, msg) {
+  var el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+function showSuccess(id, msg) {
+  var el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+function switchAuthTab(tab) {
+  currentAuthTab = tab;
+  var isForgot    = tab === 'forgot';
+  var isResetPass = tab === 'resetPass';
+  var isSpecial   = isForgot || isResetPass;
+
+  // Tab bar visibility
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+
+  // Panels
+  document.getElementById('panelLogin').style.display     = tab === 'login'     ? '' : 'none';
+  document.getElementById('panelSignup').style.display    = tab === 'signup'    ? '' : 'none';
+  document.getElementById('panelForgot').style.display    = tab === 'forgot'    ? '' : 'none';
+  document.getElementById('panelResetPass').style.display = tab === 'resetPass' ? '' : 'none';
+  // Reset signup verify step on tab switch
+  if (tab !== 'signup' && document.getElementById('signupFormStep')) {
+    document.getElementById('signupFormStep').style.display = '';
+    document.getElementById('signupVerifyStep').style.display = 'none';
+    var sb = document.getElementById('signupSubmitBtn');
+    if (sb) { sb.disabled = false; sb.textContent = 'Create Account →'; sb.style.background = ''; }
+    if (resendTimerInterval) { clearInterval(resendTimerInterval); resendTimerInterval = null; }
+  }
+
+  // Title / subtitle
+  var titles = { login: 'Welcome back', signup: 'Create your account', forgot: 'Reset password', resetPass: 'Set new password' };
+  var subs   = {
+    login:     'Sign in to access your dashboard.',
+    signup:    'Join Eternant — publish, advertise, or manage services.',
+    forgot:    'Enter your email and we\'ll send a reset link.',
+    resetPass: 'Choose a strong new password for your account.'
+  };
+  document.getElementById('authTitle').textContent    = titles[tab] || 'Welcome to Eternant';
+  document.getElementById('authSubtitle').textContent = subs[tab]   || '';
+
+  // Google button text
+  document.getElementById('googleBtnText').textContent = tab === 'signup' ? 'Sign up with Google' : 'Continue with Google';
+
+  // Hide Google + divider + tabs on forgot / resetPass
+  document.getElementById('btnGoogleSignIn').style.display = isSpecial ? 'none' : '';
+  document.querySelector('.auth-divider').style.display     = isSpecial ? 'none' : '';
+  document.querySelector('.auth-tabs').style.display        = isSpecial ? 'none' : '';
+
+  clearAuthErrors();
+}
+
+/* ── GOOGLE ── */
+function signInWithGoogle() {
+  document.getElementById('authForm').style.display = 'none';
+  document.getElementById('authLoadingText').textContent = 'Redirecting to Google…';
+  document.getElementById('authLoading').classList.add('show');
+  try {
+    // Redirect back to select-role.html (same directory as current page — repo-path safe)
+    var dir = window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/') + 1);
+    var redirectTo = window.location.origin + dir + 'select-role.html';
+    // Direct browser navigation — fetch() yahan CORS/redirect pe fail hota tha ("Failed to fetch")
+    window.location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
+  } catch(e) {
+    document.getElementById('authForm').style.display = '';
+    document.getElementById('authLoading').classList.remove('show');
+    showError('loginError', 'Google sign-in failed: ' + e.message);
+  }
+}
+
+
+/*  CHECK IF USER EXISTS IN SUPABASE  */
+async function userExists(email) {
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/user?email=' + encodeURIComponent(email), {
+      method: 'GET',
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    });
+    if (res.ok) {
+      var data = await res.json();
+      return !!data.user; // Returns true if user exists
+    }
+    return false;
+  } catch(e) {
+    return false;
+  }
+}
+
+/* ── EMAIL LOGIN ── */
+async function handleEmailLogin() {
+  clearAuthErrors();
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass  = document.getElementById('loginPassword').value;
+  if (!email || !pass) { showError('loginError', 'Please enter your email and password.'); return; }
+
+  var btn = document.querySelector('#panelLogin .auth-submit-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      var msg = data.error_description || data.msg || data.error || 'Login failed.';
+      if (msg.includes('Invalid login credentials')) {
+        msg = 'Invalid email or password. Please check your credentials or create an account.';
+      } else if (msg.includes('not confirmed')) {
+        msg = 'Please check your email and click the confirmation link first.';
+      }
+      throw new Error(msg);
+    }
+    currentUser = data.user;
+    persistSupabaseSession(data);
+    document.getElementById('authForm').style.display = 'none';
+    document.getElementById('authLoadingText').textContent = 'Signed in! Redirecting to dashboard…';
+    document.getElementById('authLoading').classList.add('show');
+    setTimeout(function() { window.location.href = getDashboardUrl(); }, 1000);
+  } catch(e) {
+    showError('loginError', e.message);
+    btn.disabled = false; btn.textContent = 'Login →';
+  }
+}
+
+/* ── EMAIL SIGN UP ── */
+var lastSignupEmail = '';
+var resendTimerInterval = null;
+
+async function handleEmailSignup() {
+  clearAuthErrors();
+  var email   = document.getElementById('signupEmail').value.trim();
+  var pass    = document.getElementById('signupPassword').value;
+  var confirm = document.getElementById('signupConfirm').value;
+
+  // Validations
+  if (!email || !pass || !confirm) { showError('signupError', 'Please fill in all fields.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('signupError', 'Please enter a valid email address.'); return; }
+  if (pass.length < 8)  { showError('signupError', 'Password must be at least 8 characters.'); return; }
+  if (pass !== confirm) { showError('signupError', 'Passwords do not match.'); return; }
+
+  var btn = document.getElementById('signupSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+
+  try {
+    var redirectUrl = window.location.origin + window.location.pathname;
+    
+    var res = await fetch(SUPABASE_URL + '/auth/v1/signup', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        password: pass,
+        redirect_to: redirectUrl
+      })
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error_description || data.msg || 'Sign up failed.');
+
+    lastSignupEmail = email;
+
+    // Check if session returned (if email confirm is disabled in Supabase)
+    if (data.session && data.user) {
+      currentUser = data.user;
+      persistSupabaseSession(data);
+      document.getElementById('authForm').style.display = 'none';
+      document.getElementById('authLoadingText').textContent = 'Account created! Redirecting…';
+      document.getElementById('authLoading').classList.add('show');
+      setTimeout(function() { window.location.href = getDashboardUrl(); }, 1200);
+      return;
+    }
+
+    // Check if email confirmation needed
+    var needsConfirm = !data.user || !data.user.email_confirmed_at;
+    if (needsConfirm) {
+      // Show verification step
+      document.getElementById('signupFormStep').style.display = 'none';
+      document.getElementById('signupVerifyStep').style.display = '';
+      document.getElementById('signupEmailSent').textContent = email;
+      // Hide Google/divider/tabs since we're in verify state
+      var gBtn = document.getElementById('btnGoogleSignIn'); if (gBtn) gBtn.style.display = 'none';
+      var div = document.querySelector('.auth-divider'); if (div) div.style.display = 'none';
+      var tabs = document.querySelector('.auth-tabs'); if (tabs) tabs.style.display = 'none';
+      document.getElementById('authTitle').textContent = 'Check your inbox';
+      document.getElementById('authSubtitle').textContent = 'We sent a confirmation link to ' + email;
+      startResendTimer();
+    } else {
+      // Auto confirmed
+      currentUser = data.user;
+      persistSupabaseSession(data);
+      document.getElementById('authForm').style.display = 'none';
+      document.getElementById('authLoadingText').textContent = 'Account created! Redirecting…';
+      document.getElementById('authLoading').classList.add('show');
+      setTimeout(function() { window.location.href = getDashboardUrl(); }, 1200);
+    }
+  } catch(e) {
+    showError('signupError', e.message);
+    btn.disabled = false; btn.textContent = 'Create Account →';
+  }
+}
+
+/* ── RESEND EMAIL ── */
+function startResendTimer() {
+  var btn = document.getElementById('resendBtn');
+  var timerEl = document.getElementById('resendTimer');
+  var countEl = document.getElementById('resendCount');
+  btn.style.display = 'none';
+  timerEl.style.display = 'block';
+  var seconds = 60;
+  countEl.textContent = seconds;
+  if (resendTimerInterval) clearInterval(resendTimerInterval);
+  resendTimerInterval = setInterval(function() {
+    seconds--;
+    countEl.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(resendTimerInterval);
+      timerEl.style.display = 'none';
+      btn.style.display = '';
+      btn.disabled = false;
+      btn.textContent = 'Resend Email';
+    }
+  }, 1000);
+}
+
+async function handleResendEmail() {
+  if (!lastSignupEmail) return;
+  var btn = document.getElementById('resendBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    await fetch(SUPABASE_URL + '/auth/v1/resend', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'signup', email: lastSignupEmail })
+    });
+  } catch(e) { /* silent fail — timer still starts */ }
+  startResendTimer();
+}
+
+/* ── FORGOT PASSWORD ── */
+async function handleForgotPassword() {
+  clearAuthErrors();
+  var email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { showError('forgotError', 'Please enter your email address.'); return; }
+
+  var btn = document.querySelector('#panelForgot .auth-submit-btn');
+  btn.disabled = true; btn.textContent = 'Checking account…';
+
+  try {
+    // First check if user exists
+    var userCheck = await userExists(email);
+    if (!userCheck) {
+      btn.disabled = false; btn.textContent = 'Send Reset Link →';
+      showError('forgotError', 'This account does not exist. Please register first.');
+      return;
+    }
+
+    btn.textContent = 'Sending…';
+    var redirectUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '') + 'reset.html';
+    var res = await fetch(SUPABASE_URL + '/auth/v1/recover', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        redirect_to: redirectUrl
+      })
+    });
+    if (!res.ok) {
+      var data = await res.json();
+      throw new Error(data.error_description || data.msg || 'Something went wrong.');
+    }
+    showSuccess('forgotSuccess', '✓ Reset link sent! Check your inbox.');
+    btn.textContent = 'Sent!';
+    btn.style.opacity = '0.6';
+  } catch(e) {
+    showError('forgotError', e.message);
+    btn.disabled = false; btn.textContent = 'Send Reset Link →';
+  }
+}
+
+/* ── RESET PASSWORD (set new password after clicking email link) ── */
+async function handleResetPassword() {
+  var errEl  = document.getElementById('resetPassError');
+  var sucEl  = document.getElementById('resetPassSuccess');
+  var btn    = document.getElementById('resetPassBtn');
+  errEl.textContent = ''; errEl.classList.remove('show');
+  sucEl.textContent = ''; sucEl.classList.remove('show');
+
+  var newPass  = document.getElementById('resetNewPass').value;
+  var confPass = document.getElementById('resetConfirmPass').value;
+
+  if (!newPass || newPass.length < 8) {
+    errEl.textContent = 'Password must be at least 8 characters.';
+    errEl.classList.add('show'); return;
+  }
+  if (newPass !== confPass) {
+    errEl.textContent = 'Passwords do not match.';
+    errEl.classList.add('show'); return;
+  }
+
+  var token = '';
+  try { token = sessionStorage.getItem('eternant_reset_token') || ''; } catch(e) {}
+  if (!token) {
+    errEl.textContent = 'Reset link expired or invalid. Please request a new one.';
+    errEl.classList.add('show'); return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    // Use the access_token from the email link to update password
+    var res = await fetch(SUPABASE_URL + '/auth/v1/user', {
+      method: 'PUT',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password: newPass })
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error_description || data.msg || 'Failed to update password.');
+
+    // Clear token
+    try { sessionStorage.removeItem('eternant_reset_token'); } catch(e) {}
+
+    sucEl.textContent = '✓ Password updated! Redirecting to login…';
+    sucEl.classList.add('show');
+    btn.textContent = 'Done!';
+
+    // After 2s, switch to login tab
+    setTimeout(function() {
+      document.getElementById('resetNewPass').value = '';
+      document.getElementById('resetConfirmPass').value = '';
+      switchAuthTab('login');
+    }, 2000);
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.classList.add('show');
+    btn.disabled = false; btn.textContent = 'Save New Password →';
+  }
+}
+
+[document.getElementById('nav-login-btn'), document.getElementById('nav-signup-btn'), document.getElementById('hero-start-btn')].forEach(function(el) {
+  if (el) el.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (isLoggedIn()) {
+      var modal = document.getElementById('authModal');
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('authForm').style.display = 'none';
+        var ld = document.getElementById('authLoading');
+        if (ld) ld.classList.add('show');
+        var txt = document.getElementById('authLoadingText');
+        if (txt) txt.textContent = 'Redirecting to your dashboard…';
+      }
+      setTimeout(function() { window.location.href = getDashboardUrl(); }, 150);
+      return;
+    }
+    var isSignup = el.id === 'nav-signup-btn' || el.id === 'hero-start-btn';
+    openAuthModal(isSignup ? 'signup' : 'login');
+  });
+});
+
+/* ── STARFIELD ── */
+(function() {
+  var canvas = document.getElementById('starfield');
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  var W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function getStarColors() {
+    var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return isDark
+      ? { purple: 'rgba(167,139,250,', blue: 'rgba(110,181,255,', white: 'rgba(216,230,255,' }
+      : { purple: 'rgba(100,60,200,', blue: 'rgba(30,90,200,', white: 'rgba(20,50,140,' };
+  }
+  function initStars() {
+    stars = [];
+    var C = getStarColors();
+    var count = Math.floor((W * H) / 3800);
+    for (var i = 0; i < count; i++) {
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.3+0.2, a: Math.random()*0.8+0.1, speed: Math.random()*0.25+0.04, twinkle: Math.random()*Math.PI*2, twinkleSpeed: Math.random()*0.012+0.003, color: Math.random()<0.12?C.purple:Math.random()<0.12?C.blue:C.white });
+    }
+    var BC = getStarColors();
+    for (var j = 0; j < 12; j++) {
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.6+1.0, a: 0.85, speed: 0.015, twinkle: Math.random()*Math.PI*2, twinkleSpeed: 0.005, color: BC.white, glow: true });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(function(s) {
+      s.twinkle += s.twinkleSpeed;
+      var alpha = s.a * (0.45 + 0.55 * Math.sin(s.twinkle));
+      if (s.glow) {
+        var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*4);
+        g.addColorStop(0, s.color + alpha + ')');
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r*4, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.color + alpha + ')'; ctx.fill();
+      s.y -= s.speed * 0.15;
+      if (s.y < -2) { s.y = H+2; s.x = Math.random()*W; }
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); initStars(); draw();
+  window.initStars = initStars;
+  var rt;
+  window.addEventListener('resize', function() { clearTimeout(rt); rt = setTimeout(function(){ resize(); initStars(); }, 200); });
+
+  function spawnShootingStar() {
+    var el = document.createElement('div'); el.className = 'shooting-star';
+    document.body.appendChild(el);
+    var startX = Math.random()*W*0.7, startY = Math.random()*H*0.4;
+    var angle = Math.random()*30+20, dist = Math.random()*200+150;
+    var dx = Math.cos(angle*Math.PI/180)*dist, dy = Math.sin(angle*Math.PI/180)*dist;
+    var dur = Math.random()*600+500;
+    el.style.cssText = 'left:'+startX+'px;top:'+startY+'px;opacity:0;transform:translate(0,0) rotate('+angle+'deg);transition:transform '+dur+'ms linear,opacity '+(dur*0.3)+'ms ease;';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      el.style.opacity='1'; el.style.transform='translate('+dx+'px,'+dy+'px) rotate('+angle+'deg)';
+      setTimeout(function(){ el.style.opacity='0'; setTimeout(function(){ el.remove(); }, 400); }, dur*0.6);
+    }); });
+    setTimeout(spawnShootingStar, Math.random()*6000+3000);
+  }
+  setTimeout(spawnShootingStar, 2000);
+})();
+  setupContactForm();
+</script>
+
+
+/* Mobile Secondary Nav Toggle */
+function toggleMobileSecondaryNav() {
+  var nav = document.getElementById('mobileSecondaryNav');
+  if (nav) {
+    nav.style.display = nav.style.display === 'none' ? 'flex' : 'none';
+  }
+}
+</body>
+</html>

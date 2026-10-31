@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script src="webview-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Select Your Role - Eternant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="dark"] {
+  --bg: #03050d;
+  --bg-card: #070c1a;
+  --bg-hover: #0b1226;
+  --border: #141f38;
+  --border-lt: #1e3058;
+  --text: #d8e6ff;
+  --text-sub: #8aa4c8;
+  --muted: #4a6080;
+  --accent: #6eb5ff;
+  --accent2: #a78bfa;
+  --glow: rgba(110,181,255,0.18);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #f0f4ff;
+  --bg-card: #ffffff;
+  --bg-hover: #e8eeff;
+  --border: #d0daf0;
+  --border-lt: #b8c8e8;
+  --text: #0d1832;
+  --text-sub: #3a5080;
+  --muted: #6a82a8;
+  --accent: #2a7fd4;
+  --accent2: #7c54e8;
+  --glow: rgba(42,127,212,0.14);
+  color-scheme: light;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  transition: background 0.4s, color 0.4s;
+  position: relative;
+}
+
+#starfield {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; transition: opacity 0.5s;
+}
+[data-theme="light"] #starfield { opacity: 0.35; }
+
+.nebula {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); pointer-events: none; z-index: 0;
+  transition: background 0.4s;
+}
+.nebula-1 { width: 700px; height: 700px; top: -250px; right: -120px; background: radial-gradient(circle, rgba(110,181,255,0.07) 0%, transparent 70%); }
+.nebula-2 { width: 550px; height: 550px; bottom: 50px; left: -180px; background: radial-gradient(circle, rgba(167,139,250,0.06) 0%, transparent 70%); }
+.nebula-3 { width: 400px; height: 400px; top: 55%; left: 45%; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(110,181,255,0.07) 0%, transparent 70%); }
+
+.role-container {
+  position: relative; z-index: 1;
+  width: 100%;
+  max-width: 800px;
+}
+
+.role-logo {
+  margin-bottom: 32px;
+}
+
+.logo-icon {
+  position: relative; width: 60px; height: 60px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.logo-ring { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0.5; position: absolute; animation: logo-rotate 12s linear infinite; }
+.logo-ring-2 { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent2); opacity: 0.4; position: absolute; animation: logo-rotate 8s linear infinite reverse; }
+.logo-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px var(--accent), 0 0 40px rgba(110,181,255,0.4); position: relative; z-index: 1; animation: pulse-dot 3s ease-in-out infinite; }
+
+@keyframes logo-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); box-shadow:0 0 20px var(--accent); } 50% { opacity:0.6; transform:scale(0.75); box-shadow:0 0 10px var(--accent); } }
+
+.role-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.role-subtitle {
+  font-size: clamp(14px, 2.5vw, 16px);
+  color: var(--text-sub);
+  margin-bottom: 40px;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.role-cards {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.role-card {
+  flex: 1;
+  min-width: 280px;
+  max-width: 340px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.role-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-lt);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3), 0 0 32px var(--glow);
+}
+
+.role-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 24px var(--glow);
+  background: linear-gradient(135deg, rgba(110,181,255,0.05), rgba(167,139,250,0.03));
+}
+
+.role-card-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: rgba(110,181,255,0.08);
+  border: 1px solid rgba(110,181,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+}
+
+.role-card.selected .role-card-icon {
+  background: rgba(110,181,255,0.12);
+  border-color: rgba(110,181,255,0.3);
+}
+
+.role-card-icon svg {
+  width: 24px; height: 24px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.role-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.role-card-desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.role-card-features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.role-feature {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-feature::before {
+  content: '\2713';
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.theme-toggle-float {
+  position: fixed;
+  top: 20px; right: 20px;
+  z-index: 100;
+}
+
+.theme-toggle {
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 3px; cursor: pointer;
+  transition: border-color 0.2s, background 0.4s;
+  position: relative; width: 68px; height: 30px;
+}
+.theme-toggle:hover { border-color: var(--border-lt); }
+.toggle-track { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 5px; }
+.toggle-icon { font-size: 12px; z-index: 1; transition: opacity 0.3s; line-height: 1; }
+.toggle-thumb { position: absolute; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 2px 8px var(--glow); transition: left 0.3s cubic-bezier(0.4,0,0.2,1), background 0.4s; left: 2px; }
+[data-theme="light"] .toggle-thumb { left: calc(100% - 24px); }
+
+.loading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.loading-overlay.active {
+  display: flex;
+}
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.role-footer {
+  margin-top: 40px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.role-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.role-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .role-cards {
+    flex-direction: column;
+  }
+  .role-card {
+    max-width: 100%;
+  }
+  .theme-toggle-float {
+    top: 16px; right: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<div class="theme-toggle-float">
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <div class="toggle-track">
+      <span class="toggle-icon">🌙</span>
+      <span class="toggle-icon">☀️</span>
+      <div class="toggle-thumb"></div>
+    </div>
+  </button>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<div class="role-container">
+  <div class="role-logo">
+    <div class="logo-icon">
+      <div class="logo-ring"></div>
+      <div class="logo-ring-2"></div>
+      <div class="logo-dot"></div>
+    </div>
+    <h1 class="role-title">Choose Your Dashboard</h1>
+    <p class="role-subtitle">Select how you want to use Eternant. You can switch between dashboards anytime after login.</p>
+  </div>
+
+  <div class="role-cards">
+    <div class="role-card" data-role="publisher" onclick="selectRoleAndProceed('publisher')">
+      <div class="role-card-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="role-card-title">Publisher</div>
+      <div class="role-card-desc">Earn money by monetizing your traffic across websites, apps, and social platforms</div>
+      <div class="role-card-features">
+        <span class="role-feature">Monetize Websites & Apps</span>
+        <span class="role-feature">Telegram & Social Monetization</span>
+        <span class="role-feature">Real-time Analytics</span>
+      </div>
+    </div>
+
+    <div class="role-card" data-role="advertiser" onclick="selectRoleAndProceed('advertiser')">
+      <div class="role-card-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M18 20V10"/>
+          <path d="M12 20V4"/>
+          <path d="M6 20v-6"/>
+        </svg>
+      </div>
+      <div class="role-card-title">Advertiser</div>
+      <div class="role-card-desc">Launch campaigns and reach targeted audiences across the Eternant network</div>
+      <div class="role-card-features">
+        <span class="role-feature">Create Ad Campaigns</span>
+        <span class="role-feature">Targeted Audience Reach</span>
+        <span class="role-feature">Performance Tracking</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="role-footer">
+    <p><a href="/">← Back to Home</a></p>
+  </div>
+</div>
+
+<script>
+// Theme Toggle
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', newTheme);
+  try { localStorage.setItem('et_theme', newTheme); } catch(e) {}
+  if (window.initStars) window.initStars();
+}
+
+try {
+  const savedTheme = localStorage.getItem('et_theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+} catch(e) {}
+
+// Starfield Animation
+(function() {
+  var canvas = document.getElementById('starfield');
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  var W, H;
+
+  function resize() {
+    W = canvas.width = innerWidth * (devicePixelRatio || 1);
+    H = canvas.height = innerHeight * (devicePixelRatio || 1);
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    ctx.scale(devicePixelRatio || 1, devicePixelRatio || 1);
+  }
+
+  function initStars() {
+    stars = [];
+    for (var i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2,
+        a: Math.random() * 0.8 + 0.2,
+        speed: Math.random() * 0.5 + 0.1,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.02 + 0.01
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    stars.forEach(function(s) {
+      s.twinkle += s.twinkleSpeed;
+      var alpha = s.a * (0.45 + 0.55 * Math.sin(s.twinkle));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = isDark ? 'rgba(216,230,255,' + alpha + ')' : 'rgba(42,90,160,' + alpha + ')';
+      ctx.fill();
+      s.y -= s.speed * 0.15;
+      if (s.y < -2) { s.y = H + 2; s.x = Math.random() * W; }
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initStars();
+  draw();
+  window.initStars = initStars;
+  window.addEventListener('resize', function() { resize(); initStars(); });
+})();
+
+// Role Selection and Redirect
+function selectRoleAndProceed(role) {
+  // Show loading
+  document.getElementById('loadingOverlay').classList.add('active');
+
+  // Save role selection
+  try {
+    localStorage.setItem('eternant_user_role', role);
+    sessionStorage.setItem('eternant_selected_role', role);
+  } catch(e) {}
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Email confirmation token in hash? → chosen dashboard with token
+  const hash = window.location.hash;
+  if (hash.includes('access_token=')) {
+    const dashboardUrl = role === 'advertiser' ? 'advertiser-dashboard.html' : 'publisher-dashboard.html';
+    window.location.href = dashboardUrl + hash;
+    return;
+  }
+
+  // Logged in (valid session)? → straight to the chosen dashboard
+  if (checkSessionAndRedirect()) return;
+
+  // Not logged in → back to home, auth modal kholega (role saved hai, login ke baad seedha dashboard milega)
+  window.location.href = 'index.html?show_auth=1&tab=' + (urlParams.get('tab') || 'login');
+}
+
+// Check if already logged in
+function checkSessionAndRedirect() {
+  try {
+    var stored = null;
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('supabase.auth.token') !== -1) {
+        stored = JSON.parse(localStorage.getItem(key));
+        break;
+      }
+    }
+    
+    if (stored && stored.currentSession && stored.currentSession.access_token) {
+      var exp = stored.currentSession.expires_at;
+      if (!exp || (exp * 1000) > Date.now()) {
+        var savedRole = localStorage.getItem('eternant_user_role');
+        if (!savedRole) return false; // Logged in but role abhi nahi chuna — is page pe choose karne do
+        var dashboardUrl = savedRole === 'advertiser' ? 'advertiser-dashboard.html' : 'publisher-dashboard.html';
+        window.location.href = dashboardUrl;
+        return true;
+      }
+    }
+  } catch(e) {}
+  return false;
+}
+
+// Check on page load
+if (checkSessionAndRedirect()) {
+  // Already redirected
+}
+</script>
+</body>
+</html>

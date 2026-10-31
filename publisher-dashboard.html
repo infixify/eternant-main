@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script src="dashboard-session-restore.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eternant — Publisher Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="dark"] {
+  --bg-app:        #070a14;
+  --bg-sidebar:    #0c1020;
+  --bg-sidebar-act: rgba(110, 181, 255, 0.12);
+  --bg-card:       #0f172e;
+  --bg-hover:      #162244;
+  --bg-topbar:     rgba(12, 16, 32, 0.85);
+  --border:        #1d2a4d;
+  --border-lt:     #253765;
+  --text:          #e2edff;
+  --text-sub:      #8ea8d0;
+  --muted:         #577099;
+  --accent:        #5da2ff;
+  --accent-gradient: linear-gradient(135deg, #4f96ff, #9b72ff);
+  --accent2:       #a78bfa;
+  --accent-dim:    rgba(93, 162, 255, 0.12);
+  --glow:          rgba(93, 162, 255, 0.22);
+  --success:       #34d399;
+  --warning:       #fbbf24;
+  --danger:        #f87171;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg-app:        #f4f7fc;
+  --bg-sidebar:    #ffffff;
+  --bg-sidebar-act: rgba(42, 127, 212, 0.1);
+  --bg-card:       #ffffff;
+  --bg-hover:      #f0f4fc;
+  --bg-topbar:     rgba(255, 255, 255, 0.9);
+  --border:        #dbe4f3;
+  --border-lt:     #c7d5ee;
+  --text:          #0f1b36;
+  --text-sub:      #475e88;
+  --muted:         #768eb3;
+  --accent:        #2575dc;
+  --accent-gradient: linear-gradient(135deg, #2575dc, #7c4dff);
+  --accent2:       #7c4dff;
+  --accent-dim:    rgba(37, 117, 220, 0.08);
+  --glow:          rgba(37, 117, 220, 0.15);
+  --success:       #10b981;
+  --warning:       #d97706;
+  --danger:        #ef4444;
+  color-scheme: light;
+}
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg-app);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* APP LAYOUT */
+.app-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* SIDEBAR (AdsLab / Offerwall style) */
+.sidebar {
+  width: 260px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s, border-color 0.3s;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  position: relative; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-ring { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--accent); opacity: 0.6; position: absolute; animation: spin 12s linear infinite; }
+.logo-ring-2 { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--accent2); opacity: 0.5; position: absolute; animation: spin 8s linear infinite reverse; }
+.logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.sidebar-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.sidebar-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-label {
+  font-size: 10.5px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 12px 12px 6px;
+  margin-top: 4px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-sub);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.sidebar-item:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+.sidebar-item.active {
+  color: var(--accent);
+  background: var(--bg-sidebar-act);
+  border-color: rgba(93, 162, 255, 0.25);
+}
+.sidebar-item .item-icon {
+  font-size: 16px;
+  width: 22px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-item .item-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* SIDEBAR SUBMENU STYLES */
+.sidebar-item-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-item-wrap.open .nav-arrow-icon {
+  transform: rotate(180deg);
+}
+
+.sidebar-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 32px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.sidebar-submenu.open {
+  max-height: 240px;
+  opacity: 1;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-sub);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: 1px solid transparent;
+}
+
+.submenu-item:hover,
+.submenu-item.active {
+  color: var(--accent);
+  background: var(--bg-hover);
+  border-color: rgba(110, 181, 255, 0.25);
+}
+
+.prop-filter-btn.active {
+  background: var(--bg-sidebar-act);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.submenu-item .sub-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.submenu-item .sub-badge {
+  margin-left: auto;
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--warning);
+  font-weight: 700;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* SIDEBAR FOOTER (Earnings Badge & Role Switcher) */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-earnings-card {
+  background: linear-gradient(135deg, rgba(93, 162, 255, 0.15), rgba(167, 139, 250, 0.1));
+  border: 1px solid rgba(93, 162, 255, 0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar-earnings-label {
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.sidebar-earnings-val {
+  font-size: 18px;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  color: var(--success);
+}
+
+.role-switcher-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-lt);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.role-switcher-btn:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+/* MAIN CONTENT AREA */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  height: 64px;
+  background: var(--bg-topbar);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mobile-toggle-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-lt);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  color: var(--text);
+  align-items: center;
+  justify-content: center;
+}
+.topbar-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn-primary {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 9px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px var(--glow);
+  transition: transform 0.2s, opacity 0.2s;
+}
+.action-btn-primary:hover {
+  transform: translateY(-1px);
+  opacity: 0.94;
+}
+
+/* ADD ASSET DROPDOWN MENU */
+.add-asset-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.add-asset-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(110, 181, 255, 0.12);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 250;
+  animation: dropFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.add-asset-dropdown-menu.show {
+  display: flex;
+}
+
+.add-asset-drop-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.add-asset-drop-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-lt);
+  color: var(--accent);
+}
+
+.add-asset-drop-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.add-asset-drop-badge {
+  margin-left: auto;
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+.add-asset-drop-badge.active-badge {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+.add-asset-drop-badge.coming-soon-badge {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.theme-toggle-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 5px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  border-radius: 30px;
+}
+.user-avatar-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+.user-display-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* CONTENT VIEWPORT */
+.content-area {
+  padding: 24px;
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tab-pane {
+  display: none;
+}
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* PAGE HEADER */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.page-title h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+.page-title p {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-top: 4px;
+}
+
+/* CARDS & GRIDS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-lt);
+}
+.stat-label {
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.stat-val {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  color: var(--text);
+}
+.stat-sub {
+  font-size: 11.5px;
+  color: var(--text-sub);
+  margin-top: 6px;
+}
+
+/* SECTION BOX */
+.section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 24px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.section-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ASSET LIST & CARDS */
+.asset-card {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.asset-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.asset-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.asset-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.asset-meta {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-top: 3px;
+}
+.prop-badge {
+  font-size: 10.5px;
+  font-family: 'Space Mono', monospace;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-sub);
+  font-weight: 600;
+}
+.prop-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.status-active { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+.status-pending { background: rgba(251, 191, 36, 0.15); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.3); }
+.status-rejected { background: rgba(248, 113, 113, 0.15); color: var(--danger); border: 1px solid rgba(248, 113, 113, 0.3); }
+.status-paused { background: rgba(142, 168, 208, 0.15); color: var(--text-sub); }
+
+.asset-metrics {
+  display: flex;
+  gap: 20px;
+}
+.asset-metric-col {
+  text-align: right;
+}
+.metric-name {
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.metric-num {
+  font-size: 14px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+}
+
+/* TABLES */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.clean-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+.clean-table th {
+  background: var(--bg-hover);
+  padding: 12px 16px;
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.clean-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.clean-table tr:hover td {
+  background: var(--bg-hover);
+}
+
+/* BUTTONS */
+.btn-secondary {
+  font-family: 'Syne', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-sub);
+  border: 1px solid var(--border-lt);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; z-index: 200;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  border-radius: 16px;
+  padding: 26px;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; }
+.form-control {
+  width: 100%; padding: 10px 14px;
+  border-radius: 8px; border: 1px solid var(--border-lt);
+  background: var(--bg-hover); color: var(--text);
+  font-family: 'Syne', sans-serif; font-size: 13.5px;
+  outline: none;
+}
+.form-control:focus { border-color: var(--accent); }
+
+/* TOAST */
+.toast-msg {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--bg-card); border: 1px solid var(--accent);
+  color: var(--text); padding: 12px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  transform: translateY(60px); opacity: 0; pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 300;
+}
+.toast-msg.show { transform: translateY(0); opacity: 1; }
+
+/* CODE BOX */
+.code-box {
+  background: var(--bg-hover); padding: 14px; border-radius: 10px;
+  font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent);
+  border: 1px solid var(--border); overflow-x: auto; word-break: break-all;
+  white-space: pre-wrap; line-height: 1.5; margin: 12px 0;
+}
+
+/* ── 2-WAY CHAT THREAD STYLES ── */
+.chat-thread-box {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.chat-messages-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chat-msg {
+  max-width: 82%;
+  padding: 9px 13px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  position: relative;
+  word-break: break-word;
+}
+.chat-msg-publisher {
+  align-self: flex-end;
+  background: linear-gradient(135deg, rgba(93,162,255,0.22), rgba(167,139,250,0.18));
+  border: 1px solid rgba(93,162,255,0.35);
+  color: var(--text);
+  border-bottom-right-radius: 2px;
+}
+.chat-msg-admin {
+  align-self: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  color: var(--text);
+  border-bottom-left-radius: 2px;
+}
+.chat-msg-system {
+  align-self: center;
+  background: rgba(251,191,36,0.1);
+  border: 1px dashed rgba(251,191,36,0.3);
+  color: var(--warning);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 90%;
+}
+.chat-msg-meta {
+  font-size: 9.5px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chat-input-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.chat-quick-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-top: 6px;
+}
+.chat-quick-chips::-webkit-scrollbar { display: none; }
+.chat-chip {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-lt);
+  color: var(--text-sub);
+  font-size: 11px;
+  padding: 5px 11px;
+  border-radius: 100px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'Syne', sans-serif;
+  transition: all 0.2s;
+}
+.chat-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--bg-card);
+}
+
+/* ── AD FORMATS ON REQUEST STYLES ── */
+.format-card {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+.format-card:hover {
+  border-color: var(--border-lt);
+}
+.format-card.status-card-active {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.04);
+}
+.format-card.status-card-pending {
+  border-color: rgba(251, 191, 36, 0.45);
+  background: rgba(251, 191, 36, 0.05);
+}
+.format-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.format-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 240px;
+}
+.format-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface-sub);
+  border: 1px solid var(--border-lt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+.format-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.format-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.format-cpm-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(110, 181, 255, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(110, 181, 255, 0.25);
+}
+.format-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.format-tag-preview {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  word-break: break-all;
+  white-space: pre-wrap;
+  position: relative;
+}
+.format-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+.format-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-close-btn { display: block; }
+  .mobile-toggle-btn { display: flex; }
+  .sidebar-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 95; display: none;
+  }
+  .sidebar-backdrop.active { display: block; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+<div class="app-layout">
+
+  <!-- ── 1. PRO SIDEBAR (AdsLab / Offerwall Layout) ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <div class="logo-ring"></div>
+          <div class="logo-ring-2"></div>
+          <div class="logo-dot"></div>
+        </div>
+        ETERNANT
+      </a>
+      <button class="sidebar-close-btn" onclick="toggleSidebar()">&times;</button>
+    </div>
+
+    <div class="sidebar-menu">
+      <div class="menu-label">Main Menu</div>
+      
+      <a class="sidebar-item active" onclick="switchNavTab('dashboard', this)">
+        <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="sidebar-item-wrap open" id="navPropWrap">
+        <a class="sidebar-item" id="navItemProperties" onclick="toggleNavPropertiesMenu(event)">
+          <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
+          <span>Your Properties</span>
+          <span class="item-badge" id="sidebarAssetCount">0</span>
+          <span class="nav-arrow-icon" style="margin-left:4px; display:inline-flex; align-items:center; transition:transform 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </span>
+        </a>
+
+        <div class="sidebar-submenu open" id="sidebarPropertiesSubmenu">
+          <a class="submenu-item" id="subitem-Website" onclick="showPropertyCategory('Website', this)">
+            <span class="sub-dot" style="background:var(--accent);"></span>
+            <span>APP / WEBSITES</span>
+          </a>
+          <a class="submenu-item" id="subitem-Telegram Mini App" onclick="showPropertyCategory('Telegram Mini App', this)">
+            <span class="sub-dot" style="background:#f59e0b;"></span>
+            <span>TELEGRAM MINI APP</span>
+            <span class="sub-badge">Soon</span>
+          </a>
+          <a class="submenu-item" id="subitem-Telegram Bot" onclick="showPropertyCategory('Telegram Bot', this)">
+            <span class="sub-dot" style="background:var(--muted);"></span>
+            <span>BOTS (TELEGRAM + DISCORD)</span>
+            <span class="sub-badge">Soon</span>
+          </a>
+          <a class="submenu-item" id="subitem-Direct Link Locker" onclick="showPropertyCategory('Direct Link Locker', this)">
+            <span class="sub-dot" style="background:var(--accent2);"></span>
+            <span>SOCIALS (GROUPS+CHANNELS)</span>
+          </a>
+        </div>
+      </div>
+
+      <a class="sidebar-item" onclick="switchNavTab('statistics', this)">
+        <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></span>
+        <span>Statistics</span>
+      </a>
+
+      <a class="sidebar-item" onclick="switchNavTab('payments', this)">
+        <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></span>
+        <span>Payments &amp; Payouts</span>
+      </a>
+
+      <div class="menu-label">Integrations &amp; Help</div>
+
+      <a class="sidebar-item" onclick="switchNavTab('getstarted', this)">
+        <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></span>
+        <span>Get Started Guide</span>
+      </a>
+
+      <a class="sidebar-item" onclick="switchNavTab('settings', this)">
+        <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+        <span>Settings &amp; API</span>
+      </a>
+    </div>
+
+    <!-- Sidebar Bottom: Live Earnings & Role Switcher -->
+    <div class="sidebar-footer">
+      <div class="sidebar-earnings-card">
+        <div>
+          <div class="sidebar-earnings-label">Earnings</div>
+          <div class="sidebar-earnings-val" id="sidebarEarningsVal">$0.00</div>
+        </div>
+        <span style="color:var(--success);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path></svg></span>
+      </div>
+
+      <a href="advertiser-dashboard.html" class="role-switcher-btn" onclick="switchDashboardRole('advertiser')">
+        <span style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          ADVERTISER
+        </span>
+        <span style="font-size:11px; opacity:0.7;">Switch &rarr;</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── 2. MAIN WORKSPACE ── -->
+  <div class="main-wrapper">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle-btn" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title" id="topbarTitle">Overview Dashboard</span>
+      </div>
+
+      <div class="topbar-right">
+        <button class="action-btn-primary" onclick="openPropertyModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Add Asset</span>
+        </button>
+
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+
+        <div class="user-badge">
+          <div class="user-avatar-circle" id="userInitial">P</div>
+          <span class="user-display-name" id="userName">Publisher</span>
+        </div>
+
+        <button onclick="handleSignOut()" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid rgba(248,113,113,0.3);background:transparent;color:var(--danger);cursor:pointer;">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Dynamic Content Area -->
+    <main class="content-area">
+
+      <!-- ── TAB 1: OVERVIEW DASHBOARD ── -->
+      <section class="tab-pane active" id="pane-dashboard">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Publisher Overview</h1>
+            <p>Real-time analytics and revenue across all monetization units.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="action-btn-primary" onclick="switchNavTab('getstarted')" style="background:linear-gradient(135deg, #10b981, #059669);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"></path></svg>
+              <span>Get Started Guide</span>
+            </button>
+            <button class="btn-secondary" onclick="exportEarningsCsv()" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Start Tutorial Banner -->
+        <div style="background:linear-gradient(135deg, rgba(93, 162, 255, 0.12), rgba(167, 139, 250, 0.08)); border:1px solid rgba(93, 162, 255, 0.25); border-radius:14px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
+            </div>
+            <div>
+              <div style="font-size:14px; font-weight:700;">New to Eternant? Learn How Monetization Works</div>
+              <div style="font-size:12px; color:var(--text-sub); margin-top:2px;">Check our complete tutorial on Websites, Direct Links / Socials, Bots, and payout rules.</div>
+            </div>
+          </div>
+          <button class="btn-secondary" onclick="switchNavTab('getstarted')" style="border-color:var(--accent); color:var(--accent); font-weight:700;">
+            Open Tutorial &rarr;
+          </button>
+        </div>
+
+        <!-- 3-Col KPI Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Available Balance</div>
+            <div class="stat-val" id="statBalance">$0.00</div>
+            <div class="stat-sub">Est. INR: <span id="statInr" style="color:var(--accent); font-weight:700;">₹0</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Impressions</div>
+            <div class="stat-val" id="statImpressions">0</div>
+            <div class="stat-sub">Avg eCPM: <span id="statEcpm" style="color:var(--success); font-weight:700;">$0.00</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Properties</div>
+            <div class="stat-val" id="statProperties">0</div>
+            <div class="stat-sub" id="statActiveRatio">0 of 0 serving ads</div>
+          </div>
+        </div>
+
+        <!-- Quick Integration Channels Box -->
+        <div class="section-card">
+          <div class="section-header">
+            <h3>Active Monetization Channels</h3>
+            <button class="btn-secondary" onclick="switchNavTab('properties')">View All Properties &rarr;</button>
+          </div>
+          <div id="overviewPropertyList">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 2: YOUR PROPERTIES ── -->
+      <section class="tab-pane" id="pane-properties">
+        <div class="page-header">
+          <div class="page-title">
+            <h1 id="propHeaderTitle">Your Properties</h1>
+            <p id="propHeaderSub">Manage your registered websites, mobile applications, bots, and shortlinks.</p>
+          </div>
+          <button class="action-btn-primary" id="btnAddPropertyMain" onclick="openPropertyModal(currentPropFilter !== 'ALL' ? currentPropFilter : 'Website')" style="display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span id="btnAddPropertyBtnText">Add New Asset</span>
+          </button>
+        </div>
+
+        <!-- Filter Tabs / Pills -->
+        <div style="display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; align-items:center;" id="propertyFilterPills">
+          <button class="btn-secondary prop-filter-btn active" id="pfilter-ALL" onclick="showPropertyCategory('ALL')">All Assets</button>
+          <button class="btn-secondary prop-filter-btn" id="pfilter-Website" onclick="showPropertyCategory('Website')">App / Websites</button>
+          <button class="btn-secondary prop-filter-btn" id="pfilter-Telegram Mini App" onclick="showPropertyCategory('Telegram Mini App')">Telegram Mini App <span class="sub-badge" style="font-size:9px; padding:1px 4px; margin-left:2px;">Soon</span></button>
+          <button class="btn-secondary prop-filter-btn" id="pfilter-Telegram Bot" onclick="showPropertyCategory('Telegram Bot')">Bots (Telegram + Discord) <span class="sub-badge" style="font-size:9px; padding:1px 4px; margin-left:2px;">Soon</span></button>
+          <button class="btn-secondary prop-filter-btn" id="pfilter-Direct Link Locker" onclick="showPropertyCategory('Direct Link Locker')">Socials (Groups+Channels)</button>
+        </div>
+
+        <div class="section-card">
+          <div id="fullPropertyList">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 3: STATISTICS ── -->
+      <section class="tab-pane" id="pane-statistics">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Detailed Statistics &amp; Analytics</h1>
+            <p>Granular traffic breakdown by property, ad format, and eCPM yield.</p>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="table-wrap">
+            <table class="clean-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Format</th>
+                  <th>Impressions</th>
+                  <th>Clicks</th>
+                  <th>eCPM</th>
+                  <th>Earnings</th>
+                </tr>
+              </thead>
+              <tbody id="statsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 5: PAYMENTS & PAYOUTS ── -->
+      <section class="tab-pane" id="pane-payments">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Payments &amp; Withdrawals</h1>
+            <p>Configure withdrawal credentials (UPI, Bank Wire, PayPal, USDT) and monitor payments.</p>
+          </div>
+          <button class="action-btn-primary" onclick="openPayoutModal()">Configure Payout</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Available for Withdrawal</div>
+            <div class="stat-val" id="payoutAvailableVal">$0.00</div>
+            <div class="stat-sub">Minimum threshold: $50.00</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Payout Method</div>
+            <div class="stat-val" style="font-size:16px;" id="payoutMethodDisplay">Not Configured</div>
+            <div class="stat-sub" id="payoutDetailDisplay">Click 'Configure Payout' to set up</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Payout Action</div>
+            <button class="action-btn-primary" style="margin-top:10px; width:100%; justify-content:center;" onclick="requestWithdrawal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              Request Withdrawal
+            </button>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h3>Withdrawal Transaction History</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="clean-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Method</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="payoutHistoryTable">
+                <tr><td colspan="5" style="text-align:center; color:var(--muted); padding:24px;">No payout transactions requested yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 6: GET STARTED GUIDE ── -->
+      <section class="tab-pane" id="pane-getstarted">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Get Started &amp; Monetization Matrix</h1>
+            <p>Clear guide on which ad format and setup applies to each digital asset.</p>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h3>4 Core Monetization Categories</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="clean-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Supported Ad Formats</th>
+                  <th>Integration Method</th>
+                  <th>Requirements</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:700;">
+                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                      Website / Mobile App
+                    </span>
+                  </td>
+                  <td>Banners (300x250, 728x90), Popunders, In-Page Push, Native, Offerwall</td>
+                  <td>HTML Tag embed or Mobile SDK initialization</td>
+                  <td>Domain or App source code access</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;">
+                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                      Direct Link / Shortlinks &amp; Socials
+                    </span>
+                  </td>
+                  <td>Direct Smartlink (Earn per click)</td>
+                  <td>Convert destination URLs and drop in Telegram Channels, WhatsApp, Instagram Bio, YouTube descriptions</td>
+                  <td><strong style="color:var(--success);">Zero website required!</strong></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;">
+                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
+                      Bots (Telegram &amp; Discord)
+                    </span>
+                  </td>
+                  <td>Auto-broadcast sponsored messages &amp; inline ads</td>
+                  <td>Connect Eternant Bot API Token</td>
+                  <td>Bot Token &amp; active users</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;">
+                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"></path></svg>
+                      Telegram Mini Apps (TMA)
+                    </span>
+                  </td>
+                  <td>TMA WebApp Ad SDK</td>
+                  <td>In-app popup &amp; rewarded tasks</td>
+                  <td><strong style="color:var(--warning);">Coming Soon</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── DIRECT SUPPORT & CONTACT BUTTONS ── -->
+        <div class="section-card">
+          <div class="section-header">
+            <h3>Need Help? Connect with Publisher Support</h3>
+            <span style="font-size:11px; font-family:'Space Mono'; color:var(--success); font-weight:700; display:inline-flex; align-items:center; gap:4px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:var(--success); box-shadow:0 0 6px var(--success);"></span> Online 24/7
+            </span>
+          </div>
+          <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:18px;">
+            If you need assistance setting up ad units or want custom high-volume rates, contact our dedicated publisher managers:
+          </p>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+            <!-- Telegram Support -->
+            <a href="https://t.me/EternantSupport" target="_blank" style="text-decoration:none; color:inherit; background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; transition:border-color 0.2s;">
+              <div style="width:40px; height:40px; border-radius:10px; background:rgba(93,162,255,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f96ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px; font-weight:700;">Telegram Support</div>
+                <div style="font-size:11.5px; color:var(--text-sub);">Instant replies in &lt;5 mins</div>
+              </div>
+            </a>
+
+            <!-- WhatsApp Priority -->
+            <a href="https://wa.me/15550192834" target="_blank" style="text-decoration:none; color:inherit; background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; transition:border-color 0.2s;">
+              <div style="width:40px; height:40px; border-radius:10px; background:rgba(52,211,153,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px; font-weight:700;">WhatsApp Desk</div>
+                <div style="font-size:11.5px; color:var(--text-sub);">Direct 1-on-1 manager</div>
+              </div>
+            </a>
+
+            <!-- Official Email -->
+            <a href="mailto:publishers@eternant.net" style="text-decoration:none; color:inherit; background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; transition:border-color 0.2s;">
+              <div style="width:40px; height:40px; border-radius:10px; background:rgba(167,139,250,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px; font-weight:700;">Email Desk</div>
+                <div style="font-size:11.5px; color:var(--text-sub);">publishers@eternant.net</div>
+              </div>
+            </a>
+
+            <!-- FAQ & Knowledge Base -->
+            <div onclick="showToast('Opening FAQ docs...')" style="cursor:pointer; background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; transition:border-color 0.2s;">
+              <div style="width:40px; height:40px; border-radius:10px; background:rgba(251,191,36,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 1-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px; font-weight:700;">Publisher FAQs</div>
+                <div style="font-size:11.5px; color:var(--text-sub);">Common questions &amp; fixes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 7: SETTINGS ── -->
+      <section class="tab-pane" id="pane-settings">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Account &amp; Developer Settings</h1>
+            <p>Manage API keys, webhooks, and publisher profile credentials.</p>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="form-group">
+            <label class="form-label">Publisher Public Client ID</label>
+            <div style="display:flex; gap:10px;">
+              <input type="text" class="form-control" id="settingClientId" readonly>
+              <button class="btn-secondary" onclick="copyInputVal('settingClientId')">Copy</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Server Postback / Webhook URL</label>
+            <input type="url" class="form-control" id="settingWebhook" placeholder="https://yourserver.com/api/postback">
+          </div>
+          <button class="action-btn-primary" onclick="saveAccountSettings()">Save Settings</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ── MODAL: ADD ASSET (4 Clean Options) ── -->
+<div class="modal-overlay" id="propertyModal">
+  <div class="modal-box">
+    <h2 id="propertyModalHeading" style="font-size:18px; font-weight:800; margin-bottom:6px;">Add New Asset / Property</h2>
+    <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:18px;">Select your monetization asset type and enter details.</p>
+
+    <div class="form-group">
+      <label class="form-label">Monetization Channel</label>
+      <select class="form-control" id="propType" onchange="onPropTypeChange()">
+        <option value="Website">APP / WEBSITES (Banners, Popunder, Native, SDK, Offerwall)</option>
+        <option value="Direct Link Locker">SOCIALS - GROUPS + CHANNELS + SOCIAL (Monetized Shortlink &amp; Offerwall)</option>
+        <option value="Telegram Bot" disabled>BOTS - TELEGRAM + DISCORD (Coming Soon)</option>
+        <option value="Telegram Mini App" disabled>TELEGRAM MINI APP (Coming Soon)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Asset / Property Name</label>
+      <input type="text" class="form-control" id="propName" placeholder="e.g. Tech News Blog, Movies Channel">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" id="propUrlLabel">URL / Handle / Destination Link</label>
+      <input type="text" class="form-control" id="propUrl" placeholder="https://example.com or @channel">
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-control" id="propCategory">
+          <option value="Technology">Technology &amp; Software</option>
+          <option value="Gaming">Gaming &amp; Entertainment</option>
+          <option value="Downloads">Downloads &amp; Tools</option>
+          <option value="Crypto">Crypto &amp; Finance</option>
+          <option value="General">General / Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Traffic Geo</label>
+        <select class="form-control" id="propGeo">
+          <option value="India">India (IN)</option>
+          <option value="Tier 1">Tier 1 (US, UK, CA)</option>
+          <option value="Global">Worldwide / Mixed</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button class="btn-secondary" onclick="closePropertyModal()">Cancel</button>
+      <button class="action-btn-primary" onclick="saveProperty()">Submit Asset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: AD FORMATS ON REQUEST (WEBSITE / APP) ── -->
+<div class="modal-overlay" id="adFormatsModal">
+  <div class="modal-box" style="max-width: 680px;">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+      <div>
+        <h2 id="formatModalHeading" style="font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+          Ad Formats Management (On Request)
+        </h2>
+        <p id="formatModalSubtitle" style="font-size:12px; color:var(--text-sub);">
+          Select ad formats to appeal for Admin allocation &amp; tag activation
+        </p>
+      </div>
+      <button class="btn-secondary" onclick="closeAdFormatsModal()" style="padding:4px 10px; font-size:16px; line-height:1;">&times;</button>
+    </div>
+
+    <!-- Info Notice Box -->
+    <div style="background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.6; color:var(--text-sub); margin-bottom:16px; display:flex; align-items:flex-start; gap:10px;">
+      <span style="color:var(--accent); display:flex; margin-top:2px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </span>
+      <span><strong>Ad Formats are provisioned on-request:</strong> Select the formats you wish to activate on your Website or Mobile App. Your appeal will be sent to an Eternant Ad Operations representative who will review the request and allocate integration tags.</span>
+    </div>
+
+    <!-- Format items rendered dynamically -->
+    <div id="formatCardsList" style="max-height: 52vh; overflow-y: auto; padding-right: 4px;"></div>
+
+    <!-- Bottom Submit Bar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--border); padding-top:14px; flex-wrap:wrap; gap:10px;">
+      <div style="font-size:12px; color:var(--text-sub);" id="selectedFormatsSummary">
+        Select one or more formats above to request.
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-secondary" onclick="closeAdFormatsModal()">Close</button>
+        <button class="action-btn-primary" id="btnSubmitFormatAppeal" onclick="submitAdFormatAppeal()" style="display:none; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"></path></svg>
+          Submit Ad Format Appeal
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: GET TAG CODE / ASSET SHORTLINK ── -->
+<div class="modal-overlay" id="tagModal">
+  <div class="modal-box">
+    <h2 id="tagModalHeading" style="font-size:18px; font-weight:800; margin-bottom:6px;">Monetization Integration Tag</h2>
+    <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:14px;" id="tagModalSubtitle">Ready-to-use integration code</p>
+    
+    <!-- Shortlink-specific generator strictly tied to this asset -->
+    <div id="tagShortlinkHelper" style="display:none; margin-bottom:16px; background:var(--surface-sub); border:1px solid var(--border); padding:14px; border-radius:10px;">
+      <label class="form-label" style="margin-bottom:6px;">Generate Shortlink for this Asset:</label>
+      <div style="display:flex; gap:8px;">
+        <input type="url" id="assetShortlinkCustomUrl" class="form-control" placeholder="Destination URL (e.g. https://drive.google.com/...)">
+        <button class="action-btn-primary" onclick="generateAssetShortlinkUrl()" style="white-space:nowrap; padding:8px 14px; font-size:12px;">Create Link</button>
+      </div>
+      <div style="font-size:11px; color:var(--text-sub); margin-top:6px;">All shortlinks created here are automatically tracked and credited under this registered asset.</div>
+    </div>
+
+    <div class="code-box" id="tagModalCode"></div>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+      <button class="btn-secondary" id="tagModalCopyBtn" onclick="copyTagModalCode()">Copy Code</button>
+      <button class="action-btn-primary" onclick="closeTagModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: 2-WAY CHAT & REVIEW THREAD ── -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal-box" style="max-width:560px;">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px;">
+      <div>
+        <h2 id="chatModalTitle" style="font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+          Property Chat &amp; Review
+        </h2>
+        <p id="chatModalSubtitle" style="font-size:12px; color:var(--text-sub);">Direct 2-way messaging with Eternant Admin</p>
+      </div>
+      <span id="chatModalStatusBadge" class="prop-status-pill status-pending">In Review</span>
+    </div>
+
+    <!-- Quick info bar -->
+    <div id="chatModalMetaBar" style="background:var(--bg-hover); border:1px solid var(--border-lt); padding:8px 12px; border-radius:8px; font-size:11.5px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <span id="chatModalUrl" style="color:var(--accent); font-weight:600; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:280px;">https://...</span>
+      <span id="chatModalToken" style="font-family:'Space Mono'; color:var(--muted); font-size:10.5px;">ID: ...</span>
+    </div>
+
+    <!-- Rejection notice if rejected -->
+    <div id="chatModalRejectAlert" style="display:none; margin-bottom:10px; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.3); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--danger);">
+      <strong>Rejection Reason:</strong> <span id="chatModalRejectReason">Compliance failed</span>
+    </div>
+
+    <!-- Quick prompt chips -->
+    <div class="chat-quick-chips">
+      <button type="button" class="chat-chip" onclick="insertChatPrompt('Please review and expedite approval')">Expedite Review</button>
+      <button type="button" class="chat-chip" onclick="insertChatPrompt('Domain DNS ownership verified')">DNS Verified</button>
+      <button type="button" class="chat-chip" onclick="insertChatPrompt('Can we discuss custom high-volume rates?')">High Volume Rates</button>
+      <button type="button" class="chat-chip" onclick="insertChatPrompt('I have updated the destination link')">Updated Destination</button>
+    </div>
+
+    <!-- Chat Messages Box -->
+    <div class="chat-thread-box">
+      <div class="chat-messages-wrap" id="chatMessagesWrap">
+        <!-- Messages rendered dynamically -->
+      </div>
+      <div class="chat-input-bar">
+        <input type="text" id="chatInputText" class="form-control" style="flex:1;" placeholder="Message Admin regarding this property..." onkeydown="if(event.key==='Enter')sendPublisherMessage()">
+        <button type="button" class="action-btn-primary" onclick="sendPublisherMessage()" style="padding:8px 16px; white-space:nowrap;">Send</button>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+      <button class="btn-secondary" onclick="closeChatModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: CONFIGURE PAYOUT ── -->
+<div class="modal-overlay" id="payoutModal">
+  <div class="modal-box">
+    <h2 style="font-size:18px; font-weight:800; margin-bottom:6px;">Configure Payout Method</h2>
+    <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:16px;">Choose your payment method. 0% fee on all transfers.</p>
+
+    <div class="form-group">
+      <label class="form-label">Payout Method</label>
+      <select class="form-control" id="payoutMethodSelect" onchange="onPayoutMethodChange()">
+        <option value="UPI">UPI (Instant India - 0% fee)</option>
+        <option value="Bank Wire">Bank Wire Transfer (NEFT / IMPS)</option>
+        <option value="PayPal">PayPal (USD)</option>
+        <option value="USDT">USDT Crypto (TRC20 / BEP20)</option>
+      </select>
+    </div>
+
+    <div id="payoutFieldsUPI">
+      <div class="form-group">
+        <label class="form-label">UPI ID / VPA</label>
+        <input type="text" class="form-control" id="payoutUpiId" placeholder="e.g. yourname@oksbi">
+      </div>
+    </div>
+
+    <div id="payoutFieldsBank" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Account Holder Name</label>
+        <input type="text" class="form-control" id="payoutBankName" placeholder="Full legal name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account Number</label>
+        <input type="text" class="form-control" id="payoutBankAcc" placeholder="Bank Account Number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">IFSC Code</label>
+        <input type="text" class="form-control" id="payoutBankIfsc" placeholder="e.g. HDFC0001234">
+      </div>
+    </div>
+
+    <div id="payoutFieldsPayPal" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">PayPal Email</label>
+        <input type="email" class="form-control" id="payoutPaypalEmail" placeholder="your-email@domain.com">
+      </div>
+    </div>
+
+    <div id="payoutFieldsUSDT" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">USDT TRC20 Address</label>
+        <input type="text" class="form-control" id="payoutUsdtAddress" placeholder="e.g. T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb">
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button class="btn-secondary" onclick="closePayoutModal()">Cancel</button>
+      <button class="action-btn-primary" onclick="savePayoutMethod()">Save Method</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastMsg" class="toast-msg"></div>
+
+<script>
+// ================= ROLE & THEME =================
+(function() {
+  var role = localStorage.getItem('eternant_user_role') || 'publisher';
+  if (role !== 'publisher') {
+    window.location.replace('advertiser-dashboard.html');
+  }
+})();
+
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var bd = document.getElementById('sidebarBackdrop');
+  sb.classList.toggle('open');
+  bd.classList.toggle('active');
+}
+
+function toggleTheme() {
+  var html = document.documentElement;
+  var current = html.getAttribute('data-theme');
+  var next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  try { localStorage.setItem('et_theme', next); } catch(e) {}
+}
+try {
+  var savedTheme = localStorage.getItem('et_theme');
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+} catch(e) {}
+
+function showToast(text) {
+  var t = document.getElementById('toastMsg');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2600);
+}
+
+// Navigation Tab Switcher
+function switchNavTab(tabId, el) {
+  document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+  var target = document.getElementById('pane-' + tabId);
+  if (target) target.classList.add('active');
+
+  document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+  if (el) el.classList.add('active');
+
+  var titles = {
+    dashboard: 'Overview Dashboard',
+    properties: 'Your Properties',
+    statistics: 'Statistics & Reports',
+    payments: 'Payments & Payouts',
+    getstarted: 'Get Started Guide',
+    settings: 'Settings'
+  };
+  document.getElementById('topbarTitle').textContent = titles[tabId] || 'Publisher Dashboard';
+
+  // Close mobile sidebar
+  var sb = document.getElementById('sidebar');
+  var bd = document.getElementById('sidebarBackdrop');
+  if (sb) sb.classList.remove('open');
+  if (bd) bd.classList.remove('active');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Properties State
+var properties = [];
+try {
+  var saved = localStorage.getItem('et_properties_v2');
+  if (saved) properties = JSON.parse(saved);
+} catch(e) {}
+
+function persistProperties() {
+  try { localStorage.setItem('et_properties_v2', JSON.stringify(properties)); } catch(e) {}
+  renderAllViews();
+}
+
+// SVG Icon Helpers
+var SVG_ICONS = {
+  globe: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+  link: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+  bot: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>`,
+  target: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`,
+  chat: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+  check: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+  clock: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+  x: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+  zap: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+  bell: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>`,
+  newspaper: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>`,
+  gift: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>`,
+  banner: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
+  trophy: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>`,
+  rocket: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"></path></svg>`,
+  copy: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
+  shield: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+  user: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6eb5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`
+};
+
+var currentPropFilter = 'ALL';
+
+function renderAllViews() {
+  var totalEarn = properties.reduce(function(acc, p) { return acc + (p.earnings || 0); }, 0);
+  var totalImp = properties.reduce(function(acc, p) { return acc + (p.impressions || 0); }, 0);
+  var avgEcpm = totalImp > 0 ? ((totalEarn / totalImp) * 1000).toFixed(2) : '0.00';
+  var inrEst = Math.round(totalEarn * 83.5);
+
+  // Top stats
+  document.getElementById('statBalance').textContent = '$' + totalEarn.toFixed(2);
+  document.getElementById('sidebarEarningsVal').textContent = '$' + totalEarn.toFixed(2);
+  document.getElementById('payoutAvailableVal').textContent = '$' + totalEarn.toFixed(2);
+  document.getElementById('statInr').textContent = '₹' + inrEst.toLocaleString();
+  document.getElementById('statImpressions').textContent = totalImp.toLocaleString();
+  document.getElementById('statEcpm').textContent = '$' + avgEcpm;
+  document.getElementById('statProperties').textContent = properties.length;
+  document.getElementById('sidebarAssetCount').textContent = properties.length;
+
+  var activeProps = properties.filter(function(p) { return p.status === 'Active'; });
+  document.getElementById('statActiveRatio').textContent = activeProps.length + ' of ' + properties.length + ' serving ads';
+
+  // Render overview list & full list & stats
+  var ovEl = document.getElementById('overviewPropertyList');
+  var fullEl = document.getElementById('fullPropertyList');
+  var statsEl = document.getElementById('statsTableBody');
+
+  // Filter properties for fullPropertyList tab based on currentPropFilter
+  var filteredProps = properties;
+  if (currentPropFilter && currentPropFilter !== 'ALL') {
+    filteredProps = properties.filter(function(p) { return p.type === currentPropFilter; });
+  }
+
+  // Render Overview list (always all items or empty)
+  if (!properties.length) {
+    var emptyOverviewHtml = '<div style="text-align:center; padding:32px; color:var(--text-sub); font-size:13px;">No assets added yet. Click <strong>Add Asset</strong> above to begin!</div>';
+    if (ovEl) ovEl.innerHTML = emptyOverviewHtml;
+    if (statsEl) statsEl.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--muted);">No properties data recorded yet.</td></tr>';
+  }
+
+  // Render Full list empty state if filtered list is empty
+  if (!filteredProps.length) {
+    var emptyMessage = 'No assets added yet in this section.';
+    if (currentPropFilter === 'Website') {
+      emptyMessage = 'No App / Websites added yet. Click <strong>Add New Asset</strong> to submit your website domain or app.';
+    } else if (currentPropFilter === 'Telegram Mini App') {
+      emptyMessage = 'Telegram Mini App monetization is <span style="color:var(--warning); font-weight:700;">Coming Soon</span>. Click <strong>Add New Asset</strong> to register early for beta access.';
+    } else if (currentPropFilter === 'Telegram Bot') {
+      emptyMessage = 'Bot Monetization (Telegram & Discord) is <span style="color:var(--warning); font-weight:700;">Coming Soon</span>. Register your bot handle to join the early access list.';
+    } else if (currentPropFilter === 'Direct Link Locker') {
+      emptyMessage = 'No Social Channels or Monetized Shortlinks added yet. Click <strong>Add New Asset</strong> to create your first monetized shortlink!';
+    } else {
+      emptyMessage = 'No assets added yet. Click <strong>Add New Asset</strong> above to begin!';
+    }
+
+    var emptyFullHtml = '<div style="text-align:center; padding:36px; color:var(--text-sub); font-size:13.5px; line-height:1.6;">' + emptyMessage + '</div>';
+    if (fullEl) fullEl.innerHTML = emptyFullHtml;
+    if (properties.length === 0 && statsEl) statsEl.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--muted);">No properties data recorded yet.</td></tr>';
+    if (!properties.length) return;
+  }
+
+  // Helper to generate property card HTML
+  function buildPropertyCardHtml(p) {
+    var icon = p.type === 'Website' ? SVG_ICONS.globe : (p.type === 'Telegram Bot' ? SVG_ICONS.bot : SVG_ICONS.link);
+    var isPending = p.status === 'Pending Review' || !p.status;
+    var isRejected = p.status === 'Rejected';
+    var isActive = p.status === 'Active';
+    
+    var statusClass = isActive ? 'status-active' : (isRejected ? 'status-rejected' : 'status-pending');
+    var statusLabel = isActive ? `${SVG_ICONS.check} Active &amp; Serving` : (isRejected ? `${SVG_ICONS.x} Rejected` : `${SVG_ICONS.clock} In Admin Review`);
+
+    var msgs = p.messages || [];
+    var adminMsgCount = msgs.filter(function(m) { return m.sender === 'admin'; }).length;
+    var chatBadge = adminMsgCount > 0 ? `<span style="background:var(--accent); color:#fff; border-radius:10px; padding:1px 6px; font-size:10px; margin-left:4px;">${adminMsgCount}</span>` : '';
+
+    var formatReqs = p.formatRequests || {};
+    var approvedFormats = Object.keys(formatReqs).filter(function(k) { return formatReqs[k].status === 'Approved'; });
+    var pendingFormats = Object.keys(formatReqs).filter(function(k) { return formatReqs[k].status === 'Pending'; });
+
+    var formatStatusBadge = '';
+    if (p.type === 'Website') {
+      if (approvedFormats.length > 0) {
+        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--success); font-weight:700; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.check} ${approvedFormats.length} Active Formats</span>`;
+      } else if (pendingFormats.length > 0) {
+        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--warning); font-weight:700; background:rgba(251,191,36,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.clock} ${pendingFormats.length} Format Appeals Pending</span>`;
+      } else {
+        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--muted); background:var(--bg-hover); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.target} Formats On Request</span>`;
+      }
+    } else if (p.type === 'Direct Link Locker') {
+      formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--accent); background:rgba(110,181,255,0.1); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.link} 1 Format (Monetized Shortlink)</span>`;
+    }
+
+    var actionButtons = '';
+    if (p.type === 'Website') {
+      actionButtons = `
+        <button class="btn-secondary" style="border-color:var(--accent); color:var(--accent); display:inline-flex; align-items:center; gap:6px;" onclick="openAdFormatsModal('${p.id}')">
+          ${SVG_ICONS.target} Ad Formats (On Request) ${pendingFormats.length ? `<span style="background:var(--warning); color:#000; font-size:10px; border-radius:10px; padding:1px 5px; margin-left:4px;">${pendingFormats.length}</span>` : (approvedFormats.length ? `<span style="background:var(--success); color:#000; font-size:10px; border-radius:10px; padding:1px 5px; margin-left:4px;">${approvedFormats.length}</span>` : '')}
+        </button>
+        <button class="btn-secondary" style="border-color:rgba(110,181,255,0.5); color:var(--text); display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.link} Shortlink Generator</button>
+        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
+      `;
+    } else if (p.type === 'Direct Link Locker') {
+      if (isActive) {
+        actionButtons = `
+          <button class="btn-secondary" style="border-color:var(--accent); color:var(--accent); display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.link} Monetized Shortlink</button>
+          <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
+        `;
+      } else if (isRejected) {
+        actionButtons = `
+          <button class="btn-secondary" style="border-color:var(--danger); color:var(--danger); display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Appeal / Chat ${chatBadge}</button>
+        `;
+      } else {
+        actionButtons = `
+          <button class="btn-secondary" style="border-color:var(--warning); color:var(--warning); display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat with Admin ${chatBadge}</button>
+          <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.clock} Status</button>
+        `;
+      }
+    } else {
+      actionButtons = `
+        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.bot} Bot API</button>
+        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
+      `;
+    }
+
+    return `
+      <div class="asset-card">
+        <div class="asset-left">
+          <div class="asset-icon-box">${icon}</div>
+          <div>
+            <div class="asset-title">
+              ${escapeHtml(p.name)}
+              <span class="prop-badge">${escapeHtml(p.type)}</span>
+              ${formatStatusBadge}
+            </div>
+            <div class="asset-meta">${escapeHtml(p.url || 'No URL')} &bull; Niche: ${escapeHtml(p.category)} &bull; Geo: ${escapeHtml(p.geo || 'Global')}</div>
+            ${p.rejectionReason ? `<div style="font-size:11.5px; color:var(--danger); margin-top:4px;">Reason: ${escapeHtml(p.rejectionReason)}</div>` : ''}
+          </div>
+        </div>
+        <div class="asset-metrics">
+          <div class="asset-metric-col">
+            <div class="metric-name">Impressions</div>
+            <div class="metric-num">${(p.impressions || 0).toLocaleString()}</div>
+          </div>
+          <div class="asset-metric-col">
+            <div class="metric-name">Earnings</div>
+            <div class="metric-num" style="color:var(--success);">$${(p.earnings || 0).toFixed(2)}</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span class="prop-status-pill ${statusClass}">${statusLabel}</span>
+          ${actionButtons}
+          <button class="btn-secondary" style="color:var(--danger);" onclick="deleteAsset('${p.id}')" title="Delete Property">&times;</button>
+        </div>
+      </div>
+    `;
+  }
+
+  var ovHtml = '';
+  properties.forEach(function(p) {
+    ovHtml += buildPropertyCardHtml(p);
+  });
+
+  var fullHtml = '';
+  filteredProps.forEach(function(p) {
+    fullHtml += buildPropertyCardHtml(p);
+  });
+
+  var statsHtml = '';
+  properties.forEach(function(p) {
+    statsHtml += `
+      <tr>
+        <td style="font-weight:700;">${escapeHtml(p.name)}</td>
+        <td><span class="prop-badge">${escapeHtml(p.type)}</span></td>
+        <td>${escapeHtml(p.format || 'Auto Ad Tag')}</td>
+        <td style="font-family:'Space Mono';">${(p.impressions || 0).toLocaleString()}</td>
+        <td style="font-family:'Space Mono';">${(p.clicks || 0).toLocaleString()}</td>
+        <td style="font-family:'Space Mono';">$${(p.ecpm || 0).toFixed(2)}</td>
+        <td style="font-family:'Space Mono'; font-weight:700; color:var(--success);">$${(p.earnings || 0).toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  if (ovEl) ovEl.innerHTML = ovHtml;
+  if (fullEl) fullEl.innerHTML = fullHtml;
+  if (statsEl) statsEl.innerHTML = statsHtml;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function toggleNavPropertiesMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  var wrap = document.getElementById('navPropWrap');
+  var sub = document.getElementById('sidebarPropertiesSubmenu');
+  if (wrap && sub) {
+    wrap.classList.toggle('open');
+    sub.classList.toggle('open');
+  }
+}
+
+function showPropertyCategory(typeFilter, subItemEl) {
+  currentPropFilter = typeFilter || 'ALL';
+
+  // Highlight active submenu item
+  document.querySelectorAll('.submenu-item').forEach(function(item) {
+    item.classList.remove('active');
+  });
+  if (subItemEl) {
+    subItemEl.classList.add('active');
+  } else {
+    var matchingSub = document.getElementById('subitem-' + currentPropFilter);
+    if (matchingSub) matchingSub.classList.add('active');
+  }
+
+  // Highlight parent item in sidebar
+  document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+  var parentNav = document.getElementById('navItemProperties');
+  if (parentNav) parentNav.classList.add('active');
+
+  // Switch to properties tab pane
+  switchNavTab('properties', null);
+
+  // Update header titles, descriptions, and button text according to specific section
+  var titleMap = {
+    'Website': 'App / Websites Monetization',
+    'Telegram Mini App': 'Telegram Mini Apps',
+    'Telegram Bot': 'Bots (Telegram + Discord)',
+    'Direct Link Locker': 'Socials (Groups + Channels + Social)',
+    'ALL': 'All Properties'
+  };
+  var subMap = {
+    'Website': 'Websites and mobile applications with custom on-request ad unit allocation (Popunder, Banners, Native, Offerwall).',
+    'Telegram Mini App': 'Telegram Mini App WebApp Ad SDK is rolling out soon. Register your Mini App for early access.',
+    'Telegram Bot': 'Broadcasting & inline ad integration for Telegram and Discord bots.',
+    'Direct Link Locker': 'Earn per click with monetized shortlinks across Telegram Channels, WhatsApp Groups, YouTube & Social Bio.',
+    'ALL': 'Overview and status of all registered monetization channels.'
+  };
+  var btnTextMap = {
+    'Website': '+ Add App / Website',
+    'Telegram Mini App': '+ Register Mini App',
+    'Telegram Bot': '+ Register Bot',
+    'Direct Link Locker': '+ Add Social Asset',
+    'ALL': '+ Add New Asset'
+  };
+
+  var headerTitle = document.getElementById('propHeaderTitle');
+  var headerSub = document.getElementById('propHeaderSub');
+  var btnText = document.getElementById('btnAddPropertyBtnText');
+  var filterPills = document.getElementById('propertyFilterPills');
+
+  if (headerTitle) headerTitle.textContent = titleMap[currentPropFilter] || 'Your Properties';
+  if (headerSub) headerSub.textContent = subMap[currentPropFilter] || 'Manage your monetization channels.';
+  if (btnText) btnText.textContent = btnTextMap[currentPropFilter] || '+ Add New Asset';
+
+  // Only show filter pills when ALL is explicitly selected; hide in specific sections to avoid clutter
+  if (filterPills) {
+    if (currentPropFilter === 'ALL') {
+      filterPills.style.display = 'flex';
+      document.querySelectorAll('.prop-filter-btn').forEach(function(btn) { btn.classList.remove('active'); });
+      var matchingPill = document.getElementById('pfilter-ALL');
+      if (matchingPill) matchingPill.classList.add('active');
+    } else {
+      filterPills.style.display = 'none';
+    }
+  }
+
+  var topbar = document.getElementById('topbarTitle');
+  if (topbar) topbar.textContent = (titleMap[currentPropFilter] || 'Your Properties');
+
+  renderAllViews();
+}
+
+// Add Asset Dropdown Toggle Helpers
+function toggleAddAssetDropdown(e, dropdownId) {
+  if (e) e.stopPropagation();
+  var menu = document.getElementById(dropdownId || 'topbarAddAssetDropdown');
+  if (!menu) return;
+  var isShow = menu.classList.contains('show');
+  closeAllAssetDropdowns();
+  if (!isShow) {
+    menu.classList.add('show');
+  }
+}
+
+function closeAllAssetDropdowns() {
+  document.querySelectorAll('.add-asset-dropdown-menu').forEach(function(el) {
+    el.classList.remove('show');
+  });
+}
+
+window.addEventListener('click', function(e) {
+  if (!e.target.closest('.add-asset-dropdown-wrap')) {
+    closeAllAssetDropdowns();
+  }
+});
+
+// Modal & Forms
+function openPropertyModal(defaultType) {
+  closeAllAssetDropdowns();
+  var modal = document.getElementById('propertyModal');
+  var propTypeSelect = document.getElementById('propType');
+  var heading = document.getElementById('propertyModalHeading');
+
+  var targetType = defaultType || (currentPropFilter !== 'ALL' ? currentPropFilter : 'Website');
+  if (propTypeSelect) {
+    propTypeSelect.value = targetType;
+  }
+
+  var headingMap = {
+    'Website': 'Add New App / Website Asset',
+    'Direct Link Locker': 'Add New Social Asset / Monetized Shortlink',
+    'Telegram Mini App': 'Register Telegram Mini App (Early Access)',
+    'Telegram Bot': 'Register Bot (Telegram + Discord)'
+  };
+  if (heading) heading.textContent = headingMap[targetType] || 'Add New Asset / Property';
+
+  if (modal) modal.classList.add('active');
+  onPropTypeChange();
+}
+function closePropertyModal() {
+  document.getElementById('propertyModal').classList.remove('active');
+}
+function onPropTypeChange() {
+  var t = document.getElementById('propType').value;
+  var lbl = document.getElementById('propUrlLabel');
+  var inp = document.getElementById('propUrl');
+  if (t === 'Website') {
+    lbl.textContent = 'App Store URL or Website Domain';
+    inp.placeholder = 'https://mysite.com or App Store link';
+  } else if (t === 'Direct Link Locker') {
+    lbl.textContent = 'Social Channel / Group / Destination Link';
+    inp.placeholder = 'https://t.me/yourchannel or destination URL';
+  } else if (t === 'Telegram Bot') {
+    lbl.textContent = 'Bot Username / Bot Token';
+    inp.placeholder = '@my_telegram_bot';
+  } else if (t === 'Telegram Mini App') {
+    lbl.textContent = 'Telegram Mini App Link / Web App URL';
+    inp.placeholder = 'https://t.me/mybot/app';
+  }
+}
+
+function saveProperty() {
+  var name = document.getElementById('propName').value.trim();
+  var type = document.getElementById('propType').value;
+  var url = document.getElementById('propUrl').value.trim();
+  var cat = document.getElementById('propCategory').value;
+  var geo = document.getElementById('propGeo').value;
+
+  if (!name) { showToast('Please enter an Asset Name.'); return; }
+
+  var newAsset = {
+    id: 'prop-' + Date.now(),
+    name: name,
+    type: type,
+    url: url || 'N/A',
+    category: cat,
+    geo: geo,
+    format: type === 'Direct Link Locker' ? 'Smartlink' : 'Auto Ad Tag',
+    status: 'Pending Review', // Set to Pending Admin Review by default
+    submittedAt: new Date().toISOString(),
+    verificationToken: 'ET-VERIFY-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    messages: [
+      {
+        sender: 'system',
+        text: 'Property submitted for Admin Review. Our audit team checks traffic guidelines and activates ad units typically within 15–30 minutes.',
+        timestamp: new Date().toISOString()
+      }
+    ],
+    impressions: 0,
+    clicks: 0,
+    ecpm: 0.00,
+    earnings: 0.00
+  };
+
+  properties.unshift(newAsset);
+  persistProperties();
+  closePropertyModal();
+  showToast('Property submitted! It is now under Admin Review.');
+}
+
+function deleteAsset(id) {
+  properties = properties.filter(function(p) { return p.id !== id; });
+  persistProperties();
+  showToast('Property removed.');
+}
+
+// ══════════════════════════════════════════════
+// AD FORMATS ON REQUEST (WEBSITE & APP MONETIZATION)
+// ══════════════════════════════════════════════
+var WEBSITE_AD_FORMATS = [
+  {
+    id: 'popunder',
+    name: 'Popunder (OnClick)',
+    icon: SVG_ICONS.zap,
+    badge: 'High eCPM',
+    cpm: '$3.50 – $8.20',
+    desc: 'High-converting background full-tab ad triggered on first user click. Highest revenue per 1000 visitors with zero banner blindness or layout shift.',
+    codeSnippet: function(p) {
+      return `<!-- Eternant Popunder Tag: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/popunder.js" data-zone="${p.id}-pop"><\/script>`;
+    }
+  },
+  {
+    id: 'social_bar',
+    name: 'Social Bar / In-Page Push',
+    icon: SVG_ICONS.bell,
+    badge: 'High CTR',
+    cpm: '$2.80 – $6.50',
+    desc: 'Interactive chat bubbles, native notifications, and alert bars. Up to 30x higher CTR than classic web push without needing user browser permission.',
+    codeSnippet: function(p) {
+      return `<!-- Eternant Social Bar Tag: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/socialbar.js" data-zone="${p.id}-sb"><\/script>`;
+    }
+  },
+  {
+    id: 'native_banner',
+    name: 'Native Banner (Recommendations)',
+    icon: SVG_ICONS.newspaper,
+    badge: 'Editorial',
+    cpm: '$1.50 – $4.00',
+    desc: 'Content recommendation widgets that blend natively into blog posts, article lists, download feeds, and news grids for maximum engagement.',
+    codeSnippet: function(p) {
+      return `<!-- Eternant Native Widget: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/native.js" data-zone="${p.id}-nat"><\/script>\n<div class="eternant-native-widget" data-zone="${p.id}-nat"></div>`;
+    }
+  },
+  {
+    id: 'rewarded_interstitial',
+    name: 'Rewarded Interstitial / Fullscreen',
+    icon: SVG_ICONS.gift,
+    badge: 'Highest Yield',
+    cpm: '$4.50 – $12.00',
+    desc: 'Fullscreen overlay ad with countdown/reward trigger. Ideal for web apps, tools, file download portals, quizzes, and browser games.',
+    codeSnippet: function(p) {
+      return `<!-- Eternant Rewarded Interstitial: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/interstitial.js" data-zone="${p.id}-int"><\/script>\n<script>\nfunction triggerEternantAd() {\n  if (window.EternantAd) window.EternantAd.showInterstitial('${p.id}-int');\n}\n<\/script>`;
+    }
+  },
+  {
+    id: 'display_banner',
+    name: 'Standard Display Banners (300x250, 728x90)',
+    icon: SVG_ICONS.banner,
+    badge: 'Classic IAB',
+    cpm: '$1.00 – $2.50',
+    desc: 'Standard IAB banner zones for header top, sidebar right, in-article, and sticky bottom footer placements.',
+    codeSnippet: function(p) {
+      return `<!-- Eternant 300x250 Banner: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/banner.js" data-zone="${p.id}-ban" data-size="300x250"><\/script>\n<div class="eternant-banner-zone" data-zone="${p.id}-ban" style="width:300px; height:250px;"></div>`;
+    }
+  },
+  {
+    id: 'direct_smartlink',
+    name: 'Direct Smartlink URL',
+    icon: SVG_ICONS.zap,
+    badge: 'High Conversion',
+    cpm: '$3.00 – $9.00',
+    desc: 'Algorithmically optimized direct monetization link. Ideal for CTA buttons, download redirects, and high-converting traffic routing.',
+    codeSnippet: function(p) {
+      return `https://etn.link/s/${p.id}-smart?tag=website_direct`;
+    }
+  },
+  {
+    id: 'offerwall',
+    name: 'Offerwall / Micro-Task Wall (Rewarded)',
+    icon: SVG_ICONS.trophy,
+    badge: 'Top Yield',
+    cpm: '$8.00 – $25.00+',
+    desc: 'Interactive reward wall with paid surveys, mobile app downloads, and micro-tasks. Generates high eCPM and maximum revenue per user with postback callback support.',
+    codeSnippet: function(p) {
+      return `<!-- Eternant Offerwall iFrame: ${escapeHtml(p.name)} -->\n<iframe src="https://wall.eternant.net/v1/wall?zone=${p.id}-wall&uid=USER_ID" width="100%" height="650" frameborder="0" style="border:none; border-radius:12px;" allow="payment"><\/iframe>\n<!-- Postback Webhook: https://api.eternant.net/v1/postback?pub=${p.id} -->`;
+    }
+  }
+];
+
+var currentFormatPropId = null;
+
+function openAdFormatsModal(id) {
+  var p = properties.find(function(x) { return x.id === id; });
+  if (!p) return;
+  currentFormatPropId = id;
+
+  document.getElementById('formatModalHeading').innerHTML = `${SVG_ICONS.target} Ad Formats: ${escapeHtml(p.name)}`;
+  document.getElementById('formatModalSubtitle').textContent = `Property: ${p.name} • ${p.url || 'Web Asset'} • Managed On-Request`;
+
+  renderAdFormatsModalContent(p);
+  document.getElementById('adFormatsModal').classList.add('active');
+}
+
+function closeAdFormatsModal() {
+  document.getElementById('adFormatsModal').classList.remove('active');
+  currentFormatPropId = null;
+}
+
+function renderAdFormatsModalContent(p) {
+  var listEl = document.getElementById('formatCardsList');
+  if (!listEl) return;
+
+  var formatReqs = p.formatRequests || {};
+  var html = '';
+
+  WEBSITE_AD_FORMATS.forEach(function(fmt) {
+    var req = formatReqs[fmt.id];
+    var isApproved = req && req.status === 'Approved';
+    var isPending = req && req.status === 'Pending';
+    var isRejected = req && req.status === 'Rejected';
+
+    var cardClass = isApproved ? 'format-card status-card-active' : (isPending ? 'format-card status-card-pending' : 'format-card');
+    var statusPill = '';
+    var actionArea = '';
+
+    if (isApproved) {
+      statusPill = `<span class="prop-status-pill status-active">${SVG_ICONS.check} Approved &amp; Active</span>`;
+      actionArea = `
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="action-btn-primary" style="padding:6px 12px; font-size:11.5px; display:inline-flex; align-items:center; gap:6px;" onclick="toggleFormatCodeSnippet('${fmt.id}')">
+            ${SVG_ICONS.copy} View Tag Code
+          </button>
+        </div>
+      `;
+    } else if (isPending) {
+      statusPill = `<span class="prop-status-pill status-pending">${SVG_ICONS.clock} Appeal Sent (Pending Allocation)</span>`;
+      actionArea = `
+        <div style="font-size:11px; color:var(--warning); font-style:italic;">
+          Admin Representative reviewing request
+        </div>
+      `;
+    } else if (isRejected) {
+      statusPill = `<span class="prop-status-pill status-rejected">${SVG_ICONS.x} Appeal Declined</span>`;
+      actionArea = `
+        <label class="format-checkbox-label">
+          <input type="checkbox" class="format-req-cb" value="${fmt.id}" onchange="onFormatCheckboxChange()">
+          <span>Re-appeal for this format</span>
+        </label>
+      `;
+    } else {
+      statusPill = `<span class="prop-status-pill status-paused">Not Requested</span>`;
+      actionArea = `
+        <label class="format-checkbox-label">
+          <input type="checkbox" class="format-req-cb" value="${fmt.id}" onchange="onFormatCheckboxChange()">
+          <span>Request Format</span>
+        </label>
+      `;
+    }
+
+    var snippetCode = fmt.codeSnippet(p);
+
+    html += `
+      <div class="${cardClass}" id="formatCard-${fmt.id}">
+        <div class="format-header">
+          <div class="format-left">
+            <div class="format-icon-wrap">${fmt.icon}</div>
+            <div>
+              <div class="format-title-row">
+                <span class="format-title">${escapeHtml(fmt.name)}</span>
+                <span class="format-cpm-badge">${escapeHtml(fmt.badge)} &bull; ${escapeHtml(fmt.cpm)}</span>
+              </div>
+              <div class="format-desc">${escapeHtml(fmt.desc)}</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            ${statusPill}
+            ${actionArea}
+          </div>
+        </div>
+
+        ${isApproved ? `
+          <div id="formatSnippetBox-${fmt.id}" class="format-tag-preview" style="display:none; margin-top:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:10.5px; font-weight:700; color:var(--text-sub); text-transform:uppercase;">HTML / JS Integration Snippet:</span>
+              <button class="btn-secondary" style="padding:4px 8px; font-size:10px; display:inline-flex; align-items:center; gap:4px;" onclick="copyFormatCode('${fmt.id}')">${SVG_ICONS.copy} Copy Code</button>
+            </div>
+            <pre id="formatCodeContent-${fmt.id}" style="margin:0; font-family:'Space Mono',monospace; font-size:11px; color:var(--accent); white-space:pre-wrap; word-break:break-all;">${escapeHtml(snippetCode)}</pre>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  });
+
+  listEl.innerHTML = html;
+  onFormatCheckboxChange();
+}
+
+function toggleFormatCodeSnippet(formatId) {
+  var box = document.getElementById('formatSnippetBox-' + formatId);
+  if (box) {
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function copyFormatCode(formatId) {
+  var el = document.getElementById('formatCodeContent-' + formatId);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(function() {
+    showToast('Ad format tag copied to clipboard!');
+  });
+}
+
+function onFormatCheckboxChange() {
+  var cbs = document.querySelectorAll('.format-req-cb:checked');
+  var btn = document.getElementById('btnSubmitFormatAppeal');
+  var sum = document.getElementById('selectedFormatsSummary');
+  if (cbs.length > 0) {
+    if (btn) {
+      btn.style.display = 'inline-flex';
+      btn.innerHTML = `${SVG_ICONS.rocket} Submit Ad Format Appeal (${cbs.length} selected)`;
+    }
+    if (sum) sum.textContent = `${cbs.length} ad format(s) ready to submit to Admin for review & tag allocation.`;
+  } else {
+    if (btn) btn.style.display = 'none';
+    if (sum) sum.textContent = 'Select one or more formats above to submit an appeal to Admin.';
+  }
+}
+
+function submitAdFormatAppeal() {
+  if (!currentFormatPropId) return;
+  var p = properties.find(function(x) { return x.id === currentFormatPropId; });
+  if (!p) return;
+
+  var checked = Array.from(document.querySelectorAll('.format-req-cb:checked')).map(function(cb) {
+    return cb.value;
+  });
+
+  if (checked.length === 0) {
+    showToast('Please select at least 1 ad format.');
+    return;
+  }
+
+  if (!p.formatRequests) p.formatRequests = {};
+
+  var formatNames = [];
+  checked.forEach(function(fId) {
+    p.formatRequests[fId] = {
+      status: 'Pending',
+      requestedAt: new Date().toISOString()
+    };
+    var fObj = WEBSITE_AD_FORMATS.find(function(x) { return x.id === fId; });
+    if (fObj) formatNames.push(fObj.name);
+  });
+
+  // Post notice into the 2-way chat thread so Admin Representative sees the appeal immediately
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'publisher',
+    text: `Ad Formats Appeal: Publisher requested ad unit allocation for: ${formatNames.join(', ')}. Please review site placement and allocate tags.`,
+    timestamp: new Date().toISOString()
+  });
+
+  persistProperties();
+  renderAdFormatsModalContent(p);
+  showToast(`Appeal submitted for ${formatNames.length} ad format(s)! Admin Representative notified.`);
+}
+
+// ══════════════════════════════════════════════
+// GET CODE & MONETIZED SHORTLINK MODAL
+// ══════════════════════════════════════════════
+var currentModalAssetId = null;
+
+function openTagModal(id) {
+  var p = properties.find(function(x) { return x.id === id; });
+  if (!p) return;
+
+  currentModalAssetId = id;
+
+  var heading = document.getElementById('tagModalHeading');
+  var sub = document.getElementById('tagModalSubtitle');
+  var helper = document.getElementById('tagShortlinkHelper');
+  var copyBtn = document.getElementById('tagModalCopyBtn');
+  var codeBox = document.getElementById('tagModalCode');
+
+  // If Under Review
+  if (p.status === 'Pending Review' || !p.status) {
+    if (heading) heading.innerHTML = `${SVG_ICONS.clock} Property Under Admin Review`;
+    if (sub) sub.textContent = 'Property: ' + p.name + ' • Verification in Progress';
+    if (helper) helper.style.display = 'none';
+    if (copyBtn) copyBtn.style.display = 'none';
+    codeBox.innerHTML = `
+      <div style="padding:10px 0; color:var(--warning); font-family:'Syne',sans-serif; font-size:13px; line-height:1.6;">
+        ${SVG_ICONS.alert} <strong>This property is currently under compliance review by Eternant Admin.</strong><br>
+        Monetized shortlinks will activate immediately once approved. You can message the Admin below to expedite approval.
+      </div>
+      <button class="action-btn-primary" onclick="closeTagModal(); openChatModal('${p.id}');" style="margin-top:10px; width:100%; justify-content:center;">
+        ${SVG_ICONS.chat} Chat with Admin
+      </button>
+    `;
+    document.getElementById('tagModal').classList.add('active');
+    return;
+  }
+
+  // If Rejected
+  if (p.status === 'Rejected') {
+    if (heading) heading.innerHTML = `${SVG_ICONS.x} Property Rejected`;
+    if (sub) sub.textContent = 'Property: ' + p.name + ' • Non-compliant';
+    if (helper) helper.style.display = 'none';
+    if (copyBtn) copyBtn.style.display = 'none';
+    codeBox.innerHTML = `
+      <div style="padding:10px 0; color:var(--danger); font-family:'Syne',sans-serif; font-size:13px; line-height:1.6;">
+        ${SVG_ICONS.x} <strong>Rejection Reason:</strong> ${escapeHtml(p.rejectionReason || 'Compliance criteria not met.')}<br>
+        You can send an appeal or chat with the Admin to rectify this issue.
+      </div>
+      <button class="action-btn-primary" onclick="closeTagModal(); openChatModal('${p.id}');" style="margin-top:10px; width:100%; background:var(--danger); justify-content:center;">
+        ${SVG_ICONS.chat} Appeal to Admin
+      </button>
+    `;
+    document.getElementById('tagModal').classList.add('active');
+    return;
+  }
+
+  // Active (Monetized Shortlink Generator for Websites, Apps, and Direct Link Lockers)
+  if (copyBtn) copyBtn.style.display = 'inline-block';
+  if (p.type === 'Website' || p.type === 'Direct Link Locker') {
+    if (heading) heading.innerHTML = `${SVG_ICONS.link} Monetized Shortlink & Link Customizer`;
+    if (sub) sub.textContent = 'Property: ' + p.name + ' • Monetized Link Shortener Tool';
+    if (helper) {
+      helper.style.display = 'block';
+      var customInp = document.getElementById('assetShortlinkCustomUrl');
+      if (customInp) customInp.value = p.url && p.url !== 'N/A' ? p.url : '';
+    }
+    if (copyBtn) copyBtn.textContent = 'Copy Shortlink';
+    var shortUrl = 'https://etn.link/s/' + p.id;
+    if (p.url && p.url !== 'N/A') {
+      shortUrl += '?dest=' + encodeURIComponent(p.url);
+    }
+    codeBox.textContent = shortUrl;
+  } else if (p.type === 'Telegram Bot') {
+    if (heading) heading.innerHTML = `${SVG_ICONS.bot} Telegram Bot API (Legacy)`;
+    if (sub) sub.textContent = 'Property: ' + p.name + ' (Bot API)';
+    if (helper) helper.style.display = 'none';
+    if (copyBtn) copyBtn.textContent = 'Copy Token';
+    codeBox.textContent = `# Eternant Bot API Token Integration\nET_BOT_KEY = "et_bot_${p.id}"\n# Sponsored ad broadcast active for ${escapeHtml(p.name)}`;
+  }
+  document.getElementById('tagModal').classList.add('active');
+}
+
+function renderChatMessages(id) {
+  var p = properties.find(function(x) { return x.id === id; });
+  if (!p) return;
+  var wrap = document.getElementById('chatMessagesWrap');
+  if (!wrap) return;
+
+  var msgs = p.messages || [];
+  if (!msgs.length) {
+    wrap.innerHTML = `<div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">No messages in this review thread yet. Send a message to Eternant Admin below.</div>`;
+    return;
+  }
+
+  var html = '';
+  msgs.forEach(function(m) {
+    var timeStr = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+    if (m.sender === 'system') {
+      html += `
+        <div class="chat-msg chat-msg-system">
+          <span>${SVG_ICONS.bell}</span> ${escapeHtml(m.text)}
+          <div class="chat-msg-meta" style="justify-content:center;">${timeStr}</div>
+        </div>
+      `;
+    } else if (m.sender === 'publisher') {
+      html += `
+        <div class="chat-msg chat-msg-publisher">
+          <div style="font-weight:700; font-size:10px; color:var(--accent); margin-bottom:2px; display:flex; align-items:center; gap:4px;">${SVG_ICONS.user} You (Publisher)</div>
+          ${escapeHtml(m.text)}
+          <div class="chat-msg-meta" style="justify-content:flex-end;">${timeStr} &bull; Sent</div>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="chat-msg chat-msg-admin">
+          <div style="font-weight:700; font-size:10px; color:var(--accent2); margin-bottom:2px; display:flex; align-items:center; gap:4px;">${SVG_ICONS.shield} Eternant Admin</div>
+          ${escapeHtml(m.text)}
+          <div class="chat-msg-meta">${timeStr} &bull; Verified Staff</div>
+        </div>
+      `;
+    }
+  });
+
+  wrap.innerHTML = html;
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function sendPublisherMessage() {
+  if (!currentChatPropId) return;
+  var inp = document.getElementById('chatInputText');
+  var txt = inp ? inp.value.trim() : '';
+  if (!txt) return;
+
+  var p = properties.find(function(x) { return x.id === currentChatPropId; });
+  if (!p) return;
+
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'publisher',
+    text: txt,
+    timestamp: new Date().toISOString()
+  });
+
+  inp.value = '';
+  persistProperties();
+  renderChatMessages(currentChatPropId);
+  showToast('Message sent to Admin!');
+}
+
+function insertChatPrompt(text) {
+  var inp = document.getElementById('chatInputText');
+  if (inp) {
+    inp.value = text;
+    inp.focus();
+  }
+}
+
+// Live Sync across browser tabs
+window.addEventListener('storage', function(e) {
+  if (e.key === 'et_properties_v2') {
+    try {
+      var saved = localStorage.getItem('et_properties_v2');
+      if (saved) properties = JSON.parse(saved);
+      renderAllViews();
+      if (currentChatPropId) renderChatMessages(currentChatPropId);
+      if (currentFormatPropId) {
+        var curP = properties.find(function(x) { return x.id === currentFormatPropId; });
+        if (curP) renderAdFormatsModalContent(curP);
+      }
+    } catch(err) {}
+  }
+});
+
+// Payouts
+function openPayoutModal() { document.getElementById('payoutModal').classList.add('active'); }
+function closePayoutModal() { document.getElementById('payoutModal').classList.remove('active'); }
+function onPayoutMethodChange() {
+  var m = document.getElementById('payoutMethodSelect').value;
+  document.getElementById('payoutFieldsUPI').style.display = m === 'UPI' ? 'block' : 'none';
+  document.getElementById('payoutFieldsBank').style.display = m === 'Bank Wire' ? 'block' : 'none';
+  document.getElementById('payoutFieldsPayPal').style.display = m === 'PayPal' ? 'block' : 'none';
+  document.getElementById('payoutFieldsUSDT').style.display = m === 'USDT' ? 'block' : 'none';
+}
+function savePayoutMethod() {
+  var m = document.getElementById('payoutMethodSelect').value;
+  var det = m === 'UPI' ? document.getElementById('payoutUpiId').value : 'Saved credentials';
+  document.getElementById('payoutMethodDisplay').textContent = m;
+  document.getElementById('payoutDetailDisplay').textContent = det || 'Verified';
+  closePayoutModal();
+  showToast('Payout method updated!');
+}
+function requestWithdrawal() {
+  var total = properties.reduce(function(acc, p) { return acc + (p.earnings || 0); }, 0);
+  if (total < 50) {
+    showToast('Minimum withdrawal threshold is $50.00. Current: $' + total.toFixed(2));
+    return;
+  }
+  showToast('Withdrawal request submitted! Processed in Net-7.');
+}
+
+// CSV Export
+function exportEarningsCsv() {
+  var csv = 'Asset,Type,Format,Impressions,Clicks,eCPM,Earnings\n';
+  properties.forEach(function(p) {
+    csv += `"${p.name}","${p.type}","${p.format || 'Ad Tag'}",${p.impressions || 0},${p.clicks || 0},${p.ecpm || 0},${p.earnings || 0}\n`;
+  });
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'eternant_earnings.csv';
+  a.click();
+  showToast('Report downloaded!');
+}
+
+function handleSignOut() {
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('supabase.auth.token') !== -1) localStorage.removeItem(k);
+    }
+    localStorage.removeItem('eternant_user_role');
+  } catch(e) {}
+  window.location.href = 'index.html';
+}
+
+function switchDashboardRole(r) {
+  localStorage.setItem('eternant_user_role', r);
+  window.location.href = r === 'advertiser' ? 'advertiser-dashboard.html' : 'publisher-dashboard.html';
+}
+
+// Init
+persistProperties();
+</script>
+</body>
+</html>
