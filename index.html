@@ -693,23 +693,31 @@ footer {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 640px) {
-  .btn-signup { padding: 7px 12px; font-size: 11px; white-space: nowrap; }
+  nav { padding: 0 14px; }
+  .logo { font-size: 14px; letter-spacing: 2px; gap: 7px; }
+  .nav-right { gap: 6px; }
+  .btn-signup { padding: 6px 12px; font-size: 11px; white-space: nowrap; border-radius: 6px; }
   .btn-login { display: none; }
   .nav-theme-toggle { display: none; }
+  .hamburger { width: 36px; height: 36px; padding: 7.5px; margin-left: 0; flex-shrink: 0; }
   .fmt-panel.active { grid-template-columns: 1fr; }
-
-
   .traffic-grid { grid-template-columns: 1fr 1fr; }
   .target-grid { grid-template-columns: 1fr; }
-
-
 }
 @media (min-width: 641px) { .drawer-theme-row { display: none; } }
 @media (max-width: 420px) {
+  nav { padding: 0 10px; }
+  .logo { font-size: 13px; letter-spacing: 1.5px; gap: 5px; }
   .hero h1 { letter-spacing: -0.8px; }
-  .btn-signup { padding: 8px 14px; font-size: 12px; }
+  .btn-signup { padding: 5px 9px; font-size: 10.5px; }
+  .hamburger { width: 34px; height: 34px; padding: 6.5px; }
   .theme-toggle { display: none; }
   .format-tabs { overflow-x: auto; flex-wrap: nowrap; }
+}
+@media (max-width: 360px) {
+  nav { padding: 0 8px; }
+  .logo { font-size: 12px; letter-spacing: 1px; gap: 4px; }
+  .btn-signup { padding: 4px 7px; font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
