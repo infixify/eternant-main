@@ -1574,7 +1574,7 @@ body {
       <div class="form-group">
         <label class="form-label">Domain / Full App URL *</label>
         <input type="text" class="form-control" id="owDomain" placeholder="https://example.com or example.com" oninput="clearOwStepError(2)">
-        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Enter a valid domain or full URL (e.g. <code style="color:var(--accent);">lootify.com</code> or <code style="color:var(--accent);">https://app.lootify.com</code>).</div>
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Enter your website domain or app URL (e.g. <code style="color:var(--accent);">example.com</code> or <code style="color:var(--accent);">https://app.example.com</code>).</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="form-group">
@@ -1618,11 +1618,11 @@ body {
         </div>
         <div class="form-group">
           <label class="form-label">% To Give Users (0 - 1000)</label>
-          <input type="number" class="form-control" id="owPercentToGive" value="100" min="0" max="1000" step="any" oninput="updateOwPreview(); clearOwStepError(3);">
+          <input type="number" class="form-control" id="owPercentToGive" value="0" min="0" max="1000" step="any" oninput="updateOwPreview(); clearOwStepError(3);">
         </div>
       </div>
       <div style="background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--text-sub); margin-bottom:12px; line-height:1.6;">
-        Preview: For a <strong style="color:var(--text);">$1.00</strong> offer (<span id="owPreviewPct">100%</span> to users), your users will receive <span id="owPreviewVal" style="color:var(--accent); font-weight:700;">100.00 Points</span>.
+        Preview: For a <strong style="color:var(--text);">$1.00</strong> offer (<span id="owPreviewPct">0%</span> to users), your users will receive <span id="owPreviewVal" style="color:var(--accent); font-weight:700;">0.00 Points</span>.
       </div>
       <div id="owStep3Error" style="display:none; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.35); color:var(--danger); padding:10px 12px; border-radius:8px; font-size:12px; font-weight:600; margin-bottom:12px;"></div>
       <div style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
@@ -1638,11 +1638,8 @@ body {
           <label class="form-label" style="margin-bottom:0;">Postback URL *</label>
           <span id="owDomainMatchBadge" style="font-size:11px; font-family:'Space Mono',monospace; color:var(--accent); background:rgba(110,181,255,0.1); padding:2px 8px; border-radius:6px;">Must match placement domain</span>
         </div>
-        <input type="url" class="form-control" id="owPostbackUrl" placeholder="https://your-domain.com/lootify/api/postback" oninput="clearOwStepError(4)">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; flex-wrap:wrap;">
-          <div style="font-size:11px; color:var(--muted);">Must use the same domain as your Step 2 App/Website URL (e.g. <code style="color:var(--accent);">/lootify/api/postback</code>).</div>
-          <button type="button" class="btn-secondary" style="padding:3px 8px; font-size:10.5px;" onclick="autofillOwPostbackUrl()">Auto-fill Domain Postback</button>
-        </div>
+        <input type="url" class="form-control" id="owPostbackUrl" placeholder="https://your-domain.com/api/postback" oninput="clearOwStepError(4)">
+        <div style="font-size:11px; color:var(--muted); margin-top:6px;">Enter your server's postback endpoint URL. Its domain must match your Step 2 App/Website domain.</div>
       </div>
       <div id="owStep4Error" style="display:none; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.35); color:var(--danger); padding:10px 12px; border-radius:8px; font-size:12px; font-weight:600; margin-top:10px;"></div>
       <div style="display:flex; justify-content:space-between; gap:10px; margin-top:24px;">
@@ -2484,7 +2481,8 @@ var WEBSITE_AD_FORMATS = [
     cpm: '$8.00 – $25.00+',
     desc: 'Interactive reward wall with paid surveys, mobile app downloads, and micro-tasks. Generates high eCPM and maximum revenue per user with postback callback support.',
     codeSnippet: function(p) {
-      return `<!-- Eternant Offerwall iFrame: ${escapeHtml(p.name)} -->\n<iframe src="https://wall.eternant.net/v1/wall?zone=${p.id}-wall&uid=USER_ID" width="100%" height="650" frameborder="0" style="border:none; border-radius:12px;" allow="payment"><\/iframe>\n<!-- Postback Webhook: https://api.lootify.net/lootify/api/postback?pub=${p.id} -->`;
+      var pbEndpoint = p.postbackUrl || ('https://' + (extractCleanHostname(p.url) || 'your-domain.com') + '/api/postback');
+      return `<!-- Eternant Offerwall iFrame: ${escapeHtml(p.name)} -->\n<iframe src="https://wall.eternant.net/v1/wall?zone=${p.id}-wall&uid=USER_ID" width="100%" height="650" frameborder="0" style="border:none; border-radius:12px;" allow="payment"><\/iframe>\n<!-- Your Server Postback Endpoint: ${escapeHtml(pbEndpoint)} -->`;
     }
   }
 ];
@@ -2957,21 +2955,6 @@ function clearOwStepError(stepNum) {
   }
 }
 
-function autofillOwPostbackUrl() {
-  var domEl = document.getElementById('owDomain');
-  var pbEl = document.getElementById('owPostbackUrl');
-  var host = extractCleanHostname(domEl ? domEl.value : '');
-  if (!host) {
-    showToast('Please enter a valid domain in Step 2 first.');
-    return;
-  }
-  if (pbEl) {
-    pbEl.value = 'https://' + host + '/lootify/api/postback';
-    clearOwStepError(4);
-    showToast('Postback URL auto-filled for ' + host);
-  }
-}
-
 function openOfferwallModal() {
   currentOwStep = 1;
   var chk = document.getElementById('owTermsCheck');
@@ -2985,11 +2968,11 @@ function openOfferwallModal() {
   var decEl = document.getElementById('owAllowDecimals');
   if (decEl) decEl.value = 'Yes';
   var pctEl = document.getElementById('owPercentToGive');
-  if (pctEl) pctEl.value = '100';
+  if (pctEl) pctEl.value = '0';
   var pbEl = document.getElementById('owPostbackUrl');
   if (pbEl) {
     pbEl.value = '';
-    pbEl.placeholder = 'https://your-domain.com/lootify/api/postback';
+    pbEl.placeholder = 'https://your-domain.com/api/postback';
   }
   clearOwStepError(2);
   clearOwStepError(3);
@@ -3031,7 +3014,7 @@ function nextOfferwallStep(step) {
     if (badge) badge.textContent = 'Required Domain: ' + cleanHost;
     var pbInput = document.getElementById('owPostbackUrl');
     if (pbInput) {
-      pbInput.placeholder = 'https://' + cleanHost + '/lootify/api/postback';
+      pbInput.placeholder = 'https://' + cleanHost + '/api/postback';
     }
   }
   if (step === 4 && currentOwStep === 3) {
@@ -3065,7 +3048,7 @@ function updateOwStepUI() {
 }
 
 function updateOwPreview() {
-  var rawVal = document.getElementById('owPercentToGive') ? document.getElementById('owPercentToGive').value.trim() : '100';
+  var rawVal = document.getElementById('owPercentToGive') ? document.getElementById('owPercentToGive').value.trim() : '0';
   var pct = rawVal === '' ? 0 : parseFloat(rawVal);
   if (isNaN(pct) || pct < 0) pct = 0;
   var allowDecimals = document.getElementById('owAllowDecimals').value === 'Yes';
@@ -3095,11 +3078,11 @@ function submitOfferwallUnit() {
 
   var postbackUrl = (document.getElementById('owPostbackUrl').value || '').trim();
   if (!postbackUrl) {
-    showOwStepError(4, 'Please enter your Postback URL (e.g. https://' + appHost + '/lootify/api/postback).');
+    showOwStepError(4, 'Please enter your Postback URL on ' + appHost + '.');
     return;
   }
   if (!/^https?:\/\//i.test(postbackUrl)) {
-    showOwStepError(4, 'Postback URL must start with https:// or http:// (e.g. https://' + appHost + '/lootify/api/postback).');
+    showOwStepError(4, 'Postback URL must start with https:// or http:// (e.g. https://' + appHost + '/...).');
     return;
   }
   var pbHost = extractCleanHostname(postbackUrl);
