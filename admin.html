@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eternant Admin — Network Console & Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="dark"] {
+  --bg:           #03050d;
+  --bg-card:      #070c1a;
+  --bg-hover:     #0b1226;
+  --bg-nav:       rgba(3,5,13,0.88);
+  --border:       #141f38;
+  --border-lt:    #1e3058;
+  --text:         #d8e6ff;
+  --text-sub:     #8aa4c8;
+  --muted:        #4a6080;
+  --accent:       #6eb5ff;
+  --accent2:      #a78bfa;
+  --accent-dim:   rgba(110,181,255,0.08);
+  --glow:         rgba(110,181,255,0.18);
+  --glow2:        rgba(167,139,250,0.12);
+  --success:      #4ade80;
+  --success-dim:  rgba(74,222,128,0.08);
+  --warn:         #fbbf24;
+  --warn-dim:     rgba(251,191,36,0.08);
+  --danger:       #f87171;
+  --danger-dim:   rgba(248,113,113,0.08);
+  --star-color:   rgba(216,230,255,1);
+  --nebula1-bg:   rgba(110,181,255,0.07);
+  --nebula2-bg:   rgba(167,139,250,0.06);
+  --shooting-star:rgba(180,210,255,0.9);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg:           #f0f4ff;
+  --bg-card:      #ffffff;
+  --bg-hover:     #e8eeff;
+  --bg-nav:       rgba(240,244,255,0.92);
+  --border:       #d0daf0;
+  --border-lt:    #b8c8e8;
+  --text:         #0d1832;
+  --text-sub:     #3a5080;
+  --muted:        #6a82a8;
+  --accent:       #2a7fd4;
+  --accent2:      #7c54e8;
+  --accent-dim:   rgba(42,127,212,0.08);
+  --glow:         rgba(42,127,212,0.14);
+  --glow2:        rgba(124,84,232,0.08);
+  --success:      #16a34a;
+  --success-dim:  rgba(22,163,74,0.08);
+  --warn:         #d97706;
+  --warn-dim:     rgba(217,119,6,0.08);
+  --danger:       #dc2626;
+  --danger-dim:   rgba(220,38,38,0.08);
+  --star-color:   rgba(42,90,160,1);
+  --nebula1-bg:   rgba(42,127,212,0.06);
+  --nebula2-bg:   rgba(124,84,232,0.05);
+  --shooting-star:rgba(42,100,200,0.8);
+  color-scheme: light;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.35s, color 0.35s;
+  overflow-x: hidden;
+}
+
+/* ── COSMIC BACKGROUND ── */
+#starfield {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; transition: opacity 0.5s;
+}
+[data-theme="light"] #starfield { opacity: 0.35; }
+
+.nebula {
+  position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; transition: background 0.4s;
+}
+.nebula-1 { width: 650px; height: 650px; top: -200px; right: -120px; background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
+.nebula-2 { width: 550px; height: 550px; bottom: 40px; left: -160px; background: radial-gradient(circle, var(--nebula2-bg) 0%, transparent 70%); }
+
+.shooting-star {
+  position: fixed; top: 0; left: 0; width: 2px; height: 2px; background: var(--shooting-star); border-radius: 50%; pointer-events: none; z-index: 1; opacity: 0;
+}
+.shooting-star::after {
+  content: ''; position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 80px; height: 1px; background: linear-gradient(to left, var(--shooting-star), transparent);
+}
+
+/* ── TOP NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(12px, 3vw, 36px); height: 64px;
+  background: var(--bg-nav); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.35s, border-color 0.35s;
+  width: 100%;
+}
+
+.logo-wrap { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+.logo-icon { position: relative; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+.logo-ring { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--accent); opacity: 0.5; position: absolute; animation: logo-rotate 12s linear infinite; }
+.logo-ring-2 { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--accent2); opacity: 0.4; position: absolute; animation: logo-rotate 8s linear infinite reverse; }
+.logo-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+@keyframes logo-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.logo-text { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: 2.5px; text-transform: uppercase; }
+.logo-badge { font-size: 8.5px; font-weight: 700; letter-spacing: 1.2px; background: linear-gradient(135deg, rgba(110,181,255,0.2), rgba(167,139,250,0.15)); border: 1px solid rgba(110,181,255,0.3); color: var(--accent); padding: 2px 7px; border-radius: 100px; font-family: 'Space Mono', monospace; }
+
+/* DESKTOP NAV TABS */
+.nav-tabs {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  padding: 4px; border-radius: 10px;
+}
+.nav-tab-btn {
+  background: transparent; border: none; font-family: 'Syne', sans-serif;
+  font-size: 12px; font-weight: 600; color: var(--text-sub);
+  padding: 6px 14px; border-radius: 7px; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.nav-tab-btn.active { background: var(--bg-hover); color: var(--accent); border: 1px solid var(--border-lt); }
+.nav-tab-badge {
+  font-family: 'Space Mono', monospace; font-size: 9px; padding: 1px 6px;
+  border-radius: 10px; background: var(--accent-dim); color: var(--accent);
+}
+.nav-tab-badge.pending { background: var(--warn-dim); color: var(--warn); }
+
+/* MOBILE SEGMENTED CONTROL BAR */
+.mobile-subnav-bar {
+  display: none; width: 100%; position: sticky; top: 56px; z-index: 90;
+  background: var(--bg-nav); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); padding: 8px 12px;
+}
+.mobile-segmented-tabs {
+  display: flex; width: 100%; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 4px;
+}
+.mobile-segmented-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 10px; border-radius: 7px; border: none; background: transparent;
+  color: var(--text-sub); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+}
+.mobile-segmented-tab.active {
+  background: var(--bg-hover); color: var(--accent); border: 1px solid var(--border-lt);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.btn-preview {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; padding: 7px 14px;
+  border-radius: 8px; border: 1px solid rgba(110,181,255,0.4);
+  background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.08));
+  color: var(--accent); cursor: pointer; text-decoration: none; display: inline-flex;
+  align-items: center; gap: 6px; transition: all 0.2s;
+}
+.btn-preview:hover { box-shadow: 0 0 18px var(--glow); border-color: var(--accent); }
+
+.btn-logout {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 12px;
+  border-radius: 8px; border: 1px solid var(--border-lt); background: transparent;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.btn-logout:hover { color: var(--danger); border-color: var(--danger); background: var(--danger-dim); }
+
+/* ── LAYOUT CONTAINER ── */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 clamp(16px,4vw,28px) 80px; width: 100%; position: relative; z-index: 1; }
+
+/* ── LOGIN SCREEN ── */
+#loginScreen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 64px); padding: 40px 20px; position: relative; z-index: 1;
+}
+.login-card {
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 40px 36px; width: 100%; max-width: 420px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(110,181,255,0.06);
+}
+.login-icon {
+  width: 50px; height: 50px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
+  border: 1px solid rgba(110,181,255,0.3); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px;
+}
+.login-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.login-card h2 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.4px; }
+.login-card p { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; line-height: 1.6; }
+.login-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-sub); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+.login-input {
+  width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border-lt);
+  background: var(--bg-hover); color: var(--text); font-family: 'Syne', sans-serif; font-size: 13px;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 14px;
+}
+.login-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(110,181,255,0.1); }
+.btn-login-submit {
+  width: 100%; padding: 12px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, #4a9eff, #7b5ef7); color: #fff;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 18px rgba(74,158,255,0.3);
+}
+.btn-login-submit:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,158,255,0.4); }
+.btn-login-submit:disabled { opacity: 0.6; pointer-events: none; }
+.login-error {
+  margin-top: 14px; padding: 10px 14px; border-radius: 8px;
+  background: var(--danger-dim); border: 1px solid rgba(248,113,113,0.3);
+  color: var(--danger); font-size: 12px; display: none; line-height: 1.5;
+}
+.login-error.show { display: block; }
+
+/* ── ADMIN CONTENT AREA ── */
+#adminContent { display: none; }
+
+.page-header { padding: 40px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+.page-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.page-header h1 { font-size: clamp(22px, 4vw, 32px); font-weight: 800; letter-spacing: -1px; color: var(--text); }
+.page-header h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.page-header p { font-size: 13.5px; color: var(--text-sub); line-height: 1.7; margin-top: 8px; max-width: 520px; }
+.admin-user-badge {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 100px;
+  background: var(--success-dim); border: 1px solid rgba(74,222,128,0.25);
+  font-family: 'Space Mono', monospace; font-size: 10px; color: var(--success); flex-shrink: 0;
+}
+.admin-user-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+
+/* ── TAB CONTENT CONTAINERS ── */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── TAB 1: LINK CONFIG STYLES ── */
+.save-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 14px 20px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 28px; transition: border-color 0.2s;
+}
+.save-status { display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+.status-dot.saved { background: var(--success); box-shadow: 0 0 8px var(--success); }
+.status-dot.unsaved { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.status-dot.loading { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: blink 0.8s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.save-actions { display: flex; gap: 8px; }
+.btn-reset {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 500; padding: 8px 16px;
+  border-radius: 8px; border: 1px solid var(--border-lt); background: transparent; color: var(--muted); cursor: pointer;
+}
+.btn-reset:hover { color: var(--text); border-color: var(--muted); background: var(--bg-hover); }
+.btn-save {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 20px;
+  border-radius: 8px; border: none; background: linear-gradient(135deg, #4a9eff, #7b5ef7);
+  color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 4px 16px rgba(74,158,255,0.3); transition: opacity 0.2s, transform 0.2s;
+}
+.btn-save:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-save.saving { opacity: 0.7; pointer-events: none; }
+
+.group { margin-bottom: 28px; }
+.group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.group-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; }
+.group-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+
+.link-list { display: flex; flex-direction: column; gap: 8px; }
+.link-row {
+  display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; flex-wrap: wrap;
+}
+.link-row:hover { border-color: var(--border-lt); }
+.link-label { min-width: 160px; flex-shrink: 0; }
+.link-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.link-desc { font-size: 10.5px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 1px; }
+
+.link-input-wrap {
+  flex: 1; min-width: 220px; display: flex; align-items: center;
+  border: 1px solid var(--border-lt); border-radius: 9px; background: var(--bg-hover); overflow: hidden;
+}
+.link-input-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(110,181,255,0.08); }
+.link-input-icon { padding: 0 10px; color: var(--muted); display: flex; align-items: center; flex-shrink: 0; }
+.link-input {
+  flex: 1; padding: 9px 4px; background: transparent; border: none; outline: none;
+  color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; min-width: 0;
+}
+.link-clear { padding: 9px 12px; background: transparent; border: none; border-left: 1px solid var(--border); color: var(--muted); cursor: pointer; font-size: 11px; }
+.link-clear:hover { color: var(--text); background: var(--bg-card); }
+
+.platform-row {
+  display: flex; align-items: center; gap: 14px; padding: 11px 16px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; flex-wrap: wrap;
+}
+.platform-row:hover { border-color: var(--border-lt); }
+.platform-vis { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.vis-label { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+.pill-switch { position: relative; display: inline-block; cursor: pointer; }
+.pill-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.pill-track {
+  display: block; background: var(--border-lt); border-radius: 100px;
+  width: 100%; height: 100%; transition: background 0.25s; position: relative;
+}
+.pill-track::after {
+  content: ''; position: absolute; top: 2px; left: 2px; width: calc(50% - 2px); height: calc(100% - 4px);
+  border-radius: 100px; background: #fff; transition: left 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.pill-switch input:checked + .pill-track { background: var(--accent); }
+.pill-switch input:checked + .pill-track::after { left: calc(50% + 2px); }
+
+.p-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.p-dot-instagram { background: linear-gradient(135deg, #e1306c, #f77737); }
+.p-dot-youtube   { background: #ff0000; }
+.p-dot-telegram  { background: #2aabee; }
+.p-dot-whatsapp  { background: #25d366; }
+.p-dot-x         { background: #e7e9ea; }
+.p-dot-linkedin  { background: #0a66c2; }
+.p-dot-facebook  { background: #1877f2; }
+.p-dot-discord   { background: #5865f2; }
+
+/* ── TAB 2: PUBLISHER AUDIT STYLES ── */
+.audit-controls {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap; margin-bottom: 20px;
+}
+.audit-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-btn {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; padding: 6px 14px;
+  border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.filter-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.audit-stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+  margin-bottom: 24px;
+}
+.audit-stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+  padding: 16px 18px;
+}
+.audit-stat-label { font-size: 10px; font-family: 'Space Mono', monospace; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; }
+.audit-stat-val { font-size: 22px; font-weight: 700; font-family: 'Space Mono', monospace; color: var(--text); margin-top: 4px; }
+
+.review-list { display: flex; flex-direction: column; gap: 12px; }
+.review-item {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 18px 20px; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.review-item:hover { border-color: var(--border-lt); box-shadow: 0 4px 24px var(--glow2); }
+.review-item-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.review-title-wrap { display: flex; align-items: center; gap: 10px; }
+.review-platform-icon {
+  width: 36px; height: 36px; border-radius: 10px; background: var(--bg-hover);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.review-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.review-meta {
+  font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 2px;
+}
+.review-status-badge {
+  font-family: 'Space Mono', monospace; font-size: 10.5px; padding: 4px 10px; border-radius: 6px;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.review-status-badge.pending { background: var(--warn-dim); color: var(--warn); border: 1px solid rgba(251,191,36,0.3); }
+.review-status-badge.active { background: var(--success-dim); color: var(--success); border: 1px solid rgba(74,222,128,0.3); }
+.review-status-badge.rejected { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
+
+.review-details-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px;
+  background: var(--bg-hover); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+  font-size: 12px;
+}
+.review-kv { display: flex; flex-direction: column; gap: 2px; }
+.review-k { font-size: 10px; font-family: 'Space Mono', monospace; color: var(--muted); text-transform: uppercase; }
+.review-v { font-weight: 600; color: var(--text); word-break: break-all; }
+
+.review-notes-box {
+  background: var(--bg-hover); border: 1px solid var(--border-lt); border-radius: 9px;
+  padding: 10px 12px; font-size: 11.5px; color: var(--text-sub); margin-bottom: 12px; line-height: 1.5;
+}
+.review-actions-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding-top: 12px; border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.review-token { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+.review-btn-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.audit-controls-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.btn-approve {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; padding: 7px 14px;
+  border-radius: 8px; border: 1px solid rgba(74,222,128,0.35); background: var(--success-dim);
+  color: var(--success); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;
+}
+.btn-approve:hover { background: rgba(74,222,128,0.18); border-color: var(--success); }
+
+.btn-reject {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; padding: 7px 14px;
+  border-radius: 8px; border: 1px solid rgba(248,113,113,0.35); background: var(--danger-dim);
+  color: var(--danger); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;
+}
+.btn-reject:hover { background: rgba(248,113,113,0.18); border-color: var(--danger); }
+
+.btn-rereview {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; padding: 7px 12px;
+  border-radius: 8px; border: 1px solid var(--border-lt); background: var(--bg-hover);
+  color: var(--text-sub); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;
+}
+.btn-rereview:hover { color: var(--text); border-color: var(--accent); }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  background: transparent; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;
+}
+.toggle-track {
+  width: 48px; height: 26px; border-radius: 100px; background: var(--bg-card);
+  border: 1px solid var(--border-lt); position: relative; display: flex;
+  align-items: center; justify-content: space-between; padding: 0 5px;
+}
+.toggle-icon { font-size: 11px; line-height: 1; z-index: 1; user-select: none; }
+.toggle-thumb {
+  position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--accent); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] .toggle-thumb { transform: translateX(22px); }
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200; background: rgba(3,5,13,0.78);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-card {
+  background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: 18px;
+  padding: 28px 26px; width: 100%; max-width: 460px; box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.modal-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.modal-card p { font-size: 12.5px; color: var(--text-sub); line-height: 1.6; margin-bottom: 18px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+/* ── ADMIN CHAT & REVIEW THREAD ── */
+.admin-chat-thread-box {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-lt);
+  border-radius: 12px;
+  height: 290px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.admin-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-chat-msg {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+.admin-chat-msg-admin {
+  align-self: flex-end;
+  background: linear-gradient(135deg, rgba(110,181,255,0.22), rgba(167,139,250,0.18));
+  border: 1px solid rgba(110,181,255,0.4);
+  color: var(--text);
+  border-bottom-right-radius: 2px;
+}
+.admin-chat-msg-publisher {
+  align-self: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  color: var(--text);
+  border-bottom-left-radius: 2px;
+}
+.admin-chat-msg-system {
+  align-self: center;
+  background: var(--warn-dim);
+  border: 1px dashed rgba(251,191,36,0.3);
+  color: var(--warn);
+  font-size: 10.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-align: center;
+  max-width: 90%;
+}
+.admin-chat-meta {
+  font-size: 9px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── TOAST ALERT ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 300;
+  background: var(--bg-card); border: 1px solid var(--border-lt); color: var(--text);
+  padding: 12px 18px; border-radius: 12px; font-family: 'Space Mono', monospace; font-size: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.45); transform: translateY(20px); opacity: 0;
+  pointer-events: none; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: rgba(74,222,128,0.45); color: var(--success); }
+.toast.error, .toast.danger { border-color: rgba(248,113,113,0.45); color: var(--danger); }
+.toast.info { border-color: rgba(110,181,255,0.45); color: var(--accent); }
+
+@media (max-width: 720px) {
+  nav { height: 56px; padding: 0 12px; }
+  .logo-text { font-size: 13px; letter-spacing: 1.5px; }
+  .logo-badge { display: none; }
+  .nav-tabs { display: none !important; }
+  .mobile-subnav-bar { display: block; }
+  .btn-preview { display: none; }
+  .btn-logout { padding: 6px 10px; font-size: 11px; }
+
+  .wrap { padding: 0 12px 60px; }
+  .page-header { padding: 20px 0 18px; margin-bottom: 18px; }
+  .page-header-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .page-header h1 { font-size: 20px; }
+  .page-header p { font-size: 12px; line-height: 1.5; margin-top: 4px; }
+  .admin-user-badge { width: 100%; justify-content: flex-start; }
+
+  /* Tab 1 Mobile */
+  .save-bar { padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 20px; }
+  .save-actions { width: 100%; display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+  .btn-save, .btn-reset { width: 100%; justify-content: center; padding: 9px; font-size: 11.5px; }
+
+  .link-row, .platform-row { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; }
+  .link-label { min-width: auto; width: 100%; }
+  .link-input-wrap { width: 100%; min-width: 0; }
+  .platform-vis { width: 100%; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 2px; }
+
+  /* Tab 2 Mobile */
+  .audit-stats-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 16px; }
+  .audit-stat-card { padding: 10px 8px; text-align: center; border-radius: 10px; }
+  .audit-stat-label { font-size: 8px; letter-spacing: 0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .audit-stat-val { font-size: 16px; margin-top: 2px; }
+
+  .audit-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 16px; }
+  .audit-filters { width: 100%; display: flex; overflow-x: auto; padding-bottom: 4px; gap: 4px; scrollbar-width: none; }
+  .audit-filters::-webkit-scrollbar { display: none; }
+  .filter-btn { font-size: 11px; padding: 5px 11px; white-space: nowrap; flex-shrink: 0; }
+
+  .audit-controls-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn-approve, .btn-reject, .btn-rereview { padding: 8px 10px; font-size: 11px; justify-content: center; width: 100%; }
+
+  .review-item { padding: 14px 12px; border-radius: 12px; }
+  .review-item-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .review-title-wrap { width: 100%; }
+  .review-name { font-size: 14px; word-break: break-word; }
+  .review-details-grid { grid-template-columns: 1fr; gap: 8px; padding: 10px; }
+
+  .review-actions-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .review-btn-group { display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: 6px; }
+  .review-btn-group button { width: 100%; }
+}
+
+@media (max-width: 380px) {
+  .audit-stats-grid { grid-template-columns: 1fr; gap: 6px; }
+  .audit-stat-card { text-align: left; display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; }
+  .audit-stat-val { margin-top: 0; font-size: 15px; }
+  .mobile-segmented-tab { font-size: 11px; padding: 7px 6px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+
+<!-- TOP NAVIGATION -->
+<nav>
+  <a href="javascript:void(0)" onclick="switchAdminTab('links')" class="logo-wrap">
+    <div class="logo-icon">
+      <div class="logo-ring"></div>
+      <div class="logo-ring-2"></div>
+      <div class="logo-dot"></div>
+    </div>
+    <span class="logo-text">ETERNANT</span>
+    <span class="logo-badge">ADMIN</span>
+  </a>
+
+  <!-- UNIFIED TABS (DESKTOP) -->
+  <div class="nav-tabs" id="navTabsWrap" style="display:none;">
+    <button class="nav-tab-btn active" id="tabBtn-links" onclick="switchAdminTab('links')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+      Links
+    </button>
+    <button class="nav-tab-btn" id="tabBtn-reviews" onclick="switchAdminTab('reviews')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      Publisher Audit
+      <span class="nav-tab-badge pending" id="navPendingBadge">0</span>
+    </button>
+  </div>
+
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-track">
+        <span class="toggle-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></span>
+        <span class="toggle-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></span>
+        <div class="toggle-thumb"></div>
+      </div>
+    </button>
+    <a href="https://eternant.com" class="btn-preview" target="_blank" rel="noopener">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Preview Site
+    </a>
+    <button class="btn-logout" id="btnLogout" onclick="doLogout()" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<!-- MOBILE SUBNAV SEGMENTED TAB BAR (ALWAYS ACCESSIBLE ON MOBILE) -->
+<div class="mobile-subnav-bar" id="mobileSubnavBar">
+  <div class="mobile-segmented-tabs">
+    <button class="mobile-segmented-tab active" id="mobTabBtn-links" onclick="switchAdminTab('links')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+      Links Config
+    </button>
+    <button class="mobile-segmented-tab" id="mobTabBtn-reviews" onclick="switchAdminTab('reviews')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      Audit Queue
+      <span class="nav-tab-badge pending" id="mobNavPendingBadge">0</span>
+    </button>
+  </div>
+</div>
+
+<!-- LOGIN SCREEN (GENERIC PLACEHOLDER & SECURE AUTH CHECK) -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2>Admin Authentication</h2>
+    <p>Sign in with your Eternant administrative credentials. Access is strictly audited and limited to authorized operators.</p>
+    <label class="login-label" for="loginEmail">Authorized Admin Email</label>
+    <input class="login-input" type="email" id="loginEmail" placeholder="admin@eternant.com" value="" autocomplete="email">
+    <label class="login-label" for="loginPassword">Password</label>
+    <input class="login-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-login-submit" id="btnLoginSubmit" onclick="doAdminLogin()">Verify &amp; Enter</button>
+    <button type="button" class="btn-reset" style="width:100%; margin-top:10px; padding:10px; border-radius:10px; font-size:12px;" onclick="unlockOfflineAdmin()">⚡ Quick Open Console (Offline / Local Mode)</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- AUTHENTICATED ADMIN CONSOLE -->
+<div id="adminContent">
+  <div class="wrap">
+    
+    <div class="page-header">
+      <div class="page-header-top">
+        <div>
+          <h1 id="headerTitle">Network <em>Configuration</em></h1>
+          <p id="headerSubtitle">Manage social & follow links, Brevo SMTP API configuration, and publisher property compliance approvals.</p>
+        </div>
+        <div class="admin-user-badge">
+          <div class="admin-user-dot"></div>
+          <span id="adminBadgeText">admin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TAB 1: LINK CONFIGURATION ================= -->
+    <div class="tab-content active" id="pane-links">
+      <!-- Save Bar -->
+      <div class="save-bar">
+        <div class="save-status">
+          <div class="status-dot loading" id="statusDot"></div>
+          <span id="statusText">Loading…</span>
+        </div>
+        <div class="save-actions">
+          <button class="btn-reset" onclick="resetAllLinks()">Reset All</button>
+          <button class="btn-save" id="btnSave" onclick="saveAllLinks()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Links to Cloud
+          </button>
+        </div>
+      </div>
+
+      <!-- Follow Us Configuration -->
+      <div class="group">
+        <div class="group-header"><span class="group-label">Social &amp; Follow Ecosystem</span><div class="group-line"></div></div>
+        <div class="link-list">
+          <div class="platform-row">
+            <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-telegram"></span>Telegram</div><div class="link-desc">follow_telegram</div></div>
+            <div class="link-input-wrap"><span class="link-input-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_telegram" placeholder="https://t.me/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+            <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_telegram_visible" data-toggle-key="follow_telegram_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+          </div>
+          <div class="platform-row">
+            <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-whatsapp"></span>WhatsApp</div><div class="link-desc">follow_whatsapp</div></div>
+            <div class="link-input-wrap"><span class="link-input-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_whatsapp" placeholder="https://wa.me/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+            <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_whatsapp_visible" data-toggle-key="follow_whatsapp_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+          </div>
+          <div class="platform-row">
+            <div class="link-label"><div class="link-name" style="display:flex;align-items:center;gap:7px;"><span class="p-dot p-dot-x"></span>X (Twitter)</div><div class="link-desc">follow_x</div></div>
+            <div class="link-input-wrap"><span class="link-input-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><input class="link-input" type="url" data-key="follow_x" placeholder="https://x.com/eternant"><button class="link-clear" onclick="clearInput(this)">✕</button></div>
+            <div class="platform-vis"><span class="vis-label">Show</span><label class="pill-switch" style="width:36px;height:20px;"><input type="checkbox" id="toggle-follow_x_visible" data-toggle-key="follow_x_visible" checked onchange="markDirty()"><span class="pill-track"></span></label></div>
+          </div>
+        </div>
+      </div>
+      <!-- ================= BREVO API KEY SETTINGS ================= -->
+      <div class="group" id="brevoSettingsGroup">
+        <div class="group-header">
+          <span class="group-label">Brevo API Configuration</span>
+          <div class="group-line"></div>
+        </div>
+        <div class="link-list">
+          <div class="link-row">
+            <div class="link-label">
+              <div class="link-name" style="display:flex;align-items:center;gap:7px;">
+                <span class="p-dot" style="background:var(--success);box-shadow:0 0 8px var(--success);" id="brevoStatusDot"></span>
+                Brevo API Key
+              </div>
+              <div class="link-desc" id="brevoKeyStatusText">Set your Brevo REST API key (xkeysib-...)</div>
+            </div>
+            <div class="link-input-wrap">
+              <span class="link-input-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 10.5a3.5 3.5 0 0 1-5 0 3.5 3.5 0 0 0 5 0z"/>
+                </svg>
+              </span>
+              <input type="password" id="brevoApiKeyInput" data-key="brevo_api_key" class="link-input" placeholder="xkeysib-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+              <button type="button" class="link-clear" id="btnToggleBrevoVis" onclick="toggleBrevoKeyVisibility()" title="Show/Hide API Key">👁️</button>
+              <button type="button" class="link-clear" onclick="clearInput(this)" title="Clear">✕</button>
+            </div>
+            <button type="button" class="btn-save" onclick="saveBrevoApiKey()" style="padding: 9px 16px; font-size: 12px; flex-shrink: 0;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Save Key
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TAB 2: PUBLISHER AUDIT ================= -->
+    <div class="tab-content" id="pane-reviews">
+      
+      <!-- Metrics Overview -->
+      <div class="audit-stats-grid">
+        <div class="audit-stat-card">
+          <div class="audit-stat-label">Pending Review</div>
+          <div class="audit-stat-val" id="metricPendingCount" style="color:var(--warn);">0</div>
+        </div>
+        <div class="audit-stat-card">
+          <div class="audit-stat-label">Active Approved</div>
+          <div class="audit-stat-val" id="metricActiveCount" style="color:var(--success);">0</div>
+        </div>
+        <div class="audit-stat-card">
+          <div class="audit-stat-label">Rejected / Flagged</div>
+          <div class="audit-stat-val" id="metricRejectedCount" style="color:var(--danger);">0</div>
+        </div>
+      </div>
+
+      <!-- Controls & Quick Actions -->
+      <div class="audit-controls">
+        <div class="audit-filters">
+          <button class="filter-btn active" onclick="setAuditFilter('all', this)">All</button>
+          <button class="filter-btn" onclick="setAuditFilter('Pending Review', this)">Pending (Queue)</button>
+          <button class="filter-btn" onclick="setAuditFilter('Active', this)">Approved</button>
+          <button class="filter-btn" onclick="setAuditFilter('Rejected', this)">Rejected</button>
+        </div>
+        <div class="audit-controls-actions">
+          <button class="btn-approve" onclick="approveAllPending()">Approve All Pending</button>
+          <button class="btn-reset" onclick="injectTestProperty()">+ Test Submission</button>
+        </div>
+      </div>
+
+      <!-- Review Items List -->
+      <div class="review-list" id="auditListContainer">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+</div><!-- /adminContent -->
+
+<!-- REJECTION REASON MODAL -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-card">
+    <h3 style="color:var(--danger);">Reject Property Submission</h3>
+    <p>Provide a constructive audit failure reason. This feedback will be securely visible in the publisher's dashboard inspection modal.</p>
+    
+    <label class="login-label">Standard Compliance Reason</label>
+    <select class="login-input" id="rejectPreset" onchange="onRejectPresetChange()">
+      <option value="Traffic volume does not meet minimum organic threshold.">Low Traffic: Minimum organic volume not met</option>
+      <option value="Destination link / bot is non-functional or unreachable.">Technical Error: URL or Bot is unreachable</option>
+      <option value="Content violates Eternant Network Ad Safety & DMCA Policies.">Safety Violation: Non-compliant / restricted content</option>
+      <option value="Domain ownership could not be verified.">Ownership: Domain/Channel ownership unverified</option>
+      <option value="CUSTOM">Custom Explanation...</option>
+    </select>
+
+    <div id="customReasonWrap" style="display:none; margin-top:8px;">
+      <label class="login-label">Custom Audit Feedback</label>
+      <textarea class="login-input" id="customReasonText" rows="3" placeholder="Explain rejection parameters..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-reset" onclick="closeRejectModal()">Cancel</button>
+      <button class="btn-approve" style="background:var(--danger);" onclick="confirmReject()">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADMIN 2-WAY CHAT & REVIEW CONTROL MODAL ── -->
+<div class="modal-overlay" id="adminMessageModal">
+  <div class="modal-card" style="max-width: 580px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+      <div>
+        <h3 id="adminChatPropTitle" style="color:var(--accent); font-size:17px; font-weight:800;">Property Audit Chat</h3>
+        <p id="adminChatPropMeta" style="font-size:12px; color:var(--text-sub); margin-bottom:0;">Live 2-way discussion with publisher</p>
+      </div>
+      <span id="adminChatStatusBadge" class="review-status-badge pending">⏳ Pending Review</span>
+    </div>
+
+    <!-- Quick Control Bar inside Chat -->
+    <div style="background:var(--bg-hover); border:1px solid var(--border-lt); border-radius:10px; padding:10px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div style="font-size:11.5px; color:var(--text-sub);">
+        URL: <span id="adminChatUrl" style="color:var(--text); font-weight:600;">...</span>
+      </div>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="btn-approve" onclick="approveFromChat()" style="padding:5px 10px; font-size:11px;">✓ Approve</button>
+        <button type="button" class="btn-reject" onclick="rejectFromChat()" style="padding:5px 10px; font-size:11px;">✕ Reject</button>
+      </div>
+    </div>
+
+    <!-- Ad Formats Allocation Section for Website properties -->
+    <div id="adminChatFormatSection" style="display:none; background:rgba(110,181,255,0.06); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:12px; font-weight:700; color:var(--accent);">🎯 Ad Formats Management (Admin Representative)</span>
+        <button type="button" class="btn-approve" style="padding:3px 8px; font-size:10.5px;" onclick="adminApproveAllFormats(targetMessagePropId)">✓ Approve All Requested</button>
+      </div>
+      <div id="adminChatFormatList" style="display:flex; flex-direction:column; gap:6px; max-height:180px; overflow-y:auto;"></div>
+    </div>
+
+    <!-- Admin Quick Canned Replies -->
+    <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:4px;">
+      <button type="button" class="filter-btn" onclick="insertAdminPrompt('Approved! You can now generate ad tags & live shortlinks in your dashboard.')">✓ Quick Approve</button>
+      <button type="button" class="filter-btn" onclick="insertAdminPrompt('Please share screenshot or analytics proof of organic traffic.')">📊 Ask for Analytics</button>
+      <button type="button" class="filter-btn" onclick="insertAdminPrompt('Please add meta tag or txt file to your domain root to verify ownership.')">🌐 Verify Domain</button>
+    </div>
+
+    <!-- Conversation Messages -->
+    <div class="admin-chat-thread-box">
+      <div class="admin-chat-messages" id="adminChatMessages">
+        <!-- Messages rendered dynamically -->
+      </div>
+      <div style="display:flex; gap:8px; padding:8px 10px; background:var(--bg-card); border-top:1px solid var(--border);">
+        <input type="text" id="adminChatInputText" class="login-input" style="margin-bottom:0; flex:1;" placeholder="Reply to publisher as Eternant Admin..." onkeydown="if(event.key==='Enter')sendAdminChatMessage()">
+        <button type="button" class="btn-save" onclick="sendAdminChatMessage()" style="padding:8px 14px; white-space:nowrap;">Reply ✈️</button>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:8px;">
+      <button type="button" class="btn-reset" onclick="closeAdminMessageModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-card">
+    <h3 id="confirmModalTitle">Confirm Action</h3>
+    <p id="confirmModalDesc">Are you sure you want to proceed?</p>
+    <div class="modal-actions">
+      <button class="btn-reset" onclick="closeConfirmModal()">Cancel</button>
+      <button class="btn-approve" style="background:var(--danger); color:#fff; border:none;" id="confirmModalBtn" onclick="executeConfirmedAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST ALERT -->
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   SUPABASE CONFIG & STRICT ADMIN SECURITY
+   ════════════════════════════════════════════ */
+var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
+var ADMIN_EMAIL   = 'sarthaksinghyadav1@gmail.com';
+var CACHE_KEY     = 'eternant_links_v1';
+var PROP_STORE    = 'et_properties_v2';
+
+var session = null;
+var isDirty = false;
+var properties = [];
+var targetRejectId = null;
+var targetMessagePropId = null;
+var currentAuditFilter = 'all';
+
+/* ── THEME INITIALIZATION ── */
+var htmlEl = document.documentElement;
+var savedTheme = localStorage.getItem('et-theme');
+if (savedTheme) htmlEl.setAttribute('data-theme', savedTheme);
+document.getElementById('themeToggle').addEventListener('click', function() {
+  var next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  htmlEl.setAttribute('data-theme', next);
+  localStorage.setItem('et-theme', next);
+  if (window.initStars) window.initStars();
+});
+
+/* ── STRICT AUTH CHECK ON PAGE LOAD ── */
+(async function initSecurity() {
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem('et_admin_session') || 'null'); } catch(e) {}
+  
+  // Validate token expiration and strictly verify admin email identity
+  if (stored && stored.access_token && stored.user_email === ADMIN_EMAIL && stored.expires_at > Date.now()) {
+    session = stored;
+    unlockAdminConsole();
+  } else {
+    // Revoke any invalid or stale tokens
+    localStorage.removeItem('et_admin_session');
+    session = null;
+  }
+})();
+
+document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doAdminLogin();
+});
+
+/* ── LOGIN WITH SUPABASE AUTH & HARD ENFORCEMENT ── */
+async function doAdminLogin() {
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass  = document.getElementById('loginPassword').value;
+  var errEl = document.getElementById('loginError');
+  var btn   = document.getElementById('btnLoginSubmit');
+
+  errEl.classList.remove('show');
+
+  // Hardcoded security constraint: Only the designated admin email can access
+  if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    errEl.innerHTML = '🚫 <strong>Access Denied</strong>: You do not possess Administrator permissions for Eternant.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  if (!email || !pass) {
+    errEl.textContent = 'Please enter both administrator email and password.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Authenticating…';
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    });
+    var data = await res.json();
+    if (!res.ok || data.error) {
+      throw new Error(data.error_description || data.msg || 'Invalid administrative credentials');
+    }
+
+    // Verify token payload email matches authorized admin
+    if (!data.user || data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      throw new Error('Access denied: Unauthorized account payload.');
+    }
+
+    session = {
+      access_token: data.access_token,
+      user_email:   data.user.email,
+      expires_at:   Date.now() + (data.expires_in * 1000)
+    };
+    localStorage.setItem('et_admin_session', JSON.stringify(session));
+    unlockAdminConsole();
+    showToast('success', '✓ Administrator session verified');
+  } catch(e) {
+    errEl.textContent = e.message || 'Authentication failed. Check credentials.';
+    errEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Verify & Enter';
+  }
+}
+
+async function doLogout() {
+  try {
+    if (session && session.access_token) {
+      await fetch(SUPABASE_URL + '/auth/v1/logout', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': 'Bearer ' + session.access_token
+        }
+      });
+    }
+  } catch(e) {}
+
+  localStorage.removeItem('et_admin_session');
+  session = null;
+
+  document.getElementById('adminContent').style.display = 'none';
+  document.getElementById('navTabsWrap').style.display  = 'none';
+  var mobNav = document.getElementById('mobileSubnavBar');
+  if (mobNav) mobNav.style.display = 'none';
+  document.getElementById('btnLogout').style.display    = 'none';
+
+  var emailInput = document.getElementById('loginEmail');
+  var passInput = document.getElementById('loginPassword');
+  var loginErr = document.getElementById('loginError');
+  var submitBtn = document.getElementById('btnLoginSubmit');
+
+  if (emailInput) emailInput.value = '';
+  if (passInput) passInput.value = '';
+  if (loginErr) {
+    loginErr.textContent = '';
+    loginErr.classList.remove('show');
+  }
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Verify & Enter';
+  }
+
+  document.getElementById('loginScreen').style.display = 'flex';
+  showToast('info', 'Signed out successfully');
+}
+
+function unlockAdminConsole() {
+  document.getElementById('loginScreen').style.display  = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+  document.getElementById('navTabsWrap').style.display  = 'flex';
+  var mobNav = document.getElementById('mobileSubnavBar');
+  if (mobNav) mobNav.style.display = window.innerWidth <= 720 ? 'block' : 'none';
+  document.getElementById('btnLogout').style.display    = 'inline-flex';
+  if (session && session.user_email) {
+    document.getElementById('adminBadgeText').textContent = session.user_email.split('@')[0];
+  }
+  loadLinksData();
+  loadBrevoApiKey();
+  loadPropertiesForAudit();
+}
+
+window.addEventListener('resize', function() {
+  var mobNav = document.getElementById('mobileSubnavBar');
+  if (mobNav && session) {
+    mobNav.style.display = window.innerWidth <= 720 ? 'block' : 'none';
+  }
+});
+
+/* ── UNIFIED TAB SWITCHING (MOBILE + DESKTOP) ── */
+function switchAdminTab(tabKey) {
+  document.querySelectorAll('.nav-tab-btn, .mobile-segmented-tab').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(pane => pane.classList.remove('active'));
+
+  var btn = document.getElementById('tabBtn-' + tabKey);
+  var mobBtn = document.getElementById('mobTabBtn-' + tabKey);
+  var pane = document.getElementById('pane-' + tabKey);
+  if (btn) btn.classList.add('active');
+  if (mobBtn) mobBtn.classList.add('active');
+  if (pane) pane.classList.add('active');
+
+  var hTitle = document.getElementById('headerTitle');
+  var hSub = document.getElementById('headerSubtitle');
+  if (tabKey === 'links') {
+    hTitle.innerHTML = 'Network <em>Configuration</em>';
+    hSub.textContent = 'Manage social & follow links and Brevo API configuration stored on Supabase.';
+  } else {
+    hTitle.innerHTML = 'Publisher <em>Audit &amp; Compliance</em>';
+    hSub.textContent = 'Inspect submitted websites, apps, Telegram channels, and bots. Approve or reject properties with live synchronization.';
+    renderAuditQueue();
+  }
+}
+
+function updateAuditMetrics() {
+  var pending = properties.filter(p => p.status === 'Pending Review').length;
+  var active = properties.filter(p => p.status === 'Active').length;
+  var rejected = properties.filter(p => p.status === 'Rejected').length;
+
+  document.getElementById('metricPendingCount').textContent = pending;
+  document.getElementById('metricActiveCount').textContent = active;
+  document.getElementById('metricRejectedCount').textContent = rejected;
+
+  var badge = document.getElementById('navPendingBadge');
+  var mobBadge = document.getElementById('mobNavPendingBadge');
+  if (badge) {
+    badge.textContent = pending;
+    badge.style.display = pending > 0 ? 'inline-block' : 'none';
+  }
+  if (mobBadge) {
+    mobBadge.textContent = pending;
+    mobBadge.style.display = pending > 0 ? 'inline-block' : 'none';
+  }
+}
+
+/* ════════════════════════════════════════════
+   TAB 1: SUPABASE LINK CONFIGURATION LOGIC
+   ════════════════════════════════════════════ */
+async function loadLinksData() {
+  setStatus('loading');
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/site_config?select=key,value', {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + session.access_token }
+    });
+    if (!res.ok) throw new Error('Fetch failed');
+    var rows = await res.json();
+    var data = {};
+    rows.forEach(function(r) { data[r.key] = r.value; });
+
+    document.querySelectorAll('.link-input').forEach(function(inp) {
+      var k = inp.dataset.key;
+      if (k && data[k]) inp.value = data[k];
+    });
+    document.querySelectorAll('[data-toggle-key]').forEach(function(cb) {
+      var k = cb.dataset.toggleKey;
+      if (k in data) cb.checked = (data[k] !== 'false');
+    });
+
+    data._ts = Date.now();
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    if (data.brevo_api_key) { try { localStorage.setItem('eternant_brevo_api_key', data.brevo_api_key); } catch(e) {} }
+    loadBrevoApiKey();
+    isDirty = false;
+    setStatus('saved');
+  } catch(e) {
+    setStatus('saved');
+    showToast('error', '⚠️ Could not load remote links config');
+  }
+}
+
+function markDirty() { isDirty = true; setStatus('unsaved'); }
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('link-input')) markDirty();
+});
+
+function setStatus(state) {
+  var dot  = document.getElementById('statusDot');
+  var text = document.getElementById('statusText');
+  if (!dot || !text) return;
+  dot.className = 'status-dot ' + state;
+  if (state === 'saved')   text.textContent = 'All changes saved to cloud';
+  if (state === 'unsaved') text.textContent = 'Unsaved changes';
+  if (state === 'loading') text.textContent = 'Synchronizing…';
+  if (state === 'saving')  text.textContent = 'Saving…';
+}
+
+async function saveAllLinks() {
+  if (!session) return;
+  var btn = document.getElementById('btnSave');
+  btn.classList.add('saving');
+  setStatus('saving');
+
+  var rows = [];
+  document.querySelectorAll('.link-input').forEach(function(inp) {
+    var k = inp.dataset.key;
+    if (k) rows.push({ key: k, value: inp.value.trim(), updated_at: new Date().toISOString() });
+  });
+  document.querySelectorAll('[data-toggle-key]').forEach(function(cb) {
+    var k = cb.dataset.toggleKey;
+    rows.push({ key: k, value: cb.checked ? 'true' : 'false', updated_at: new Date().toISOString() });
+  });
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/site_config', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + session.access_token,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(rows)
+    });
+    if (!res.ok) throw new Error('Save error');
+    
+    isDirty = false;
+    btn.classList.remove('saving');
+    setStatus('saved');
+    showToast('success', '✓ Links saved & site updated');
+  } catch(e) {
+    btn.classList.remove('saving');
+    setStatus('unsaved');
+    showToast('error', '✕ Failed to save links');
+  }
+}
+
+function clearInput(btn) {
+  var inp = btn.closest('.link-input-wrap').querySelector('.link-input');
+  inp.value = ''; markDirty(); inp.focus();
+}
+
+var _pendingConfirmFn = null;
+function openConfirmModal(title, desc, onConfirm) {
+  _pendingConfirmFn = onConfirm;
+  document.getElementById('confirmModalTitle').textContent = title;
+  document.getElementById('confirmModalDesc').textContent = desc;
+  document.getElementById('confirmModal').classList.add('active');
+}
+function closeConfirmModal() {
+  document.getElementById('confirmModal').classList.remove('active');
+  _pendingConfirmFn = null;
+}
+function executeConfirmedAction() {
+  var fn = _pendingConfirmFn;
+  closeConfirmModal();
+  if (typeof fn === 'function') fn();
+}
+
+function resetAllLinks() {
+  openConfirmModal(
+    'Reset All Links',
+    'Are you sure you want to clear all configuration link inputs?',
+    async function() {
+      document.querySelectorAll('.link-input').forEach(function(inp) {
+        if (inp.id !== 'brevoApiKeyInput') inp.value = '';
+      });
+      document.querySelectorAll('[data-toggle-key]').forEach(function(cb) { cb.checked = true; });
+      markDirty();
+      await saveAllLinks();
+    }
+  );
+}
+
+/* ════════════════════════════════════════════
+   TAB 2: PUBLISHER AUDIT & COMPLIANCE SYSTEM
+   ════════════════════════════════════════════ */
+function loadPropertiesForAudit() {
+  try {
+    var raw = localStorage.getItem(PROP_STORE);
+    properties = raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    properties = [];
+  }
+  updateAuditMetrics();
+  renderAuditQueue();
+}
+
+function persistAuditProperties(msg) {
+  // Save verified properties array
+  try {
+    localStorage.setItem(PROP_STORE, JSON.stringify(properties));
+  } catch(e) {}
+  updateAuditMetrics();
+  renderAuditQueue();
+  if (msg) showToast('success', msg);
+}
+
+function updateAuditMetrics() {
+  var pending = properties.filter(p => p.status === 'Pending Review').length;
+  var active = properties.filter(p => p.status === 'Active').length;
+  var rejected = properties.filter(p => p.status === 'Rejected').length;
+
+  document.getElementById('metricPendingCount').textContent = pending;
+  document.getElementById('metricActiveCount').textContent = active;
+  document.getElementById('metricRejectedCount').textContent = rejected;
+
+  var badge = document.getElementById('navPendingBadge');
+  if (badge) {
+    badge.textContent = pending;
+    badge.style.display = pending > 0 ? 'inline-block' : 'none';
+  }
+}
+
+function setAuditFilter(filterVal, btn) {
+  currentAuditFilter = filterVal;
+  document.querySelectorAll('.audit-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderAuditQueue();
+}
+
+function getPlatformIcon(type) {
+  if (type.includes('Telegram')) return '✈️';
+  if (type.includes('WhatsApp')) return '💬';
+  if (type.includes('App')) return '📱';
+  if (type.includes('Discord')) return '👾';
+  if (type.includes('YouTube')) return '▶️';
+  if (type.includes('Instagram')) return '📸';
+  return '🌐';
+}
+
+function renderAuditQueue() {
+  var container = document.getElementById('auditListContainer');
+  if (!container) return;
+
+  var filtered = properties.filter(function(p) {
+    if (currentAuditFilter === 'all') return true;
+    return p.status === currentAuditFilter;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:40px 20px; text-align:center; color:var(--muted); font-size:13px;">
+        No properties currently in "${currentAuditFilter}" audit filter.
+      </div>
+    `;
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(p) {
+    var icon = getPlatformIcon(p.type || '');
+    var statusClass = p.status === 'Active' ? 'active' : (p.status === 'Rejected' ? 'rejected' : 'pending');
+    var dateStr = p.submittedAt ? new Date(p.submittedAt).toLocaleDateString() : 'Recent';
+
+    html += `
+      <div class="review-item">
+        <div class="review-item-header">
+          <div class="review-title-wrap">
+            <div class="review-platform-icon">${icon}</div>
+            <div>
+              <div class="review-name">${escapeHtml(p.name)}</div>
+              <div class="review-meta">${escapeHtml(p.type)} &bull; Submitted ${dateStr}</div>
+            </div>
+          </div>
+          <span class="review-status-badge ${statusClass}">
+            ${p.status === 'Active' ? '● Approved & Active' : (p.status === 'Rejected' ? '✕ Rejected' : '⏳ Pending Audit')}
+          </span>
+        </div>
+
+        <div class="review-details-grid">
+          <div class="review-kv">
+            <span class="review-k">Destination / URL</span>
+            <span class="review-v"><a href="${escapeHtml(p.url)}" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">${escapeHtml(p.url || 'None')} ↗</a></span>
+          </div>
+          <div class="review-kv">
+            <span class="review-k">Niche / Category</span>
+            <span class="review-v">${escapeHtml(p.category || 'General')}</span>
+          </div>
+          <div class="review-kv">
+            <span class="review-k">Audience Volume</span>
+            <span class="review-v">${escapeHtml(p.volume || 'Standard')}</span>
+          </div>
+          <div class="review-kv">
+            <span class="review-k">Traffic GEO</span>
+            <span class="review-v">${escapeHtml(p.geo || 'Global')}</span>
+          </div>
+        </div>
+
+        ${p.notes ? `
+          <div class="review-notes-box">
+            <strong>Publisher Audit Notes:</strong> ${escapeHtml(p.notes)}
+          </div>
+        ` : ''}
+
+        ${p.rejectionReason ? `
+          <div class="review-notes-box" style="border-color:var(--danger); color:var(--danger); background:var(--danger-dim);">
+            <strong>Rejection Reason:</strong> ${escapeHtml(p.rejectionReason)}
+          </div>
+        ` : ''}
+
+        ${(function() {
+          if (p.type !== 'Website') return '';
+          var reqs = p.formatRequests || {};
+          var pKeys = Object.keys(reqs).filter(function(k) { return reqs[k].status === 'Pending'; });
+          var aKeys = Object.keys(reqs).filter(function(k) { return reqs[k].status === 'Approved'; });
+
+          return `
+            <div class="review-notes-box" style="border-color:${pKeys.length > 0 ? 'rgba(251,191,36,0.6)' : 'rgba(110,181,255,0.3)'}; background:${pKeys.length > 0 ? 'rgba(251,191,36,0.06)' : 'rgba(110,181,255,0.04)'};">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <strong style="color:${pKeys.length > 0 ? 'var(--warn)' : 'var(--accent)'}; font-size:12px;">
+                  🎯 Ad Formats (On Request): ${pKeys.length > 0 ? `⚡ ${pKeys.length} Appeal(s) Pending` : `${aKeys.length} Formats Active`}
+                </strong>
+                ${pKeys.length > 0 ? `
+                  <button type="button" class="btn-approve" style="padding:3px 8px; font-size:10.5px;" onclick="adminApproveAllFormats('${p.id}')">✓ Approve All Formats</button>
+                ` : ''}
+              </div>
+              
+              ${pKeys.length > 0 ? `
+                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px;">
+                  ${pKeys.map(function(fId) {
+                    var fName = AD_FORMAT_NAMES[fId] || fId;
+                    return `
+                      <span style="font-size:11px; padding:3px 8px; border-radius:6px; background:var(--bg-card); border:1px solid rgba(251,191,36,0.5); display:inline-flex; align-items:center; gap:6px;">
+                        <span>⏳ <strong>${escapeHtml(fName)}</strong></span>
+                        <button type="button" class="btn-approve" style="padding:2px 6px; font-size:10px;" onclick="adminApproveFormat('${p.id}', '${fId}')">✓ Approve</button>
+                      </span>
+                    `;
+                  }).join('')}
+                </div>
+              ` : ''}
+
+              <div style="font-size:11px; color:var(--text-sub);">
+                ${aKeys.length > 0 ? `<span style="color:var(--success);">✓ Active: ${aKeys.map(function(k) { return AD_FORMAT_NAMES[k] || k; }).join(', ')}</span>` : '<span style="color:var(--muted);">No formats approved yet. Formats are provisioned on request.</span>'}
+              </div>
+            </div>
+          `;
+        })()}
+
+        ${(function() {
+          var msgs = p.messages || [];
+          var pubMsgs = msgs.filter(function(m) { return m.sender === 'publisher'; });
+          var latestMsg = msgs.length ? msgs[msgs.length - 1] : null;
+          if (!msgs.length) return '';
+          return `
+            <div class="review-notes-box" style="border-color:rgba(110,181,255,0.4); background:rgba(110,181,255,0.06);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="color:var(--accent);">💬 Discussion Thread (${msgs.length} messages${pubMsgs.length ? ', ' + pubMsgs.length + ' from publisher' : ''}):</strong>
+                <span style="font-size:10px; color:var(--muted); font-family:'Space Mono';">${latestMsg ? new Date(latestMsg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</span>
+              </div>
+              <div style="font-size:12px; color:var(--text);">${latestMsg ? escapeHtml((latestMsg.sender === 'publisher' ? 'Publisher: ' : (latestMsg.sender === 'admin' ? 'Admin: ' : '🔔 ')) + latestMsg.text) : ''}</div>
+            </div>
+          `;
+        })()}
+
+        <div class="review-actions-bar">
+          <span class="review-token">ID: ${escapeHtml(p.verificationToken || p.id)}</span>
+          <div class="review-btn-group">
+            <button class="btn-approve" onclick="openAdminMessageModal('${p.id}')" style="background:linear-gradient(135deg, rgba(110,181,255,0.22), rgba(167,139,250,0.18)); border:1px solid rgba(110,181,255,0.4); color:var(--accent);">
+              💬 2-Way Chat (${(p.messages || []).length})
+            </button>
+            ${p.status !== 'Active' ? `
+              <button class="btn-approve" onclick="approveProperty('${p.id}')">✓ Approve</button>
+            ` : ''}
+            ${p.status !== 'Rejected' ? `
+              <button class="btn-reject" onclick="openRejectModal('${p.id}')">✕ Reject</button>
+            ` : ''}
+            <button class="btn-rereview" onclick="reReviewProperty('${p.id}')">Reset to Queue</button>
+            <button class="btn-reset" style="color:var(--danger);" onclick="deleteProperty('${p.id}')">Delete</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/* ── AD FORMAT DEFINITIONS & ADMIN REPRESENTATIVE ACTIONS ── */
+var AD_FORMAT_NAMES = {
+  popunder: 'Popunder (OnClick)',
+  social_bar: 'Social Bar / In-Page Push',
+  native_banner: 'Native Banner (Recommendations)',
+  rewarded_interstitial: 'Rewarded Interstitial / Fullscreen',
+  display_banner: 'Display Banner (300x250 / 728x90)',
+  direct_smartlink: 'Direct Smartlink URL',
+  offerwall: 'Offerwall / Micro-Task Wall (Rewarded)'
+};
+
+var ALL_WEBSITE_FORMAT_KEYS = [
+  'popunder',
+  'social_bar',
+  'native_banner',
+  'rewarded_interstitial',
+  'display_banner',
+  'direct_smartlink',
+  'offerwall'
+];
+
+function adminApproveFormat(propId, formatId) {
+  var p = properties.find(function(x) { return x.id === propId; });
+  if (!p) return;
+  if (!p.formatRequests) p.formatRequests = {};
+
+  p.formatRequests[formatId] = {
+    status: 'Approved',
+    approvedAt: new Date().toISOString()
+  };
+
+  var fName = AD_FORMAT_NAMES[formatId] || formatId;
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'admin',
+    text: `Eternant Representative approved ad format: "${fName}". Integration tag has been allocated and is ready in your dashboard.`,
+    timestamp: new Date().toISOString()
+  });
+
+  persistAuditProperties(`Approved format "${fName}" for ${p.name}`);
+  if (targetMessagePropId === propId) {
+    renderAdminChat(propId);
+    renderAdminChatFormats(p);
+  }
+}
+
+function adminApproveAllFormats(propId) {
+  var p = properties.find(function(x) { return x.id === propId; });
+  if (!p) return;
+  if (!p.formatRequests) p.formatRequests = {};
+
+  var pendingKeys = Object.keys(p.formatRequests).filter(function(k) { return p.formatRequests[k].status === 'Pending'; });
+  var targetKeys = pendingKeys.length > 0 ? pendingKeys : ALL_WEBSITE_FORMAT_KEYS;
+
+  targetKeys.forEach(function(k) {
+    p.formatRequests[k] = {
+      status: 'Approved',
+      approvedAt: new Date().toISOString()
+    };
+  });
+
+  var names = targetKeys.map(function(k) { return AD_FORMAT_NAMES[k] || k; }).join(', ');
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'admin',
+    text: `Eternant Representative approved requested ad formats: ${names}. All tags are active.`,
+    timestamp: new Date().toISOString()
+  });
+
+  persistAuditProperties(`Approved ${targetKeys.length} format(s) for "${p.name}"`);
+  if (targetMessagePropId === propId) {
+    renderAdminChat(propId);
+    renderAdminChatFormats(p);
+  }
+}
+
+function adminRevokeFormat(propId, formatId) {
+  var p = properties.find(function(x) { return x.id === propId; });
+  if (!p || !p.formatRequests) return;
+
+  delete p.formatRequests[formatId];
+  var fName = AD_FORMAT_NAMES[formatId] || formatId;
+
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'admin',
+    text: `Format status update: "${fName}" allocation was removed by Ad Operations.`,
+    timestamp: new Date().toISOString()
+  });
+
+  persistAuditProperties(`Revoked format "${fName}" for ${p.name}`);
+  if (targetMessagePropId === propId) {
+    renderAdminChat(propId);
+    renderAdminChatFormats(p);
+  }
+}
+
+function renderAdminChatFormats(p) {
+  var sec = document.getElementById('adminChatFormatSection');
+  var list = document.getElementById('adminChatFormatList');
+  if (!sec || !list) return;
+
+  if (p.type !== 'Website') {
+    sec.style.display = 'none';
+    return;
+  }
+
+  sec.style.display = 'block';
+  var reqs = p.formatRequests || {};
+  var html = '';
+
+  ALL_WEBSITE_FORMAT_KEYS.forEach(function(fId) {
+    var fName = AD_FORMAT_NAMES[fId] || fId;
+    var req = reqs[fId];
+    var isApproved = req && req.status === 'Approved';
+    var isPending = req && req.status === 'Pending';
+
+    var pill = isApproved
+      ? '<span style="font-size:10px; color:var(--success); background:rgba(52,211,153,0.15); padding:2px 6px; border-radius:4px; font-weight:700;">● Active</span>'
+      : (isPending
+        ? '<span style="font-size:10px; color:var(--warn); background:rgba(251,191,36,0.15); padding:2px 6px; border-radius:4px; font-weight:700;">Appeal Pending</span>'
+        : '<span style="font-size:10px; color:var(--muted); background:var(--bg-card); padding:2px 6px; border-radius:4px;">Not Requested</span>');
+
+    var btn = isApproved
+      ? `<button type="button" class="btn-reject" style="padding:2px 6px; font-size:10px;" onclick="adminRevokeFormat('${p.id}', '${fId}')">Revoke</button>`
+      : `<button type="button" class="btn-approve" style="padding:2px 6px; font-size:10px;" onclick="adminApproveFormat('${p.id}', '${fId}')">${isPending ? 'Approve Appeal' : '+ Enable'}</button>`;
+
+    html += `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:6px 10px; border-radius:6px; border:1px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:11.5px; font-weight:600; color:var(--text);">${escapeHtml(fName)}</span>
+          ${pill}
+        </div>
+        <div>${btn}</div>
+      </div>
+    `;
+  });
+
+  list.innerHTML = html;
+}
+
+/* ── ADMIN 2-WAY CHAT & REVIEW FUNCTIONS ── */
+function openAdminMessageModal(id) {
+  targetMessagePropId = id;
+  var p = properties.find(function(x) { return x.id === id; });
+  if (!p) return;
+
+  document.getElementById('adminChatPropTitle').textContent = p.name;
+  document.getElementById('adminChatPropMeta').textContent = `${p.type} • ID: ${p.verificationToken || p.id}`;
+  
+  var statusBadge = document.getElementById('adminChatStatusBadge');
+  if (p.status === 'Active') {
+    statusBadge.className = 'review-status-badge active';
+    statusBadge.textContent = 'Approved & Active';
+  } else if (p.status === 'Rejected') {
+    statusBadge.className = 'review-status-badge rejected';
+    statusBadge.textContent = 'Rejected';
+  } else {
+    statusBadge.className = 'review-status-badge pending';
+    statusBadge.textContent = 'Pending Review';
+  }
+
+  document.getElementById('adminChatUrl').textContent = p.url || 'None';
+  renderAdminChat(id);
+  renderAdminChatFormats(p);
+  document.getElementById('adminMessageModal').classList.add('active');
+  setTimeout(function() {
+    var inp = document.getElementById('adminChatInputText');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function closeAdminMessageModal() {
+  document.getElementById('adminMessageModal').classList.remove('active');
+  targetMessagePropId = null;
+}
+
+function renderAdminChat(id) {
+  var p = properties.find(function(x) { return x.id === id; });
+  if (!p) return;
+  var wrap = document.getElementById('adminChatMessages');
+  if (!wrap) return;
+
+  var msgs = p.messages || [];
+  if (!msgs.length) {
+    wrap.innerHTML = `<div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">No messages in this thread yet. Send a note to the publisher below.</div>`;
+    return;
+  }
+
+  var html = '';
+  msgs.forEach(function(m) {
+    var timeStr = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+    if (m.sender === 'system') {
+      html += `
+        <div class="admin-chat-msg admin-chat-msg-system">
+          ${escapeHtml(m.text)}
+          <div class="admin-chat-meta" style="justify-content:center;">${timeStr}</div>
+        </div>
+      `;
+    } else if (m.sender === 'publisher') {
+      html += `
+        <div class="admin-chat-msg admin-chat-msg-publisher">
+          <div style="font-weight:700; font-size:10px; color:var(--accent); margin-bottom:2px;">Publisher</div>
+          ${escapeHtml(m.text)}
+          <div class="admin-chat-meta">${timeStr} &bull; Received</div>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="admin-chat-msg admin-chat-msg-admin">
+          <div style="font-weight:700; font-size:10px; color:var(--accent2); margin-bottom:2px;">You (Admin)</div>
+          ${escapeHtml(m.text)}
+          <div class="admin-chat-meta" style="justify-content:flex-end;">${timeStr} &bull; Sent</div>
+        </div>
+      `;
+    }
+  });
+
+  wrap.innerHTML = html;
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function sendAdminChatMessage() {
+  if (!targetMessagePropId) return;
+  var inp = document.getElementById('adminChatInputText');
+  var txt = inp ? inp.value.trim() : '';
+  if (!txt) return;
+
+  var p = properties.find(function(x) { return x.id === targetMessagePropId; });
+  if (!p) return;
+
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'admin',
+    text: txt,
+    timestamp: new Date().toISOString()
+  });
+
+  inp.value = '';
+  persistAuditProperties('Message sent to publisher');
+  renderAdminChat(targetMessagePropId);
+  showToast('success', 'Message sent to publisher!');
+}
+
+function insertAdminPrompt(text) {
+  var inp = document.getElementById('adminChatInputText');
+  if (inp) {
+    inp.value = text;
+    inp.focus();
+  }
+}
+
+function approveFromChat() {
+  if (!targetMessagePropId) return;
+  var p = properties.find(function(x) { return x.id === targetMessagePropId; });
+  if (!p) return;
+
+  p.status = 'Active';
+  p.verifiedAt = new Date().toISOString();
+  p.rejectionReason = null;
+  if (!p.messages) p.messages = [];
+  p.messages.push({
+    sender: 'system',
+    text: '🛡️ Eternant Admin approved this property for active monetization.',
+    timestamp: new Date().toISOString()
+  });
+
+  persistAuditProperties(`✓ Approved "${p.name}"`);
+  var statusBadge = document.getElementById('adminChatStatusBadge');
+  if (statusBadge) {
+    statusBadge.className = 'review-status-badge active';
+    statusBadge.textContent = '● Approved & Active';
+  }
+  renderAdminChat(targetMessagePropId);
+}
+
+function rejectFromChat() {
+  if (!targetMessagePropId) return;
+  var id = targetMessagePropId;
+  closeAdminMessageModal();
+  openRejectModal(id);
+}
+
+/* ── PROPERTY APPROVAL ACTIONS ── */
+function approveProperty(id) {
+  var p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  p.status = 'Active';
+  p.verifiedAt = new Date().toISOString();
+  p.rejectionReason = null;
+  persistAuditProperties(`✓ Approved "${p.name}" for ad serving`);
+}
+
+function approveAllPending() {
+  var pending = properties.filter(p => p.status === 'Pending Review');
+  if (pending.length === 0) {
+    showToast('info', 'No pending properties in audit queue.');
+    return;
+  }
+  pending.forEach(p => {
+    p.status = 'Active';
+    p.verifiedAt = new Date().toISOString();
+    p.rejectionReason = null;
+  });
+  persistAuditProperties(`✓ Approved ${pending.length} pending properties`);
+}
+
+function openRejectModal(id) {
+  targetRejectId = id;
+  document.getElementById('rejectModal').classList.add('active');
+  document.getElementById('rejectPreset').value = 'Traffic volume does not meet minimum organic threshold.';
+  document.getElementById('customReasonWrap').style.display = 'none';
+  document.getElementById('customReasonText').value = '';
+}
+
+function closeRejectModal() {
+  document.getElementById('rejectModal').classList.remove('active');
+  targetRejectId = null;
+}
+
+function onRejectPresetChange() {
+  var val = document.getElementById('rejectPreset').value;
+  document.getElementById('customReasonWrap').style.display = val === 'CUSTOM' ? 'block' : 'none';
+}
+
+function confirmReject() {
+  if (!targetRejectId) return;
+  var p = properties.find(x => x.id === targetRejectId);
+  if (!p) return;
+
+  var preset = document.getElementById('rejectPreset').value;
+  var finalReason = preset === 'CUSTOM' ? (document.getElementById('customReasonText').value.trim() || 'Compliance criteria not met.') : preset;
+
+  p.status = 'Rejected';
+  p.rejectionReason = finalReason;
+  p.verifiedAt = new Date().toISOString();
+
+  closeRejectModal();
+  persistAuditProperties(`Rejected "${p.name}"`);
+}
+
+function reReviewProperty(id) {
+  var p = properties.find(x => x.id === id);
+  if (!p) return;
+  p.status = 'Pending Review';
+  p.rejectionReason = null;
+  persistAuditProperties(`Reset "${p.name}" to Pending Queue`);
+}
+
+function deleteProperty(id) {
+  openConfirmModal(
+    'Delete Property',
+    'Permanently remove this property from the audit database?',
+    function() {
+      properties = properties.filter(x => x.id !== id);
+      persistAuditProperties('Property permanently removed');
+    }
+  );
+}
+
+/* ── HELPER TEST SUBMISSION INJECTOR ── */
+function injectTestProperty() {
+  var types = ['Telegram Channel', 'Website', 'Telegram Bot', 'WhatsApp Channel'];
+  var niches = ['Crypto & Web3', 'Education', 'Gaming & Tech', 'Deals & Coupons'];
+  var rand = Math.floor(Math.random() * 900) + 100;
+  var selType = types[Math.floor(Math.random() * types.length)];
+  
+  var mock = {
+    id: 'prop-test-' + Date.now(),
+    name: 'Sample ' + selType.split(' ')[0] + ' ' + rand,
+    type: selType,
+    url: 'https://t.me/sample_channel_' + rand,
+    category: niches[Math.floor(Math.random() * niches.length)],
+    geo: 'India (IN)',
+    volume: '50K - 200K',
+    notes: 'Real organic audience with daily updates and active engagement.',
+    status: 'Pending Review',
+    submittedAt: new Date().toISOString(),
+    verificationToken: 'ET-VERIFY-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    impressions: 0,
+    earnings: 0.00
+  };
+
+  properties.unshift(mock);
+  persistAuditProperties('Added test submission to queue');
+}
+
+/* ── CROSS-WINDOW STORAGE SYNC ── */
+window.addEventListener('storage', function(e) {
+  if (e.key === PROP_STORE) {
+    loadPropertiesForAudit();
+    if (targetMessagePropId) {
+      renderAdminChat(targetMessagePropId);
+      var curP = properties.find(function(x) { return x.id === targetMessagePropId; });
+      if (curP) renderAdminChatFormats(curP);
+    }
+  }
+});
+
+/* ── TOAST NOTIFICATION ── */
+function showToast(type, msg) {
+  var t = document.getElementById('toast');
+  t.className = 'toast ' + type;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function() {
+    t.classList.remove('show');
+  }, 2600);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ── STARFIELD VISUALS ── */
+(function() {
+  var canvas = document.getElementById('starfield');
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  var W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function initStars() {
+    stars = [];
+    var count = Math.floor((W * H) / 4500);
+    for (var i = 0; i < count; i++) {
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.2+0.2, a: Math.random()*0.8+0.1, speed: Math.random()*0.2+0.04, twinkle: Math.random()*Math.PI*2, twinkleSpeed: Math.random()*0.012+0.003 });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var isDark = htmlEl.getAttribute('data-theme') !== 'light';
+    stars.forEach(function(s) {
+      s.twinkle += s.twinkleSpeed;
+      var alpha = s.a * (0.45 + 0.55 * Math.sin(s.twinkle));
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = isDark ? 'rgba(216,230,255,' + alpha + ')' : 'rgba(42,90,160,' + alpha + ')';
+      ctx.fill();
+      s.y -= s.speed * 0.15;
+      if (s.y < -2) { s.y = H+2; s.x = Math.random()*W; }
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); initStars(); draw();
+  window.initStars = initStars;
+  window.addEventListener('resize', function() { resize(); initStars(); });
+})();
+
+// Explicit Window Bindings for Inline Listeners
+window.switchAdminTab = switchAdminTab;
+window.setAuditFilter = setAuditFilter;
+window.approveProperty = approveProperty;
+window.approveAllPending = approveAllPending;
+window.openRejectModal = openRejectModal;
+window.closeRejectModal = closeRejectModal;
+window.onRejectPresetChange = onRejectPresetChange;
+window.confirmReject = confirmReject;
+window.reReviewProperty = reReviewProperty;
+window.deleteProperty = deleteProperty;
+window.injectTestProperty = injectTestProperty;
+window.doAdminLogin = doAdminLogin;
+window.doLogout = doLogout;
+window.saveAllLinks = saveAllLinks;
+window.resetAllLinks = resetAllLinks;
+window.clearInput = clearInput;
+window.markDirty = markDirty;
+window.openAdminMessageModal = openAdminMessageModal;
+window.closeAdminMessageModal = closeAdminMessageModal;
+window.sendAdminChatMessage = sendAdminChatMessage;
+window.approveFromChat = approveFromChat;
+window.rejectFromChat = rejectFromChat;
+window.insertAdminPrompt = insertAdminPrompt;
+
+// Real-time synchronization when publisher adds property or sends message
+window.addEventListener('storage', function(e) {
+  if (e.key === PROP_STORE) {
+    loadPropertiesForAudit();
+    if (targetMessagePropId) renderAdminChat(targetMessagePropId);
+  }
+});
+
+
+/* ── BREVO API KEY SETTINGS ── */
+function loadBrevoApiKey() {
+  var inp = document.getElementById('brevoApiKeyInput');
+  var statusText = document.getElementById('brevoKeyStatusText');
+  var dot = document.getElementById('brevoStatusDot');
+  if (!inp) return;
+  var savedKey = '';
+  try {
+    savedKey = localStorage.getItem('eternant_brevo_api_key') || '';
+    if (!savedKey) {
+      var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+      if (cached.brevo_api_key) savedKey = cached.brevo_api_key;
+    }
+  } catch(e) {}
+  if (savedKey) {
+    inp.value = savedKey;
+    if (statusText) statusText.textContent = 'Active key saved (' + savedKey.substring(0, 10) + '•••)';
+    if (dot) { dot.style.background = 'var(--success)'; dot.style.boxShadow = '0 0 8px var(--success)'; }
+  } else {
+    if (statusText) statusText.textContent = 'Set your Brevo SMTP API key (xkeysib-...)';
+    if (dot) { dot.style.background = 'var(--warn)'; dot.style.boxShadow = '0 0 8px var(--warn)'; }
+  }
+}
+
+function toggleBrevoKeyVisibility() {
+  var inp = document.getElementById('brevoApiKeyInput');
+  var btn = document.getElementById('btnToggleBrevoVis');
+  if (!inp) return;
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    if (btn) btn.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    if (btn) btn.textContent = '👁️';
+  }
+}
+
+async function saveBrevoApiKey() {
+  var inp = document.getElementById('brevoApiKeyInput');
+  var key = inp ? inp.value.trim() : '';
+  if (!key) {
+    showToast('danger', 'Please enter a valid Brevo API key');
+    return;
+  }
+  try {
+    localStorage.setItem('eternant_brevo_api_key', key);
+    var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    cached.brevo_api_key = key;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cached));
+  } catch(e) {}
+
+  if (session && session.access_token && session.access_token !== 'offline-local-token') {
+    try {
+      await fetch(SUPABASE_URL + '/rest/v1/site_config', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': 'Bearer ' + session.access_token,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify([{ key: 'brevo_api_key', value: key, updated_at: new Date().toISOString() }])
+      });
+    } catch(e) {}
+  }
+
+  loadBrevoApiKey();
+  showToast('success', '✓ Brevo API key saved!');
+}
+
+function unlockOfflineAdmin() {
+  session = {
+    access_token: 'offline-local-token',
+    user_email: ADMIN_EMAIL,
+    expires_at: Date.now() + 86400000
+  };
+  try { localStorage.setItem('et_admin_session', JSON.stringify(session)); } catch(e) {}
+  unlockAdminConsole();
+  showToast('info', '✓ Console unlocked');
+}
+
+window.saveBrevoApiKey = saveBrevoApiKey;
+window.toggleBrevoKeyVisibility = toggleBrevoKeyVisibility;
+window.unlockOfflineAdmin = unlockOfflineAdmin;
+window.closeConfirmModal = closeConfirmModal;
+window.executeConfirmedAction = executeConfirmedAction;
+</script>
+</body>
+</html>

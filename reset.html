@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reset Password — Eternant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #03050d;
+  --bg-card:   #070c1a;
+  --bg-hover:  #0b1226;
+  --border:    #141f38;
+  --border-lt: #1e3058;
+  --text:      #d8e6ff;
+  --text-sub:  #8aa4c8;
+  --muted:     #4a6080;
+  --accent:    #6eb5ff;
+  --accent2:   #a78bfa;
+  --glow:      rgba(110,181,255,0.18);
+  --green:     #10b981;
+  --red:       #ef4444;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: 'Syne', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* Subtle background glow */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 20%, rgba(110,181,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 75% 80%, rgba(167,139,250,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-lt);
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+
+/* Logo */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.logo-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(110,181,255,0.15), rgba(167,139,250,0.1));
+  border: 1px solid rgba(110,181,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 20px; height: 20px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.logo-text {
+  font-size: 16px; font-weight: 800;
+  color: var(--text);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-size: 20px; font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.subtitle {
+  font-size: 13px; color: var(--text-sub);
+  line-height: 1.6; margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Fields */
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--text-sub); }
+.field input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border-lt);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Syne', Arial, sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field input::placeholder { color: var(--muted); }
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(110,181,255,0.1);
+}
+
+/* Button */
+.btn {
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #5b8fff, #7c6af5);
+  color: #fff;
+  font-family: 'Syne', Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+.btn:hover { opacity: 0.9; box-shadow: 0 0 24px var(--glow); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Messages */
+.msg {
+  display: none;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.msg.show { display: block; }
+.msg.error { background: rgba(239,68,68,0.1); border: 1px solid var(--red); color: var(--red); }
+.msg.success { background: rgba(16,185,129,0.1); border: 1px solid var(--green); color: var(--green); }
+
+/* Success screen */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 10px 0;
+}
+.success-screen.show { display: block; }
+.success-icon { font-size: 48px; margin-bottom: 16px; }
+.success-screen h3 { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.success-screen p { font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 20px; }
+.btn-open {
+  display: inline-block;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #5b8fff, #7c6af5);
+  color: #fff;
+  font-family: 'Syne', Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.btn-open:hover { opacity: 0.9; }
+
+/* Invalid / expired screen */
+.invalid-screen {
+  display: none;
+  text-align: center;
+  padding: 10px 0;
+}
+.invalid-screen.show { display: block; }
+.invalid-icon { font-size: 48px; margin-bottom: 16px; }
+.invalid-screen h3 { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.invalid-screen p { font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 20px; }
+.btn-secondary {
+  display: inline-block;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border-lt);
+  background: transparent;
+  color: var(--accent);
+  font-family: 'Syne', Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-secondary:hover { background: var(--bg-hover); }
+
+.footer-note {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 11px;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="logo-wrap">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+    </div>
+    <span class="logo-text">Eternant</span>
+  </div>
+
+  <!-- Reset Form -->
+  <div id="formSection">
+    <h2>🔐 Set New Password</h2>
+    <p class="subtitle">Choose a strong new password for your account.</p>
+
+    <div class="msg error" id="errMsg"></div>
+
+    <div class="field">
+      <label>New Password</label>
+      <input type="password" id="newPass" placeholder="Min. 8 characters" autocomplete="new-password">
+    </div>
+    <div class="field">
+      <label>Confirm New Password</label>
+      <input type="password" id="confirmPass" placeholder="Repeat new password" autocomplete="new-password">
+    </div>
+
+    <button class="btn" id="saveBtn" onclick="handleReset()">Save New Password →</button>
+
+    <p class="footer-note">eternant.c0m.to</p>
+  </div>
+
+  <!-- Success screen -->
+  <div class="success-screen" id="successSection">
+    <div class="success-icon">✅</div>
+    <h3>Password Updated!</h3>
+    <p>Your password has been changed successfully.<br><b>Go back to Chrome and login with your new password.</b></p>
+    <a class="btn-open" id="openSiteBtn" href="https://eternant.c0m.to/?login=1" target="_blank">
+      Open Eternant & Login →
+    </a>
+    <p class="footer-note" style="margin-top:14px;">You can close this tab now</p>
+  </div>
+
+  <!-- Invalid / expired screen -->
+  <div class="invalid-screen" id="invalidSection">
+    <div class="invalid-icon">⚠️</div>
+    <h3>Link Expired or Invalid</h3>
+    <p>This reset link has expired or already been used. Please request a new one.</p>
+    <a class="btn-secondary" href="https://eternant.c0m.to/?forgot=1" target="_blank">
+      Request New Reset Link →
+    </a>
+  </div>
+
+</div>
+
+<script>
+var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
+
+var accessToken = null;
+
+// Parse access_token from URL hash
+(function() {
+  var hash = window.location.hash;
+  if (!hash) { showInvalid(); return; }
+
+  var params = {};
+  hash.replace(/^#/, '').split('&').forEach(function(p) {
+    var kv = p.split('=');
+    params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
+  });
+
+  if (!params['access_token'] || params['type'] !== 'recovery') {
+    showInvalid(); return;
+  }
+
+  accessToken = params['access_token'];
+  // Clean URL
+  history.replaceState(null, '', window.location.pathname);
+})();
+
+function showInvalid() {
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('invalidSection').classList.add('show');
+}
+
+function showErr(msg) {
+  var el = document.getElementById('errMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function handleReset() {
+  var errEl = document.getElementById('errMsg');
+  errEl.textContent = ''; errEl.classList.remove('show');
+
+  var newPass     = document.getElementById('newPass').value;
+  var confirmPass = document.getElementById('confirmPass').value;
+  var btn         = document.getElementById('saveBtn');
+
+  if (!newPass || newPass.length < 8) { showErr('Password must be at least 8 characters.'); return; }
+  if (newPass !== confirmPass)         { showErr('Passwords do not match.'); return; }
+  if (!accessToken)                    { showInvalid(); return; }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/user', {
+      method: 'PUT',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password: newPass })
+    });
+
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error_description || data.msg || 'Failed to update password.');
+
+    accessToken = null;
+    // Show success screen with link to open site in external browser
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successSection').classList.add('show');
+
+  } catch(e) {
+    showErr(e.message);
+    btn.disabled = false; btn.textContent = 'Save New Password →';
+  }
+}
+
+// Allow Enter key to submit
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleReset();
+});
+</script>
+
+</body>
+</html>

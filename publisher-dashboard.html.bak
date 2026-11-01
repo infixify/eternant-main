@@ -1,0 +1,2933 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script src="dashboard-session-restore.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eternant — Publisher Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="dark"] {
+  --bg:           #03050d;
+  --bg-card:      #070c1a;
+  --bg-hover:     #0b1226;
+  --bg-nav:       rgba(3,5,13,0.85);
+  --bg-drawer:    rgba(3,5,13,0.97);
+  --border:       #141f38;
+  --border-lt:    #1e3058;
+  --text:         #d8e6ff;
+  --text-sub:     #8aa4c8;
+  --muted:        #4a6080;
+  --accent:       #6eb5ff;
+  --accent2:      #a78bfa;
+  --accent-dim:   rgba(110,181,255,0.08);
+  --glow:         rgba(110,181,255,0.18);
+  --glow2:        rgba(167,139,250,0.12);
+  --star-color:   rgba(216,230,255,1);
+  --nebula1-bg:   rgba(110,181,255,0.07);
+  --nebula2-bg:   rgba(167,139,250,0.06);
+  --shooting-star: rgba(180,210,255,0.9);
+  --success:      #4ade80;
+  --warning:      #fbbf24;
+  --danger:       #f87171;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg:           #f0f4ff;
+  --bg-card:      #ffffff;
+  --bg-hover:     #e8eeff;
+  --bg-nav:       rgba(240,244,255,0.92);
+  --bg-drawer:    rgba(240,244,255,0.98);
+  --border:       #d0daf0;
+  --border-lt:    #b8c8e8;
+  --text:         #0d1832;
+  --text-sub:     #3a5080;
+  --muted:        #6a82a8;
+  --accent:       #2a7fd4;
+  --accent2:      #7c54e8;
+  --accent-dim:   rgba(42,127,212,0.08);
+  --glow:         rgba(42,127,212,0.14);
+  --glow2:        rgba(124,84,232,0.08);
+  --star-color:   rgba(42,90,160,1);
+  --nebula1-bg:   rgba(42,127,212,0.06);
+  --nebula2-bg:   rgba(124,84,232,0.05);
+  --shooting-star: rgba(42,100,200,0.8);
+  --success:      #16a34a;
+  --warning:      #d97706;
+  --danger:       #dc2626;
+  color-scheme: light;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ── COSMIC BACKGROUND CANVAS & NEBULA ── */
+#starfield {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; transition: opacity 0.5s;
+}
+[data-theme="light"] #starfield { opacity: 0.35; }
+
+.nebula {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); pointer-events: none; z-index: 0;
+  transition: background 0.4s, opacity 0.4s;
+}
+.nebula-1 { width: 650px; height: 650px; top: -200px; right: -120px; background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
+.nebula-2 { width: 550px; height: 550px; bottom: 40px; left: -160px; background: radial-gradient(circle, var(--nebula2-bg) 0%, transparent 70%); }
+.nebula-3 { width: 400px; height: 400px; top: 50%; left: 45%; transform: translate(-50%,-50%); background: radial-gradient(circle, var(--nebula1-bg) 0%, transparent 70%); }
+
+.shooting-star {
+  position: fixed; top: 0; left: 0; width: 2px; height: 2px;
+  background: var(--shooting-star); border-radius: 50%;
+  pointer-events: none; z-index: 1; opacity: 0;
+}
+.shooting-star::after {
+  content: ''; position: absolute; top: 50%; right: 0;
+  transform: translateY(-50%); width: 80px; height: 1px;
+  background: linear-gradient(to left, var(--shooting-star), transparent);
+}
+
+/* ── TOPNAV WITH ORBITAL LOGO ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 64px;
+  background: var(--bg-nav); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.4s, border-color 0.4s;
+}
+.logo {
+  font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; display: flex; align-items: center; gap: 10px; transition: opacity 0.2s;
+  flex-shrink: 0; white-space: nowrap;
+}
+.logo:hover { opacity: 0.9; }
+
+/* ORBIT RINGS */
+.logo-icon { position: relative; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.logo-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--accent); opacity: 0.5; position: absolute; animation: logo-rotate 12s linear infinite; }
+.logo-ring-2 { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--accent2); opacity: 0.4; position: absolute; animation: logo-rotate 8s linear infinite reverse; }
+.logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(110,181,255,0.4); position: relative; z-index: 1; animation: pulse-dot 3s ease-in-out infinite; }
+@keyframes logo-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); box-shadow:0 0 12px var(--accent); } 50% { opacity:0.6; transform:scale(0.75); box-shadow:0 0 6px var(--accent); } }
+
+/* DESKTOP NAV LINKS */
+.nav-links {
+  display: flex; align-items: center; gap: 4px;
+  list-style: none;
+}
+.nav-links a {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  color: var(--text-sub); text-decoration: none; transition: all 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text); background: var(--bg-hover);
+}
+.nav-links a.active { color: var(--accent); background: var(--accent-dim); }
+
+/* SECTION NAVIGATION IN HEADER */
+.dashboard-section-nav {
+  display: flex; gap: 2px; background: var(--bg-card);
+  padding: 4px; border-radius: 12px; border: 1px solid var(--border);
+  margin-left: 20px;
+}
+.dashboard-section-tab {
+  padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  color: var(--text-sub); cursor: pointer; transition: all 0.2s;
+  text-decoration: none; display: flex; align-items: center; gap: 5px;
+  border: 1px solid transparent;
+}
+.dashboard-section-tab:hover { color: var(--text); background: var(--bg-hover); }
+.dashboard-section-tab.active {
+  color: var(--text); background: var(--accent-dim);
+  border-color: var(--accent);
+}
+.dashboard-section-tab svg { width: 14px; height: 14px; stroke: currentColor; }
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+/* SECTION NAVIGATION TABS */
+.section-tabs {
+  display: flex; gap: 2px; background: var(--bg-card);
+  padding: 4px; border-radius: 12px; border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.section-tab {
+  padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  color: var(--text-sub); cursor: pointer; transition: all 0.2s;
+  text-decoration: none; display: flex; align-items: center; gap: 6px;
+  border: 1px solid transparent;
+}
+.section-tab:hover { color: var(--text); background: var(--bg-hover); }
+.section-tab.active {
+  color: var(--text); background: var(--accent-dim);
+  border-color: var(--accent);
+}
+.section-tab svg { width: 14px; height: 14px; stroke: currentColor; }
+
+/* ROLE SWITCHER */
+.role-switcher {
+  display: flex; align-items: center; gap: 4px;
+}
+.role-switcher select {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text); cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.role-switcher select:hover { border-color: var(--border-lt); }
+.role-switcher select:focus { outline: none; border-color: var(--accent); }
+
+/* THEME TOGGLE */
+.theme-toggle {
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 3px; cursor: pointer;
+  transition: border-color 0.2s, background 0.4s;
+  position: relative; width: 64px; height: 30px;
+}
+.theme-toggle:hover { border-color: var(--border-lt); }
+.toggle-track { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 5px; }
+.toggle-icon { font-size: 12px; z-index: 1; line-height: 1; user-select: none; }
+.toggle-thumb {
+  position: absolute; top: 1px; width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 2px 8px var(--glow); transition: left 0.3s cubic-bezier(0.4,0,0.2,1); left: 2px;
+}
+[data-theme="light"] .toggle-thumb { left: calc(100% - 24px); }
+
+/* USER PILL */
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px 5px 5px; border-radius: 100px;
+  border: 1px solid var(--border-lt); background: var(--bg-card);
+}
+.user-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+.user-name { font-size: 12px; font-weight: 600; color: var(--text); }
+
+/* HAMBURGER TOGGLE BUTTON */
+.hamburger {
+  display: none; background: transparent; border: 1px solid var(--border-lt);
+  width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  transition: border-color 0.2s;
+}
+.hamburger span {
+  display: block; width: 18px; height: 2px; background: var(--text);
+}
+.hamburger-main { display: flex !important; }
+
+/* MOBILE SIDEBAR DRAWER */
+.mobile-drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.mobile-drawer-overlay.active { opacity: 1; pointer-events: auto; }
+
+.mobile-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 280px;
+  background: var(--bg-card); border-left: 1px solid var(--border);
+  z-index: 200; display: flex; flex-direction: column; padding: 24px;
+  transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-drawer.active { transform: translateX(0); }
+.drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.drawer-close { background: transparent; border: none; color: var(--text); font-size: 20px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--bg-hover); }
+.mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.mobile-nav-links a {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+  border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--text-sub);
+  text-decoration: none; transition: all 0.2s;
+}
+.mobile-nav-links a:hover, .mobile-nav-links a.active { color: var(--text); background: var(--bg-hover); }
+.mobile-nav-links a.active { color: var(--accent); background: var(--accent-dim); }
+
+/* MAIN CONTAINER & BREADCRUMB */
+.dashboard-container {
+  max-width: 1040px; width: 100%; margin: 24px auto 60px; padding: 0 20px;
+  flex: 1; display: none; position: relative; z-index: 1;
+}
+.dashboard-container.active { display: block; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 14px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb svg { width: 10px; height: 10px; stroke: var(--muted); fill: none; flex-shrink: 0; }
+.breadcrumb span { color: var(--accent); }
+
+.dash-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 14px;
+}
+.dash-title h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.dash-title p { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+
+/* BUTTONS */
+.btn-primary {
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  padding: 10px 20px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, #4a9eff, #7b5ef7); color: #fff;
+  cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(74,158,255,0.25);
+  display: inline-flex; align-items: center; gap: 6px; justify-content: center;
+}
+.btn-primary:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 6px 26px rgba(74,158,255,0.4); }
+
+.btn-secondary {
+  background: transparent; border: 1px solid var(--border-lt); color: var(--text-sub);
+  padding: 9px 16px; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 13px; cursor: pointer;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; justify-content: center;
+}
+.btn-secondary:hover { color: var(--text); border-color: var(--accent); background: var(--bg-hover); }
+
+.btn-sm { padding: 5px 10px; font-size: 11px; border-radius: 6px; }
+
+/* SIMULATOR & CONTROL BAR */
+.control-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  padding: 10px 16px; border-radius: 12px;
+}
+.quick-actions-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+.quick-action-chip {
+  background: var(--bg-hover); border: 1px solid var(--border);
+  padding: 6px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 600;
+  color: var(--text-sub); cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.quick-action-chip:hover {
+  background: var(--accent-dim); color: var(--accent); border-color: var(--accent); transform: translateY(-1px);
+}
+
+.sim-switch-wrap {
+  display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600;
+  color: var(--text-sub); user-select: none;
+}
+.sim-toggle {
+  width: 44px; height: 24px; background: var(--border-lt); border-radius: 100px;
+  position: relative; cursor: pointer; transition: background 0.3s;
+}
+.sim-toggle.active { background: var(--success); }
+.sim-thumb {
+  width: 18px; height: 18px; border-radius: 50%; background: #fff;
+  position: absolute; top: 3px; left: 3px; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.sim-toggle.active .sim-thumb { transform: translateX(20px); }
+
+/* STATS GRID */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;
+  margin-bottom: 22px;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; 
+  position: relative; overflow: hidden; 
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.stat-card:hover { 
+  border-color: var(--accent); 
+  box-shadow: 0 6px 24px rgba(110, 181, 255, 0.15); 
+  transform: translateY(-2px);
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.stat-card:hover::before { opacity: 0.8; }
+.stat-card-label { 
+  font-size: 11px; font-family: 'Space Mono', monospace; 
+  color: var(--muted); text-transform: uppercase; 
+  letter-spacing: 1px; margin-bottom: 8px; 
+}
+.stat-card-val { 
+  font-size: 26px; font-weight: 700; 
+  font-family: 'Space Mono', monospace; 
+  color: var(--text); 
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-card-sub { 
+  font-size: 11px; color: var(--text-sub); 
+  margin-top: 6px; display: flex; align-items: center; gap: 4px; 
+}
+
+/* STAT CARD ICONS */
+.stat-card-icon {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 10px;
+  background: var(--accent-dim); display: flex; align-items: center; justify-content: center;
+  opacity: 0.6; transition: opacity 0.3s, transform 0.3s;
+}
+.stat-card:hover .stat-card-icon { opacity: 1; transform: scale(1.1); }
+.stat-card-icon svg { width: 18px; height: 18px; stroke: var(--accent); }
+
+/* LIVE TICKER */
+.live-stream-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 16px; margin-bottom: 22px;
+  display: flex; align-items: center; gap: 12px; font-size: 12px;
+}
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--success);
+  box-shadow: 0 0 10px var(--success); animation: blink-pulse 2s infinite; flex-shrink: 0;
+}
+@keyframes blink-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.live-stream-text {
+  font-family: 'Space Mono', monospace; color: var(--text-sub); flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* SECTION BOX */
+.section-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px; margin-bottom: 24px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative; overflow: hidden;
+}
+.section-box:hover { 
+  border-color: var(--border-lt); 
+  box-shadow: 0 4px 20px var(--glow2);
+}
+.section-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.section-box:hover::before { opacity: 0.6; }
+.section-box-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+}
+.section-box h3 { 
+  font-size: 16px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.section-box h3 svg { width: 18px; height: 18px; stroke: var(--accent); }
+.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-pill {
+  font-size: 11.5px; padding: 4px 11px; border-radius: 20px;
+  background: var(--bg-hover); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.filter-pill.active, .filter-pill:hover {
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+}
+.empty-state {
+  text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px;
+}
+
+/* PROPERTY ITEM CARD */
+.prop-card {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px; background: var(--bg-hover); border: 1px solid var(--border);
+  border-radius: 12px; gap: 12px; transition: border-color 0.2s, transform 0.15s;
+}
+.prop-card:hover { border-color: var(--border-lt); transform: translateY(-1px); }
+.prop-card-main { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+.prop-card-icon {
+  width: 40px; height: 40px; border-radius: 10px; background: var(--bg-card);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.prop-card-info { min-width: 0; flex: 1; }
+.prop-card-title {
+  font-weight: 700; font-size: 14px; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px;
+}
+.prop-card-meta {
+  font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace;
+  margin-top: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.prop-badge {
+  font-size: 10px; font-family: 'Space Mono', monospace; padding: 2px 7px;
+  border-radius: 4px; background: var(--bg-card); border: 1px solid var(--border-lt);
+  color: var(--accent);
+}
+.prop-badge.format-badge { color: var(--accent2); }
+.prop-card-stats {
+  display: flex; gap: 16px; font-family: 'Space Mono', monospace; text-align: right;
+  flex-shrink: 0;
+}
+.prop-stat-unit { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+.prop-stat-val { font-size: 13px; font-weight: 700; color: var(--text); }
+.prop-card-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* STATUS BADGES */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-family: 'Space Mono', monospace; padding: 3px 8px;
+  border-radius: 6px; cursor: pointer; user-select: none;
+}
+.status-badge.pending { background: rgba(251,191,36,0.12); color: var(--warning); border: 1px solid rgba(251,191,36,0.3); }
+.status-badge.active { background: rgba(74,222,128,0.12); color: var(--success); border: 1px solid rgba(74,222,128,0.25); }
+.status-badge.paused { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid rgba(148,163,184,0.25); }
+.status-badge.rejected { background: rgba(248,113,113,0.12); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
+
+/* DATA TABLES */
+.table-wrap { overflow-x: auto; width: 100%; }
+.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+.data-table th {
+  padding: 12px 14px; font-size: 11px; font-family: 'Space Mono', monospace;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border); background: var(--bg-card);
+}
+.data-table td { padding: 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+.data-table tr:hover td { background: var(--bg-hover); }
+
+/* VISUAL CHART */
+.chart-box {
+  height: 220px; width: 100%; position: relative; margin-top: 10px;
+  display: flex; align-items: flex-end; gap: 12px; padding: 10px 0 24px;
+  border-bottom: 1px solid var(--border);
+}
+.chart-bar-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%;
+  justify-content: flex-end; position: relative;
+}
+.chart-bar {
+  width: 100%; max-width: 34px; border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+  cursor: pointer; min-height: 4px;
+}
+.chart-bar:hover { opacity: 0.85; filter: brightness(1.2); }
+.chart-bar-label { position: absolute; bottom: -20px; font-size: 10px; font-family: 'Space Mono', monospace; color: var(--muted); }
+.chart-bar-tooltip {
+  position: absolute; top: -30px; font-size: 10px; font-family: 'Space Mono', monospace;
+  background: var(--bg-card); border: 1px solid var(--border-lt); color: var(--text);
+  padding: 2px 6px; border-radius: 4px; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s; white-space: nowrap; z-index: 10;
+}
+.chart-bar-col:hover .chart-bar-tooltip { opacity: 1; }
+
+/* AD PREVIEW SANDBOX (NEW!) */
+.preview-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.preview-tab-btn {
+  background: var(--bg-hover); border: 1px solid var(--border);
+  padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  color: var(--text-sub); cursor: pointer; transition: all 0.2s;
+}
+.preview-tab-btn.active {
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+}
+.preview-viewport {
+  background: #02040a; border: 1px solid var(--border-lt); border-radius: 14px;
+  padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 240px;
+}
+
+/* PROGRESS BAR */
+.progress-bar-wrap {
+  width: 100%; height: 8px; background: var(--bg-hover); border-radius: 10px;
+  overflow: hidden; margin: 10px 0 6px; border: 1px solid var(--border);
+}
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 10px; transition: width 0.4s ease;
+}
+
+/* CODE BOX */
+.code-box {
+  background: var(--bg-hover); padding: 14px; border-radius: 10px;
+  font-family: 'Space Mono', monospace; font-size: 11.5px; color: var(--accent);
+  border: 1px solid var(--border); overflow-x: auto; word-break: break-all; white-space: pre-wrap;
+  position: relative; line-height: 1.5;
+}
+.code-copy-btn {
+  position: absolute; top: 10px; right: 10px; padding: 4px 10px;
+  font-size: 11px; font-family: 'Syne', sans-serif; font-weight: 600;
+  background: var(--bg-card); border: 1px solid var(--border-lt); color: var(--text);
+  border-radius: 6px; cursor: pointer; transition: all 0.2s;
+}
+.code-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* MODALS */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 250;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-card {
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 18px; padding: 26px; width: 100%; max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;
+}
+.modal-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.modal-card p.modal-sub { font-size: 12.5px; color: var(--text-sub); margin-bottom: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; letter-spacing: 0.5px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-lt);
+  background: var(--bg-hover); color: var(--text); font-family: 'Syne', sans-serif; font-size: 13px; outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+/* TOAST */
+.toast-msg {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(50px);
+  background: var(--bg-card); border: 1px solid var(--accent); color: var(--text);
+  padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000;
+  display: flex; align-items: center; gap: 8px; white-space: nowrap; max-width: 90vw;
+}
+.toast-msg.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 820px) {
+  nav { padding: 0 16px; height: 60px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .dashboard-container { margin: 16px auto 40px; padding: 0 14px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 0 12px; height: 52px; }
+  .logo { font-size: 13px; letter-spacing: 1.2px; gap: 6px; }
+  .logo-tag { font-size: 9px !important; }
+  .nav-right { gap: 8px; }
+  .user-pill { padding: 2px; border: none; background: transparent; }
+  .user-pill .user-name { display: none; }
+  .user-avatar { width: 26px; height: 26px; font-size: 11px; }
+  .hamburger { width: 34px; height: 34px; border-radius: 8px; gap: 4px; }
+  .hamburger span { width: 16px; }
+
+  .dashboard-container { margin: 12px auto 30px; padding: 0 10px; }
+  .dash-header { margin-bottom: 12px; gap: 10px; flex-direction: column; align-items: stretch; }
+  .dash-title h1 { font-size: 18px; }
+  .dash-title p { font-size: 11.5px; }
+  .dash-header .btn-primary { width: 100%; }
+
+  .control-bar { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px; }
+  .sim-switch-wrap { justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; }
+
+  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+  .stat-card { padding: 10px 6px; border-radius: 10px; text-align: center; }
+  .stat-card-label { font-size: 8px; letter-spacing: 0.3px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat-card-val { font-size: 15px; }
+  .stat-card-sub { font-size: 8.5px; }
+
+  .section-box { border-radius: 12px; padding: 14px 10px; margin-bottom: 14px; }
+  .section-box h3 { font-size: 13px; }
+  .empty-state { padding: 20px 8px; font-size: 11.5px; }
+
+  .prop-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; }
+  .prop-card-main { width: 100%; }
+  .prop-card-stats { width: 100%; justify-content: space-between; text-align: left; border-top: 1px solid var(--border); padding-top: 8px; }
+  .prop-card-actions { width: 100%; justify-content: flex-end; }
+
+  .modal-overlay { padding: 10px; }
+  .modal-card { padding: 18px 14px; border-radius: 14px; }
+  .modal-card h2 { font-size: 16px; }
+  .modal-actions { margin-top: 16px; gap: 8px; }
+  .modal-actions button { flex: 1; padding: 8px 12px; font-size: 12px; }
+}
+
+@media (max-width: 380px) {
+  .logo { font-size: 11px; letter-spacing: 0.5px; }
+  .logo-tag { display: none; }
+  .stats-grid { gap: 4px; }
+  .stat-card { padding: 8px 4px; }
+  .stat-card-val { font-size: 13.5px; }
+}
+</style>
+<style>
+/* ══ MONETIZE & EARN — INTEGRATION DROPDOWN SYSTEM ══ */
+.int-dd-wrap { position: relative; display: inline-block; margin: 16px 0 6px; }
+.int-dd-btn {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  padding: 10px 18px; border-radius: 12px; cursor: pointer;
+  background: var(--bg-card); color: var(--text);
+  border: 1px solid var(--border-lt);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.int-dd-btn:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--glow); }
+.int-dd-btn .dd-caret { font-size: 11px; color: var(--text-sub); transition: transform 0.25s; }
+.int-dd-btn.open { border-color: var(--accent); background: var(--accent-dim); }
+.int-dd-btn.open .dd-caret { transform: rotate(180deg); }
+.int-dd-menu {
+  position: absolute; top: calc(100% + 8px); left: 0; min-width: 260px;
+  background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: 14px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.45); padding: 6px; z-index: 80;
+  display: none; flex-direction: column; gap: 2px;
+}
+.int-dd-menu.open { display: flex; animation: intDdIn 0.18s ease; }
+@keyframes intDdIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.int-dd-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--text-sub);
+  border: 1px solid transparent; transition: all 0.15s;
+}
+.int-dd-item:hover { color: var(--text); background: var(--bg-hover); }
+.int-dd-item.active { color: var(--accent); background: var(--accent-dim); border-color: var(--accent); }
+.int-node-pane { display: none; margin-top: 16px; }
+/* NAV DROPDOWN (Monetize & Earn integration options) */
+.nav-links .int-dd-wrap { margin: 0; }
+.nav-links .nav-dd-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid transparent; font-size: 13px; }
+.nav-links .nav-dd-btn:hover { background: var(--bg-hover); }
+.nav-links .int-dd-menu { top: calc(100% + 10px); left: 0; }
+.int-dd-item a { text-decoration: none; }
+.drawer-int-sub a { padding: 7px 12px 7px 28px !important; font-size: 12px !important; opacity: 0.85; }
+.drawer-int-sub a:hover { opacity: 1; }
+.drawer-int-parent .dd-caret { font-size: 10px; margin-left: 4px; transition: transform 0.25s; display: inline-block; }
+.drawer-int-parent.open .dd-caret { transform: rotate(90deg); color: var(--accent); }
+
+/* COLLAPSIBLE SECTIONS (Get Started / Your Assets) */
+.collapsible-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; margin: 14px 0; overflow: hidden; }
+.collapsible-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: transparent; border: none; cursor: pointer; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: 0.3px; }
+.collapsible-header:hover { background: var(--bg-hover); }
+.collapsible-header .dd-caret { font-size: 11px; color: var(--text-sub); transition: transform 0.25s; }
+.collapsible-box.open .collapsible-header .dd-caret { transform: rotate(180deg); color: var(--accent); }
+.collapsible-body { display: none; padding: 2px 18px 16px; }
+.collapsible-box.open .collapsible-body { display: block; animation: intDdIn 0.25s ease; }
+.gs-step { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.gs-step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+.asset-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; background: var(--bg-card); }
+.collapsible-body .empty-state { color: var(--text-sub); font-size: 13px; padding: 8px 0; }
+#yaList .int-dd-item, #yaDrawerList .int-dd-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.int-dd-menu .int-dd-item span { pointer-events: none; }
+.drawer-int-sub .int-dd-item { padding: 9px 12px 9px 24px !important; font-size: 12px; }
+.int-node-pane.active { display: block; animation: intDdIn 0.25s ease; }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<!-- TOP NAV WITH ORBITAL ICON -->
+<nav>
+  <a href="index.html" class="logo" title="Back to home">
+    <div class="logo-icon">
+      <div class="logo-ring"></div>
+      <div class="logo-ring-2"></div>
+      <div class="logo-dot"></div>
+    </div>
+    ETERNANT &nbsp;<span class="logo-tag" style="font-size:11px; color:var(--accent); font-family:'Space Mono', monospace;">PUBLISHER</span>
+  </a>
+
+  <!-- Desktop Nav Links -->
+  <ul class="nav-links">
+    <li class="int-dd-wrap nav-dd-wrap">
+      <a href="#" class="int-dd-btn nav-dd-btn active" onclick="toggleNavDd('dashMenu', this, event)" title="Dashboard">Dashboard <span class="dd-caret">▾</span></a>
+      <div class="int-dd-menu" id="dashMenu">
+        <div class="int-dd-item" onclick="switchTab('dashboard', event); toggleNavDd('dashMenu', null, event);">📊 &nbsp;Overview Dashboard</div>
+        <div class="int-dd-item" onclick="switchTab('getstarted', event); toggleNavDd('dashMenu', null, event);">🚀 &nbsp;Get Started</div>
+        <div class="int-dd-item" onclick="switchTab('properties', event); toggleNavDd('dashMenu', null, event);">📦 &nbsp;Your Assets</div>
+      </div>
+    </li>
+    <li><a href="#" onclick="showToast('📊 Statistics section coming soon')" title="Statistics">📊 Statistics</a></li>
+    <li class="int-dd-wrap nav-dd-wrap">
+      <a href="#" class="int-dd-btn nav-dd-btn" id="intDdBtn" onclick="switchTab('properties', event); toggleIntDropdown(event)" title="Monetize & Earn — integration options">Monetize &amp; Earn <span class="dd-caret">▾</span></a>
+      <div class="int-dd-menu" id="intDdMenu">
+        <div class="int-dd-item" onclick="openIntNode('ads', this)">📢 &nbsp;Ads Integration</div>
+        <div class="int-dd-item" onclick="openIntNode('offerwall', this)">🎁 &nbsp;Offerwall Integration</div>
+        <div class="int-dd-item" onclick="openIntNode('shortener', this)">🔗 &nbsp;Link Shortener</div>
+      </div>
+    </li>
+    <li><a href="#" onclick="switchTab('earnings', event)">Earnings</a></li>
+    <li><a href="#" onclick="switchTab('payouts', event)">Payouts</a></li>
+    <li><a href="#" onclick="switchTab('settings', event)">Settings</a></li>
+  </ul>
+
+
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
+      <div class="toggle-track">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+        <div class="toggle-thumb" id="toggleThumb"></div>
+      </div>
+    </button>
+    <button class='hamburger hamburger-main' onclick='toggleMobileDrawer()' aria-label='Open sections menu' title='Sections'>
+      <span></span><span></span><span></span>
+    </button>
+    <div class="user-pill">
+      <div class="user-avatar" id="userInitial">U</div>
+      <span class="user-name" id="userName">Publisher</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" style="display:none;" aria-hidden="true">☀️</button>
+    <button onclick="handleSignOut()" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid rgba(248,113,113,0.4);background:transparent;color:var(--danger);cursor:pointer;" title="Sign out">Sign Out</button>
+  </div>
+</nav>
+
+<!-- Mobile Drawer Overlay & Sidebar -->
+<div class="mobile-drawer-overlay" id="drawerOverlay" onclick="toggleMobileDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <span style="font-weight:700; font-size:13px; letter-spacing:2px; color:var(--text)">NAVIGATION</span>
+    <button class="drawer-close" onclick="toggleMobileDrawer()">&times;</button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li class="drawer-int-parent"><a href="#" class="active" onclick="toggleDrawerSub('dashDrawer', event);">📊 &nbsp;Dashboard <span class="dd-caret">▸</span></a></li>
+    <li class="drawer-int-sub" id="dashDrawer" style="display:none;">
+      <a href="#" onclick="switchTab('dashboard', event); toggleMobileDrawer();">↳ &nbsp;📊 Overview Dashboard</a>
+      <a href="#" onclick="switchTab('getstarted', event); toggleMobileDrawer();">↳ &nbsp;🚀 Get Started</a>
+      <a href="#" onclick="switchTab('properties', event); toggleMobileDrawer();">↳ &nbsp;📦 Your Assets</a>
+    </li>
+    <li><a href="#" onclick="showToast('📊 Statistics section coming soon'); toggleMobileDrawer();">📊 &nbsp;Statistics</a></li>
+    <li class="drawer-int-parent"><a href="#" onclick="toggleDrawerSub('drawerIntSub', event)">🌐 &nbsp;Monetize &amp; Earn <span class="dd-caret" id="drawerIntCaret">▸</span></a></li>
+    <li class="drawer-int-sub" id="drawerIntSub" style="display:none;">
+      <a href="#" onclick="openIntNode('ads'); toggleMobileDrawer();">↳ &nbsp;📢 Ads Integration</a>
+      <a href="#" onclick="openIntNode('offerwall'); toggleMobileDrawer();">↳ &nbsp;🎁 Offerwall Integration</a>
+      <a href="#" onclick="openIntNode('shortener'); toggleMobileDrawer();">↳ &nbsp;🔗 Link Shortener</a>
+    </li>
+    <li><a href="#" onclick="switchTab('earnings', event); toggleMobileDrawer();">💰 &nbsp;Earnings</a></li>
+    <li><a href="#" onclick="switchTab('payouts', event); toggleMobileDrawer();">💳 &nbsp;Payouts</a></li>
+    <li><a href="#" onclick="switchTab('settings', event); toggleMobileDrawer();">⚙️ &nbsp;Settings</a></li>
+  </ul>
+
+  <div style='margin-top:auto;'>
+    <div class='drawer-header' style='margin-bottom:0; border-bottom:none; padding-bottom:12px;'>
+      <span style='font-weight:700; font-size:13px; letter-spacing:2px; color:var(--text)'>SWITCH ROLE</span>
+    </div>
+    <div class='role-switcher' style='margin-top:10px;'>
+      <select id='dashboardRole' onchange='switchDashboardRole(this.value)' style='width:100%; padding:10px 12px;'>
+        <option value='publisher' selected>Publisher Dashboard</option>
+        <option value='advertiser'>Advertiser Dashboard</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD TAB ================= -->
+<div class="dashboard-container active" id="tab-getstarted">
+  <div class="breadcrumb">
+    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Get Started</span>
+  </div>
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <h1>Get Started 🚀</h1>
+      <p>Eternant pe apna digital property monetize karne ka complete tutorial — 5 easy steps me.</p>
+    </div>
+    <button class="btn-primary" onclick="switchTab('properties', event)">Start Now →</button>
+  </div>
+
+  <div class="section-box">
+    <div class="section-box-header"><h3>📘 Step-by-Step Tutorial</h3></div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">1</div>
+      <div>
+        <strong style="font-size:13px;">Account banao &amp; role select karo</strong>
+        <p style="color:var(--text-sub); font-size:12px; margin-top:3px; line-height:1.7;">Sign up karo, role <strong>Publisher</strong> choose karo — websites, apps, Telegram/WhatsApp channels aur link lockers se earn karne ke liye.</p>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">2</div>
+      <div>
+        <strong style="font-size:13px;">Apna pehla property submit karo</strong>
+        <p style="color:var(--text-sub); font-size:12px; margin-top:3px; line-height:1.7;"><strong>Monetize &amp; Earn → + Add Property</strong> se apna digital asset add karo. Har property ke liye verification ID generate hota hai.</p>
+        <div style="margin-top:8px;"><button class="btn-primary" style="font-size:12px; padding:7px 14px;" onclick="openPropertyModal()">➕ Add Property</button></div>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">3</div>
+      <div>
+        <strong style="font-size:13px;">Admin review ka wait karo (2–4 ghante)</strong>
+        <p style="color:var(--text-sub); font-size:12px; margin-top:3px; line-height:1.7;">Humara audit team traffic legitimacy, domain/channel ownership aur ad-safety compliance check karta hai. Status <strong>⏳ In Review</strong> me dikhega — "Your Assets" se track karo.</p>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">4</div>
+      <div>
+        <strong style="font-size:13px;">Integration option &amp; Ad Format choose karo</strong>
+        <p style="color:var(--text-sub); font-size:12px; margin-top:3px; line-height:1.7;">Approval ke baad <strong>Monetize &amp; Earn</strong> dropdown se integration choose karo:</p>
+        <p style="color:var(--text-sub); font-size:12px; line-height:1.9; margin-top:4px;">
+          • <strong>📢 Ads Integration</strong> — HTML/JS Ad tags, Banners, Native &amp; SDKs<br>
+          • <strong>🎁 Offerwall Integration</strong> — High-yield rewarded surveys &amp; tasks<br>
+          • <strong>🔗 Link Shortener (Shortlink)</strong> — Zero-website URL monetization per click
+        </p>
+        <div style="margin-top:8px;"><button class="btn-primary" style="font-size:12px; padding:7px 14px;" onclick="openIntNode('ads')">📢 Get Ad Tag Code</button></div>
+      </div>
+    </div>
+
+    <div class="gs-step" style="border-bottom:none;">
+      <div class="gs-step-num">5</div>
+      <div>
+        <strong style="font-size:13px;">Earnings track karo &amp; withdraw karo</strong>
+        <p style="color:var(--text-sub); font-size:12px; margin-top:3px; line-height:1.7;">Real-time earnings <strong>Earnings</strong> tab me, aur payout request <strong>Payouts</strong> se — UPI, NEFT, Bank Wire, PayPal &amp; USDT me 0% fee ke saath.</p>
+        <div style="margin-top:8px;"><button class="btn-primary" style="font-size:12px; padding:7px 14px;" onclick="switchTab('payouts', event)">💳 Go to Payouts ($50 Min)</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPREHENSIVE PROPERTY VS AD FORMAT GUIDE -->
+  <div class="section-box" style="margin-top:20px;">
+    <div class="section-box-header">
+      <h3>🎯 Property Type vs Ad Format &amp; Integration Matrix</h3>
+      <span style="font-size:11px; font-family:'Space Mono', monospace; color:var(--accent);">Eternant Compliance Guide</span>
+    </div>
+    <p style="color:var(--text-sub); font-size:12.5px; line-height:1.6; margin-top:8px;">
+      Neeche diye gaye chart se samjhein ki aapke paas jo asset/property hai, uspar aap kaun-kaun se ad formats aur monetization tools chala sakte hain:
+    </p>
+
+    <div class="table-wrap" style="margin-top:16px;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Property / Asset Type</th>
+            <th>Sahi Monitization Format (Kya laga sakte ho?)</th>
+            <th>Kaise Kaam Karta Hai? (Integration)</th>
+            <th>Requirement / Who is it for?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700; color:var(--text);"><span style="font-size:16px;">🌐</span> App / Website</td>
+            <td>
+              <span class="prop-badge format-badge">Display Banners (300x250, 728x90, 320x50)</span><br>
+              <span class="prop-badge format-badge" style="margin-top:3px;">Popunder / Direct Link</span><br>
+              <span class="prop-badge format-badge" style="margin-top:3px;">In-Page Push / Native Recommendation</span><br>
+              <span class="prop-badge format-badge" style="margin-top:3px;">Interstitial (Full Screen Ad)</span><br>
+              <span class="prop-badge format-badge" style="margin-top:3px;">Rewarded Offerwall SDK</span>
+            </td>
+            <td style="font-size:12px; color:var(--text-sub);">HTML/JS Script tag Website ke `<head>`/`<body>` me paste karo, ya App me Eternant Ad SDK initialize karo.</td>
+            <td>Website, Blog, Android/iOS App jiske source code par control ho.</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700; color:var(--text);"><span style="font-size:16px;">🔗</span> Shortlink / Direct Link</td>
+            <td><span class="prop-badge format-badge" style="background:rgba(110,181,255,0.15); color:var(--accent);">Shortlink / Direct Smart URL</span></td>
+            <td style="font-size:12px; color:var(--text-sub);">Destination URLs (Google Drive, Files, Downloads, Movie links, Tools) ko short link me convert karke share karo.</td>
+            <td><strong style="color:var(--success);">Website/App ki zaroorat NHI hai!</strong> Direct high-yielding monetization per click.</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700; color:var(--text);"><span style="font-size:16px;">📱</span> Telegram Mini App (TMA)</td>
+            <td>
+              <span class="prop-badge format-badge" style="background:rgba(251,191,36,0.15); color:var(--warning);">TMA Ad SDK (Coming Soon 🚀)</span>
+            </td>
+            <td style="font-size:12px; color:var(--text-sub);">Telegram Mini App WebApp JS SDK embed karke rewarded tasks, popups aur in-app webview ads chalenge.</td>
+            <td><strong style="color:var(--warning);">Under Development (Coming Soon)</strong> — Pre-registration active.</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700; color:var(--text);"><span style="font-size:16px;">🤖</span> Telegram Bot + Discord Bot</td>
+            <td>
+              <span class="prop-badge format-badge">Bot Broadcast Sponsored Ads</span><br>
+              <span class="prop-badge format-badge" style="margin-top:3px;">Inline Command Ads</span>
+            </td>
+            <td style="font-size:12px; color:var(--text-sub);">Eternant Bot API token connect karke auto-sponsored posts/messages bhej kar earn karo.</td>
+            <td>Active Telegram Bot &amp; Discord Bot creators / developers.</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700; color:var(--text);"><span style="font-size:16px;">💬</span> Socials &amp; Channels / Groups</td>
+            <td><span class="prop-badge format-badge">Shortlinks &amp; Direct Smart Links</span></td>
+            <td style="font-size:12px; color:var(--text-sub);">High-traffic links, videos, PDF notes ko monetized shortlinks me convert karke posts, bio, descriptions ya chats me share karo.</td>
+            <td>Telegram Channels/Groups, WhatsApp, Discord, Instagram bio links, YouTube descriptions &amp; X (Twitter).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-box" style="margin-top:14px;">
+    <div class="section-box-header"><h3>💡 Pro Tips for Maximum eCPM</h3></div>
+    <p style="color:var(--text-sub); font-size:13px; line-height:1.9; margin-top:10px;">
+      • <strong>Agar Website NHI Hai:</strong> Toh <em>Direct Link / Shortlink Locker</em> sabse best aur highest eCPM option hai — bas link short karke share karo!<br>
+      • <strong>High Tier Traffic:</strong> US, UK, Tier-1 &amp; Tech/Crypto audience par $5.00 - $18.00 tak eCPM yield milta hai.<br>
+      • <strong>Multiple Properties:</strong> Aap ek sath kitni bhi properties (Websites + Shortlinks + Telegram) add karke ek hi dashboard me aggregate earn kar sakte ho.
+    </p>
+    <div style="margin-top:14px;">
+      <button class="btn-primary" onclick="switchTab('dashboard', event)">📊 Go to Overview Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-container" id="tab-dashboard">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Publisher Dashboard</span>
+  </div>
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <h1>Overview Dashboard</h1>
+      <p>Monitor your multi-property traffic earnings, active ad units, and real-time yield.</p>
+    </div>
+    <button class="btn-primary" onclick="openPropertyModal()">+ Add Website / App / Link</button>
+  </div>
+
+  <!-- Simulator & Quick Control Bar -->
+  <div class="control-bar">
+    <div class="quick-actions-bar">
+      <div class="quick-action-chip" onclick="openPropertyModal()">➕ Submit Property</div>
+      <div class="quick-action-chip" onclick="switchTab('payouts')">💳 Withdraw Funds</div>
+      
+    </div>
+    <div class="sim-switch-wrap">
+      <span>⚡ Live Traffic Simulation:</span>
+      <div class="sim-toggle" id="simToggle" onclick="toggleSimulation()" title="Toggle live traffic simulation">
+        <div class="sim-thumb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW SECTION -->
+  <div id="section-overview" class="section-marker"></div>
+  <!-- KPI Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="stat-card-label">Total Earnings</div>
+      <div class="stat-card-val" id="statEarnings">$0.00</div>
+      <div class="stat-card-sub">Available: <span id="statAvailable">$0.00</span> &bull; <span id="statInrVal" style="color:var(--accent);">₹0</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <div class="stat-card-label">Active Properties</div>
+      <div class="stat-card-val" id="statProperties">0</div>
+      <div class="stat-card-sub"><span id="statActiveRatio">0 of 0</span> units serving</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="stat-card-label">Total Impressions</div>
+      <div class="stat-card-val" id="statImpressions">0</div>
+      <div class="stat-card-sub">Network Yield: <span id="statEcpm" style="color:var(--success); font-weight:700;">$0.00</span></div>
+    </div>
+  </div>
+
+  <!-- Live Traffic Ticker -->
+  <div class="live-stream-box">
+    <div class="live-dot" id="liveDot"></div>
+    <div class="live-stream-text" id="liveStreamText">⚡ Ad network active &amp; ready • Add a digital property to start serving ads.</div>
+  </div>
+
+
+  <!-- PROPERTIES SECTION -->
+  <div id="section-properties" class="section-marker"></div>
+  <!-- Recent Properties Section -->
+  <div class="section-box">
+    <div class="section-box-header">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Active Monetization Channels</h3>
+      <div class="filter-pills" id="overviewFilterPills">
+        <span class="filter-pill active" onclick="filterOverviewProperties('all', this)">All</span>
+        <span class="filter-pill" onclick="filterOverviewProperties('Website', this)">Websites</span>
+        <span class="filter-pill" onclick="filterOverviewProperties('Telegram', this)">Telegram</span>
+        <span class="filter-pill" onclick="filterOverviewProperties('WhatsApp', this)">WhatsApp</span>
+        <span class="filter-pill" onclick="filterOverviewProperties('App', this)">Mobile Apps</span>
+        <span class="filter-pill" onclick="filterOverviewProperties('Locker', this)">Link Lockers</span>
+      </div>
+    </div>
+    <div id="propertyList" style="display:flex; flex-direction:column; gap:10px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ================= PROPERTIES TAB ================= -->
+<div class="dashboard-container" id="tab-properties">
+  <div class="breadcrumb">
+    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Monetize &amp; Earn</span>
+  </div>
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <h1>Monetize &amp; Earn</h1>
+      <p>Configure websites, mobile apps, Telegram bots/channels, WhatsApp groups, and link lockers.</p>
+    </div>
+    <button class="btn-primary" onclick="openPropertyModal()">+ Add Property</button>
+
+    </div>
+  <!-- Integration options moved into nav "Monetize & Earn" dropdown -->
+
+  <!-- Integration node panes -->
+  <div class="int-node-pane" id="int-pane-ads">
+    <div class="section-box">
+      <div class="section-box-header"><h3>📢 Ads Integration</h3></div>
+      <p style="color:var(--text-sub); font-size:13px; line-height:1.7; margin-top:10px;">Ad units, ad tags aur SDK integration yahan configure honge. System ready hai — detailed content upcoming.</p>
+    </div>
+  </div>
+  <div class="int-node-pane" id="int-pane-offerwall">
+    <div class="section-box">
+      <div class="section-box-header"><h3>🎁 Offerwall Integration</h3></div>
+      <p style="color:var(--text-sub); font-size:13px; line-height:1.7; margin-top:10px;">Offerwall setup, reward callbacks aur payout configuration yahan aayega. System ready hai — detailed content upcoming.</p>
+    </div>
+  </div>
+  <div class="int-node-pane" id="int-pane-shortener">
+    <div class="section-box">
+      <div class="section-box-header"><h3>🔗 Link Shortener</h3></div>
+      <p style="color:var(--text-sub); font-size:13px; line-height:1.7; margin-top:10px;">Monetized link shortener — URLs short karke earning wale links banana yahan hoga. System ready hai — detailed content upcoming.</p>
+    </div>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="section-box" style="padding:16px; margin-bottom:16px;">
+    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+      <div style="flex:1; min-width:200px;">
+        <input type="text" class="form-input" id="propSearchInput" placeholder="🔍 Search properties by name, handle, or URL..." oninput="applyPropertyFilters()">
+      </div>
+      <div style="width:200px;">
+        <select class="form-select" id="filterTypeSelect" onchange="applyPropertyFilters()">
+          <option value="all">All Property Types</option>
+          <option value="Website">Website / Mobile App</option>
+          <option value="Direct Link Locker">Shortlink / Direct Link</option>
+          <option value="Telegram Channel">Telegram Channel / Group / Bot</option>
+          <option value="Telegram Mini App">Telegram Mini App (TMA)</option>
+          <option value="Social Channels">Social Channels</option>
+        </select>
+      </div>
+      <div style="width:160px;">
+        <select class="form-select" id="filterStatusSelect" onchange="applyPropertyFilters()">
+          <option value="all">All Statuses</option>
+          <option value="Pending Review">⏳ Pending Review</option>
+          <option value="Active">● Active / Approved</option>
+          <option value="Paused">❚❚ Paused</option>
+          <option value="Rejected">✕ Rejected</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <div class="section-box-header">
+      <h3>All Registered Properties (<span id="propCountBadge">0</span>)</h3>
+      <button class="btn-secondary btn-sm" onclick="exportPropertiesList()">📥 Export CSV</button>
+    </div>
+    <div id="propertiesFullList" style="display:flex; flex-direction:column; gap:10px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ================= EARNINGS TAB ================= -->
+<div id="section-earnings" class="section-marker"></div>
+<div class="dashboard-container" id="tab-earnings">
+  <div class="breadcrumb">
+    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Earnings &amp; Analytics</span>
+  </div>
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <h1>Earnings &amp; Analytics</h1>
+      <p>Analyze granular eCPM yields, click rates, and daily revenue across all individual properties.</p>
+    </div>
+    <div class="filter-pills" id="timeframePills">
+      <span class="filter-pill" onclick="changeTimeframe('today', this)">Today</span>
+      <span class="filter-pill" onclick="changeTimeframe('yesterday', this)">Yesterday</span>
+      <span class="filter-pill active" onclick="changeTimeframe('7d', this)">Last 7 Days</span>
+      <span class="filter-pill" onclick="changeTimeframe('30d', this)">Last 30 Days</span>
+      <span class="filter-pill" onclick="changeTimeframe('month', this)">This Month</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-label">Period Revenue</div>
+      <div class="stat-card-val" id="periodRevVal">$0.00</div>
+      <div class="stat-card-sub" id="periodRevSub">No data recorded yet</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Period Impressions</div>
+      <div class="stat-card-val" id="periodImpVal">0</div>
+      <div class="stat-card-sub" id="periodImpSub">Avg CTR: 0.00%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Average eCPM</div>
+      <div class="stat-card-val" id="periodEcpmVal">$0.00</div>
+      <div class="stat-card-sub" id="periodEcpmSub">eCPM will compute on live traffic</div>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <div class="section-box-header">
+      <h3>Revenue Trend Curve</h3>
+      <span style="font-size:11px; font-family:'Space Mono', monospace; color:var(--muted);" id="chartRangeLabel">Showing 7-day revenue stream</span>
+    </div>
+    <div class="chart-box" id="revenueChartBox">
+      <!-- Generated SVG Bar Chart -->
+    </div>
+  </div>
+
+  <div class="section-box">
+    <div class="section-box-header">
+      <h3>Performance Breakdown by Property</h3>
+      <button class="btn-secondary btn-sm" onclick="exportEarningsCsv()">📥 Download Report</button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Ad Format</th>
+            <th>Impressions</th>
+            <th>Clicks</th>
+            <th>eCPM</th>
+            <th>Earnings</th>
+          </tr>
+        </thead>
+        <tbody id="earningsTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PAYOUTS TAB ================= -->
+<div class="dashboard-container" id="tab-payouts">
+  <div class="breadcrumb">
+    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Payouts &amp; Billing</span>
+  </div>
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <h1>Payouts &amp; Billing</h1>
+      <p>Configure individual payout methods (UPI, Bank Wire, PayPal, USDT) and monitor withdrawals.</p>
+    </div>
+    <button class="btn-primary" onclick="openPayoutModal()">Configure Payout Method</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-label">Available Balance</div>
+      <div class="stat-card-val" id="payoutAvailableBal">$0.00</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="payoutProgressFill" style="width: 0%;"></div>
+      </div>
+      <div class="stat-card-sub" id="payoutThresholdSub">Threshold: $50.00 ($50.00 needed to withdraw)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active Payout Method</div>
+      <div class="stat-card-val" style="font-size:16px; margin-top:4px;" id="payoutMethodNameDisplay">Not Configured</div>
+      <div class="stat-card-sub" id="payoutMethodDetailDisplay">Click 'Configure Payout Method' to setup</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Lifetime Paid Out</div>
+      <div class="stat-card-val" id="lifetimePaidVal">$0.00</div>
+      <div class="stat-card-sub">Next scheduled run: Net-7</div>
+    </div>
+  </div>
+
+  <!-- Currency Converter & Instant Payout Request -->
+  <div class="section-box">
+    <div class="section-box-header">
+      <div>
+        <h3>Instant Payout Request &amp; Converter</h3>
+        <p style="font-size:12px; color:var(--text-sub); margin-top:2px;">Threshold required for withdrawal is $50.00. Funds transfer directly to your verified payout account.</p>
+      </div>
+      <button class="btn-primary" id="requestWithdrawBtn" onclick="requestWithdrawal()">💸 Request Withdrawal</button>
+    </div>
+    <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:12px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+      <div style="font-size:12px; font-weight:600; color:var(--text);">💱 Currency Estimate:</div>
+      <div style="font-family:'Space Mono', monospace; font-size:12px; color:var(--accent);" id="payoutInrCalc">
+        $50.00 USD ≈ ₹4,150.00 INR (0% fee via UPI/NEFT)
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <h3>Payout Transaction History</h3>
+    <div class="table-wrap" style="margin-top:12px;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="payoutHistoryBody">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SETTINGS TAB ================= -->
+<div class="dashboard-container" id="tab-settings">
+  <div class="breadcrumb">
+    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span>Account Settings</span>
+  </div>
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <h1>Account Settings</h1>
+      <p>Manage publisher profile, authentication credentials, API secret keys, and webhooks.</p>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <h3>Publisher Profile</h3>
+    <div class="form-row" style="margin-top:14px;">
+      <div class="form-group">
+        <label class="form-label">Publisher Name</label>
+        <input type="text" class="form-input" id="settingAccountName" placeholder="Enter publisher / company name" value="Publisher">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contact Email</label>
+        <input type="email" class="form-input" id="settingEmail" placeholder="your-email@domain.com">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Telegram Username (for instant alerts)</label>
+        <input type="text" class="form-input" id="settingTelegram" placeholder="@your_username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Default Currency</label>
+        <select class="form-select" id="settingCurrency">
+          <option value="USD">USD ($) - United States Dollar</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <h3>Developer API &amp; Secret Keys</h3>
+    <div class="form-group" style="margin-top:14px;">
+      <label class="form-label">Publisher Public Client ID</label>
+      <div style="display:flex; gap:8px;">
+        <input type="text" class="form-input" id="settingClientId" readonly>
+        <button class="btn-secondary" onclick="copyInputVal('settingClientId')">Copy</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">API Secret Key (Server-to-Server)</label>
+      <div style="display:flex; gap:8px;">
+        <input type="password" class="form-input" id="settingSecretKey" readonly>
+        <button class="btn-secondary" onclick="toggleSecretKeyVisibility()">👁️ View</button>
+        <button class="btn-secondary" onclick="copyInputVal('settingSecretKey')">Copy</button>
+        <button class="btn-secondary" onclick="regenerateApiKey()">🔄 Reset</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Server Postback / Webhook URL (Optional)</label>
+      <input type="url" class="form-input" id="settingWebhook" placeholder="https://yourserver.com/api/et-postback">
+      <div class="form-hint">Used for server-to-server conversion and postback tracking for offerwalls.</div>
+    </div>
+    <button class="btn-primary" style="margin-top:8px;" onclick="saveAccountSettings()">Save Changes</button>
+  </div>
+</div>
+
+<!-- ================= MODAL: SUBMIT PROPERTY FOR REVIEW ================= -->
+<div class="modal-overlay" id="propertyModal">
+  <div class="modal-card">
+    <h2>Submit Property for Review</h2>
+    <p class="modal-sub">Submit your website, app, channel, or bot for publisher verification. Our admin team reviews and approves properties for monetization within 2–4 hours.</p>
+
+    <!-- Property Type Dropdown (Clean single options without redundant optgroup headers) -->
+    <div class="form-group">
+      <label class="form-label">Property Type / Monetization Channel</label>
+      <select class="form-select" id="propType" onchange="onPropTypeChange()">
+        <option value="Website">🌐 Website / Mobile App (Display Banners, Popunder, Native, Interstitial, Offerwall)</option>
+        <option value="Direct Link Locker">🔗 Shortlink / Direct URL (No Website Required - Per Click Earn)</option>
+        <option value="Telegram Bot">🤖 Telegram Bot &amp; Discord Bot (API Auto Broadcast Ads)</option>
+        <option value="Social Channels">💬 Social Channels &amp; Groups (Telegram Channels/Groups, WhatsApp, Instagram, YouTube, X)</option>
+        <option value="Telegram Mini App" disabled>🚀 Telegram Mini Apps - TMA (Coming Soon)</option>
+      </select>
+    </div>
+
+    <!-- Special Info Note for Shortlink & Telegram Mini Apps -->
+    <div id="shortlinkNotice" style="display:none; background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; margin-bottom:16px; font-size:12px; color:var(--text); line-height:1.6;">
+      <strong style="color:var(--accent);">ℹ️ Shortlink Monetization Access:</strong> Designed specifically for creators &amp; users who do NOT have a website or cannot install ad codes/scripts on their properties. Simply convert any destination URL into a monetized Shortlink and share it to earn per click!
+    </div>
+    <div id="tmaNotice" style="display:none; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:10px; padding:12px 14px; margin-bottom:16px; font-size:12px; color:var(--text); line-height:1.6;">
+      <strong style="color:var(--warning);">🚀 Telegram Mini Apps SDK:</strong> Telegram Mini Apps integration is currently under development and coming soon! You can pre-register your Telegram Bot / Channel in the meantime.
+    </div>
+
+    <!-- Property Name & Handle/URL -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Property Name</label>
+        <input type="text" class="form-input" id="propName" placeholder="e.g. My Telegram Channel or Site">
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL or Handle</label>
+        <input type="text" class="form-input" id="propUrl" placeholder="https://mysite.com or @handle">
+      </div>
+    </div>
+
+    <!-- Individual Category / Niche -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category / Niche</label>
+        <select class="form-select" id="propCategory">
+          <option value="Technology">Technology &amp; Software</option>
+          <option value="Gaming">Gaming &amp; Esports</option>
+          <option value="Education">Education, Jobs &amp; Study</option>
+          <option value="Entertainment">Entertainment &amp; Movies</option>
+          <option value="Finance & Crypto">Finance, Trading &amp; Crypto</option>
+          <option value="News & Media">News &amp; Media</option>
+          <option value="Deals & Coupons">Deals &amp; Shopping</option>
+          <option value="Downloads & Tools">Downloads &amp; Tools</option>
+          <option value="Anime & Comics">Anime &amp; Comics</option>
+          <option value="Other">General / Other</option>
+        </select>
+      </div>
+
+      <!-- Individual Traffic Geo -->
+      <div class="form-group">
+        <label class="form-label">Primary Traffic Region</label>
+        <select class="form-select" id="propGeo">
+          <option value="India">India (IN)</option>
+          <option value="Tier 1">Tier 1 (US, UK, CA, AU)</option>
+          <option value="Europe">Europe</option>
+          <option value="Southeast Asia">Southeast Asia</option>
+          <option value="Global">Worldwide / Mixed</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Verification Notes & Proof -->
+    <div class="form-group">
+      <label class="form-label">Traffic Verification &amp; Notes (Optional)</label>
+      <textarea class="form-textarea" id="propNotes" rows="2" placeholder="e.g. Traffic sources, daily active users, or channel admin handle"></textarea>
+      <div class="form-hint">Our compliance team reviews and approves properties for monetization within 2–4 hours.</div>
+    </div>
+
+    <!-- Monthly Traffic Scale -->
+    <div class="form-group">
+      <label class="form-label">Estimated Monthly Visitors / Audience</label>
+      <select class="form-select" id="propVolume">
+        <option value="<10K">Under 10,000 / month</option>
+        <option value="10K - 50K" selected>10,000 – 50,000 / month</option>
+        <option value="50K - 200K">50,000 – 200,000 / month</option>
+        <option value="200K - 1M">200,000 – 1,000,000 / month</option>
+        <option value="1M+">1,000,000+ (High Volume VIP)</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closePropertyModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveProperty()">Submit for Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: PAYOUT METHOD SETTINGS ================= -->
+<div class="modal-overlay" id="payoutModal">
+  <div class="modal-card">
+    <h2>Configure Payout Method</h2>
+    <p class="modal-sub">Choose your individual withdrawal method and payment credentials.</p>
+
+    <div class="form-group">
+      <label class="form-label">Payout Method</label>
+      <select class="form-select" id="payoutMethodSelect" onchange="onPayoutMethodChange()">
+        <option value="UPI">UPI (Instant - India / 0% fee)</option>
+        <option value="Bank Wire">Bank Wire Transfer (NEFT / IMPS / SWIFT)</option>
+        <option value="PayPal">PayPal (Global USD)</option>
+        <option value="USDT">USDT Crypto (TRC20 / BEP20)</option>
+      </select>
+    </div>
+
+    <!-- UPI Form Fields -->
+    <div id="payoutFieldsUPI">
+      <div class="form-group">
+        <label class="form-label">Virtual Payment Address (UPI ID)</label>
+        <input type="text" class="form-input" id="payoutUpiId" placeholder="e.g. yourname@oksbi or 9876543210@paytm">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account Holder Full Name</label>
+        <input type="text" class="form-input" id="payoutUpiName" placeholder="As registered with your bank">
+      </div>
+    </div>
+
+    <!-- Bank Form Fields -->
+    <div id="payoutFieldsBank" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Beneficiary Account Name</label>
+        <input type="text" class="form-input" id="payoutBankName" placeholder="Full legal name">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Bank Account Number</label>
+          <input type="text" class="form-input" id="payoutBankAcc" placeholder="Account Number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">IFSC / SWIFT Code</label>
+          <input type="text" class="form-input" id="payoutBankIfsc" placeholder="e.g. HDFC0001234">
+        </div>
+      </div>
+    </div>
+
+    <!-- PayPal Form Fields -->
+    <div id="payoutFieldsPayPal" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">PayPal Email Address</label>
+        <input type="email" class="form-input" id="payoutPaypalEmail" placeholder="your-paypal-email@domain.com">
+      </div>
+    </div>
+
+    <!-- USDT Form Fields -->
+    <div id="payoutFieldsUSDT" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">USDT TRC20 / BEP20 Wallet Address</label>
+        <input type="text" class="form-input" id="payoutUsdtAddress" placeholder="e.g. T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closePayoutModal()">Cancel</button>
+      <button class="btn-primary" onclick="savePayoutMethod()">Save Payout Method</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: GET TAG CODE ================= -->
+<!-- ================= MODAL: GET TAG CODE ================= -->
+<div class="modal-overlay" id="tagModal">
+  <div class="modal-card">
+    <h2>Ad Unit Code &amp; Integration</h2>
+    <p class="modal-sub" id="tagModalSubtitle">Ready-to-use monetization tag for your property.</p>
+    <div class="code-box" style="margin-bottom:16px;">
+      <button class="code-copy-btn" onclick="copyTagModalCode()">📋 Copy</button>
+      <code id="tagModalCode"></code>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="closeTagModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: REVIEW STATUS INSPECTOR ================= -->
+<div class="modal-overlay" id="reviewStatusModal">
+  <div class="modal-card" style="max-width: 500px;">
+    <h2>Property Verification Status</h2>
+    <p class="modal-sub" id="inspectorPropName">Checking compliance and traffic quality.</p>
+    
+    <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12px; color:var(--text-sub); font-weight:600;">Current Audit Status:</span>
+        <span id="inspectorStatusBadge"></span>
+      </div>
+      <div style="font-size:11.5px; color:var(--muted); line-height:1.6;" id="inspectorStatusDesc"></div>
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-family:'Space Mono', monospace; font-size:11px; color:var(--accent);" id="inspectorTokenRow"></div>
+    </div>
+
+    <div id="adminCommunicationSection" style="display:none; margin-bottom:16px;">
+      <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-size:12px; color:var(--text-sub); font-weight:600;">Admin Review Notes:</span>
+        </div>
+        <div id="adminMessagesContainer" style="max-height:200px; overflow-y:auto; font-size:12px; color:var(--text); line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <div id="publisherReplySection" style="display:none; margin-bottom:16px;">
+      <div style="background:var(--bg-card); border:1px solid var(--border-lt); border-radius:12px; padding:16px;">
+        <div style="margin-bottom:12px;">
+          <span style="font-size:12px; color:var(--text-sub); font-weight:600;">Your Response to Admin:</span>
+        </div>
+        <textarea id="publisherReplyText" class="form-textarea" rows="3" placeholder="Reply to admin feedback or provide additional information..."></textarea>
+        <div style="margin-top:10px; text-align:right;">
+          <button class="btn-primary btn-sm" onclick="submitPublisherReply()" style="font-size:12px; padding:6px 12px;">Send Reply</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReviewStatusModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastMsg" class="toast-msg"></div>
+
+<script>
+// ================= ROLE CHECK =================
+(function() {
+  var role = localStorage.getItem('eternant_user_role') || 'publisher';
+  if (role !== 'publisher') {
+    window.location.replace('advertiser-dashboard.html');
+    return;
+  }
+})();
+
+// ================= USER SESSION & INITIALIZATION =================
+let userSession = null;
+try {
+  userSession = JSON.parse(localStorage.getItem('et_user_session') || 'null');
+} catch(e) {}
+
+let userSettings = {
+  name: (userSession && userSession.user && (userSession.user.name || userSession.user.email)) ? (userSession.user.name || userSession.user.email.split('@')[0]) : 'Publisher',
+  email: (userSession && userSession.user && userSession.user.email) ? userSession.user.email : '',
+  telegram: '',
+  currency: 'USD',
+  clientId: 'et_pub_live_' + ((userSession && userSession.user && userSession.user.id) ? userSession.user.id.substring(0, 12) : '881920391823'),
+  secretKey: 'et_sec_live_' + Math.random().toString(36).substring(2, 14) + Math.random().toString(36).substring(2, 14),
+  webhook: ''
+};
+
+try {
+  let savedSettings = localStorage.getItem('et_settings');
+  if (savedSettings) userSettings = Object.assign(userSettings, JSON.parse(savedSettings));
+} catch(e) {}
+
+// Apply user info to DOM
+document.getElementById('userName').textContent = userSettings.name.split(' ')[0];
+document.getElementById('userInitial').textContent = userSettings.name.charAt(0).toUpperCase();
+document.getElementById('settingAccountName').value = userSettings.name;
+document.getElementById('settingEmail').value = userSettings.email;
+document.getElementById('settingTelegram').value = userSettings.telegram;
+document.getElementById('settingCurrency').value = userSettings.currency;
+document.getElementById('settingClientId').value = userSettings.clientId;
+document.getElementById('settingSecretKey').value = userSettings.secretKey;
+document.getElementById('settingWebhook').value = userSettings.webhook;
+
+// Theme Toggle
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', newTheme);
+  try { localStorage.setItem('et_theme', newTheme); } catch(e) {}
+  if (window.initStars) window.initStars();
+}
+
+try {
+  const savedTheme = localStorage.getItem('et_theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+} catch(e) {}
+
+// Toast Notification
+function showToast(text) {
+  var t = document.getElementById('toastMsg');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(window._toastTimeout);
+  window._toastTimeout = setTimeout(function() {
+    t.classList.remove('show');
+  }, 2600);
+}
+
+// Navigation & Tab Switching
+function switchTab(tabId, event) {
+  if (event) event.preventDefault();
+  
+  var containers = document.querySelectorAll('.dashboard-container');
+  containers.forEach(function(c) { c.classList.remove('active'); });
+
+  var target = document.getElementById('tab-' + tabId);
+  if (target) target.classList.add('active');
+
+  var allLinks = document.querySelectorAll('.nav-links a, .mobile-nav-links a');
+  allLinks.forEach(function(l) {
+    l.classList.remove('active');
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + tabId + "'")) {
+      l.classList.add('active');
+    }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  if (tabId === 'earnings') {
+    renderRevenueChart();
+    renderEarningsBreakdown();
+  }
+}
+
+function toggleMobileDrawer() {
+  var drawer = document.getElementById('mobileDrawer');
+  var overlay = document.getElementById('drawerOverlay');
+  drawer.classList.toggle('active');
+  overlay.classList.toggle('active');
+}
+
+// ================= DYNAMIC PROPERTY STATE =================
+let properties = [];
+try {
+  let saved = localStorage.getItem('et_properties_v2');
+  if (saved) {
+    properties = JSON.parse(saved);
+  } else {
+    properties = [];
+  }
+} catch(e) {
+  properties = [];
+}
+
+function persistProperties() {
+  try {
+    localStorage.setItem('et_properties_v2', JSON.stringify(properties));
+  } catch(e) {}
+  updateOverviewStats();
+  renderOverviewProperties();
+  renderPropertiesManagement();
+  if (document.getElementById('tab-earnings').classList.contains('active')) {
+    renderRevenueChart();
+    renderEarningsBreakdown();
+  }
+}
+
+function getPropertyIcon(type) {
+  switch(type) {
+    case 'Website': return '🌐';
+    case 'Android App': return '🤖';
+    case 'iOS App': return '🍎';
+    case 'Telegram Channel': return '✈️';
+    case 'Telegram Group': return '👥';
+    case 'Telegram Bot': return '🤖';
+    case 'Telegram Mini App': return '📱';
+    case 'WhatsApp Channel': return '💬';
+    case 'WhatsApp Group': return '🟢';
+    case 'Discord Server': return '👾';
+    case 'Instagram Page': return '📸';
+    case 'YouTube Channel': return '▶️';
+    case 'X Account': return '🐦';
+    case 'Direct Link Locker': return '🔗';
+    default: return '📦';
+  }
+}
+
+// Update Top KPI Cards dynamically from real properties
+function updateOverviewStats() {
+  let activeProps = properties.filter(p => p.status === 'Active');
+  let pendingProps = properties.filter(p => p.status === 'Pending Review');
+  let totalImp = properties.reduce((acc, p) => acc + (p.impressions || 0), 0);
+  let totalEarn = properties.reduce((acc, p) => acc + (p.earnings || 0), 0);
+  let avgEcpm = totalImp > 0 ? ((totalEarn / totalImp) * 1000).toFixed(2) : '0.00';
+  let inrEst = Math.round(totalEarn * 83.5);
+
+  document.getElementById('statProperties').textContent = properties.length;
+  document.getElementById('statActiveRatio').textContent = activeProps.length + ' active • ' + pendingProps.length + ' in review';
+
+
+  document.getElementById('statImpressions').textContent = totalImp.toLocaleString();
+  document.getElementById('statEarnings').textContent = '$' + totalEarn.toFixed(2);
+  document.getElementById('statAvailable').textContent = '$' + totalEarn.toFixed(2);
+  document.getElementById('statInrVal').textContent = '₹' + inrEst.toLocaleString();
+  document.getElementById('statEcpm').textContent = '$' + avgEcpm;
+
+  // Sync with Payouts tab
+  var payBal = document.getElementById('payoutAvailableBal');
+  if (payBal) payBal.textContent = '$' + totalEarn.toFixed(2);
+  var prog = document.getElementById('payoutProgressFill');
+  var threshSub = document.getElementById('payoutThresholdSub');
+  if (prog && threshSub) {
+    let pct = Math.min(100, Math.round((totalEarn / 50.00) * 100));
+    prog.style.width = pct + '%';
+    if (totalEarn >= 50.00) {
+      threshSub.textContent = 'Threshold: $50.00 (Ready to withdraw)';
+    } else {
+      let needed = (50.00 - totalEarn).toFixed(2);
+      threshSub.textContent = 'Threshold: $50.00 ($' + needed + ' needed to withdraw)';
+    }
+  }
+
+  // Currency Converter Widget
+  var convEl = document.getElementById('payoutInrCalc');
+  if (convEl) {
+    let convAmt = Math.max(totalEarn, 50.00);
+    convEl.textContent = '$' + convAmt.toFixed(2) + ' USD ≈ ₹' + Math.round(convAmt * 83.5).toLocaleString() + ' INR (0% fee via UPI/NEFT)';
+  }
+
+  // Update ticker
+  var tickerEl = document.getElementById('liveStreamText');
+  if (tickerEl && !isSimulationActive) {
+    if (properties.length === 0) {
+      tickerEl.textContent = '⚡ Ad network active & ready • Add a digital property to start serving ads.';
+    } else {
+      let p = properties[0];
+      tickerEl.textContent = '● ' + p.name + ' (' + p.type + '): Ad unit active and ready for impressions.';
+    }
+  }
+}
+
+// ================= LIVE TRAFFIC SIMULATOR =================
+let isSimulationActive = false;
+let simInterval = null;
+
+
+
+// Scroll to section with smooth animation
+function scrollToSection(sectionId, event) {
+  if (event) event.preventDefault();
+  
+  // Update active tab
+  document.querySelectorAll('.dashboard-section-tab, .section-tab').forEach(function(tab) {
+    tab.classList.remove('active');
+  });
+  var clickedTab = event.target.closest('.dashboard-section-tab') || event.target.closest('.section-tab');
+  if (clickedTab) clickedTab.classList.add('active');
+  
+  // Scroll to section
+  var sectionEl = document.getElementById('section-' + sectionId);
+  if (sectionEl) {
+    sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Auto-update section tabs on scroll
+window.addEventListener('scroll', function() {
+  var scrollPos = window.scrollY + 100;
+  var sections = [
+    { id: 'overview', top: document.getElementById('section-overview') },
+    { id: 'properties', top: document.getElementById('section-properties') },
+    { id: 'earnings', top: document.getElementById('section-earnings') },
+    { id: 'tools', top: document.getElementById('section-tools') }
+  ];
+  
+  var activeSection = 'overview';
+  sections.forEach(function(sec) {
+    if (sec.top && sec.top.offsetTop <= scrollPos) {
+      activeSection = sec.id;
+    }
+  });
+  
+  document.querySelectorAll('.dashboard-section-tab, .section-tab').forEach(function(tab) {
+    tab.classList.remove('active');
+    if (tab.getAttribute('onclick') && tab.getAttribute('onclick').includes(activeSection)) {
+      tab.classList.add('active');
+    }
+  });
+});
+
+function toggleSimulation() {
+  isSimulationActive = !isSimulationActive;
+  var tog = document.getElementById('simToggle');
+  var dot = document.getElementById('liveDot');
+  if (tog) tog.classList.toggle('active', isSimulationActive);
+
+  if (isSimulationActive) {
+    showToast('Simulation started! Simulating live ad server impressions.');
+    if (dot) dot.style.background = 'var(--accent)';
+    simInterval = setInterval(runSimulationTick, 2400);
+  } else {
+    showToast('Simulation stopped.');
+    if (dot) dot.style.background = 'var(--success)';
+    clearInterval(simInterval);
+    updateOverviewStats();
+  }
+}
+
+function runSimulationTick() {
+  if (properties.length === 0) {
+    // If no properties, auto-create a sample one so simulation makes sense
+    properties.push({
+      id: 'prop-demo',
+      name: 'Demo Website Portal',
+      type: 'Website',
+      url: 'https://demo-publisher.net',
+      category: 'Technology',
+      geo: 'India',
+      format: 'Display Banner (300x250)',
+      volume: '10K - 50K',
+      status: 'Active',
+      impressions: 42,
+      clicks: 2,
+      ecpm: 2.15,
+      earnings: 0.09
+    });
+    persistProperties();
+    showToast('Created "Demo Website Portal" for simulation!');
+  }
+
+  let activeProps = properties.filter(p => p.status === 'Active');
+  if (activeProps.length === 0) return;
+
+  let p = activeProps[Math.floor(Math.random() * activeProps.length)];
+  let addedImp = Math.floor(Math.random() * 8) + 1;
+  let addedClick = Math.random() < 0.25 ? 1 : 0;
+  let addedEarn = (addedImp * (p.ecpm || 2.00) / 1000) + (addedClick * 0.04);
+
+  p.impressions = (p.impressions || 0) + addedImp;
+  p.clicks = (p.clicks || 0) + addedClick;
+  p.earnings = parseFloat(((p.earnings || 0) + addedEarn).toFixed(3));
+  if (p.impressions > 0) {
+    p.ecpm = parseFloat(((p.earnings / p.impressions) * 1000).toFixed(2));
+  }
+
+  persistProperties();
+
+  // Ticker event
+  var tickerEl = document.getElementById('liveStreamText');
+  if (tickerEl) {
+    tickerEl.textContent = `⚡ [LIVE] ${p.name}: +${addedImp} views (${p.format}) • +$${addedEarn.toFixed(3)}`;
+  }
+}
+
+// Render Overview Properties List
+let currentOverviewFilter = 'all';
+function filterOverviewProperties(filter, el) {
+  currentOverviewFilter = filter;
+  var pills = document.querySelectorAll('#overviewFilterPills .filter-pill');
+  pills.forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderOverviewProperties();
+}
+
+function renderOverviewProperties() {
+  var listEl = document.getElementById('propertyList');
+  if (!listEl) return;
+
+  if (properties.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">No properties added yet. Click "+ Add Website / App / Link" to get started.</div>';
+    return;
+  }
+
+  var filtered = properties.filter(function(p) {
+    if (currentOverviewFilter === 'all') return true;
+    if (currentOverviewFilter === 'Website') return p.type.includes('Website');
+    if (currentOverviewFilter === 'Telegram') return p.type.includes('Telegram');
+    if (currentOverviewFilter === 'WhatsApp') return p.type.includes('WhatsApp');
+    if (currentOverviewFilter === 'App') return p.type.includes('App');
+    if (currentOverviewFilter === 'Locker') return p.type.includes('Locker') || p.format.includes('Smartlink');
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">No properties found under "' + currentOverviewFilter + '".</div>';
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(function(p) {
+    let icon = getPropertyIcon(p.type);
+    let isAct = p.status === 'Active';
+    html += `
+      <div class="prop-card">
+        <div class="prop-card-main">
+          <div class="prop-card-icon">${icon}</div>
+          <div class="prop-card-info">
+            <div class="prop-card-title">
+              ${escapeHtml(p.name)}
+              <span class="prop-badge">${escapeHtml(p.type)}</span>
+              <span class="prop-badge format-badge">${escapeHtml(p.format)}</span>
+            </div>
+            <div class="prop-card-meta">
+              <span>${escapeHtml(p.url || p.category)}</span>
+              <span>&bull; Geo: ${escapeHtml(p.geo || 'Global')}</span>
+            </div>
+          </div>
+        </div>
+        <div class="prop-card-stats">
+          <div>
+            <div class="prop-stat-unit">Impressions</div>
+            <div class="prop-stat-val">${(p.impressions || 0).toLocaleString()}</div>
+          </div>
+          <div>
+            <div class="prop-stat-unit">Earnings</div>
+            <div class="prop-stat-val" style="color:var(--success);">$${(p.earnings || 0).toFixed(2)}</div>
+          </div>
+        </div>
+        <div class="prop-card-actions">
+          ${renderPropertyStatusBadge(p)}
+          <button class="btn-secondary btn-sm" onclick="openTagModalForProperty('${p.id}')">📋 Tag</button>
+        </div>
+      </div>
+    `;
+  });
+  listEl.innerHTML = html;
+}
+
+// Render Properties Management Tab
+function renderPropertiesManagement() {
+  var fullListEl = document.getElementById('propertiesFullList');
+  var badge = document.getElementById('propCountBadge');
+  if (badge) badge.textContent = properties.length;
+  if (!fullListEl) return;
+
+  if (properties.length === 0) {
+    fullListEl.innerHTML = '<div class="empty-state">No properties registered. Add your first digital property to start serving ads.</div>';
+    return;
+  }
+
+  var searchVal = (document.getElementById('propSearchInput') ? document.getElementById('propSearchInput').value : '').toLowerCase().trim();
+  var typeVal = document.getElementById('filterTypeSelect') ? document.getElementById('filterTypeSelect').value : 'all';
+  var statusVal = document.getElementById('filterStatusSelect') ? document.getElementById('filterStatusSelect').value : 'all';
+
+  var filtered = properties.filter(function(p) {
+    if (searchVal && !p.name.toLowerCase().includes(searchVal) && !(p.url && p.url.toLowerCase().includes(searchVal))) {
+      return false;
+    }
+    if (typeVal !== 'all' && p.type !== typeVal) return false;
+    if (statusVal !== 'all' && p.status !== statusVal) return false;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    fullListEl.innerHTML = '<div class="empty-state">No properties found matching your filter criteria.</div>';
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(function(p) {
+    let icon = getPropertyIcon(p.type);
+    let isAct = p.status === 'Active';
+    html += `
+      <div class="prop-card">
+        <div class="prop-card-main">
+          <div class="prop-card-icon">${icon}</div>
+          <div class="prop-card-info">
+            <div class="prop-card-title">
+              ${escapeHtml(p.name)}
+              <span class="prop-badge">${escapeHtml(p.type)}</span>
+              <span class="prop-badge format-badge">${escapeHtml(p.format)}</span>
+            </div>
+            <div class="prop-card-meta">
+              <span>🔗 ${escapeHtml(p.url || 'No URL')}</span>
+              <span>&bull; Niche: ${escapeHtml(p.category)}</span>
+              <span>&bull; Audience: ${escapeHtml(p.volume || 'Normal')}</span>
+            </div>
+          </div>
+        </div>
+        <div class="prop-card-stats">
+          <div>
+            <div class="prop-stat-unit">Impressions</div>
+            <div class="prop-stat-val">${(p.impressions || 0).toLocaleString()}</div>
+          </div>
+          <div>
+            <div class="prop-stat-unit">eCPM</div>
+            <div class="prop-stat-val">$${(p.ecpm || 0.00).toFixed(2)}</div>
+          </div>
+          <div>
+            <div class="prop-stat-unit">Earnings</div>
+            <div class="prop-stat-val" style="color:var(--success);">$${(p.earnings || 0).toFixed(2)}</div>
+          </div>
+        </div>
+        <div class="prop-card-actions">
+          ${renderPropertyStatusBadge(p)}
+          <button class="btn-secondary btn-sm" onclick="openTagModalForProperty('${p.id}')">Get Code</button>
+          <button class="btn-secondary btn-sm" style="color:var(--danger);" onclick="deleteProperty('${p.id}')">✕</button>
+        </div>
+      </div>
+    `;
+  });
+  fullListEl.innerHTML = html;
+}
+
+function applyPropertyFilters() {
+  renderPropertiesManagement();
+}
+
+function togglePropertyStatus(id) {
+  var p = properties.find(x => x.id === id);
+  if (!p) return;
+  p.status = p.status === 'Active' ? 'Paused' : 'Active';
+  persistProperties();
+  showToast(p.name + ' marked as ' + p.status);
+}
+
+function deleteProperty(id) {
+  var p = properties.find(x => x.id === id);
+  var name = p ? p.name : 'Property';
+  properties = properties.filter(x => x.id !== id);
+  persistProperties();
+  showToast('Removed ' + name + ' from dashboard.');
+}
+
+// Modal Handling for Add Property
+function openPropertyModal() {
+  document.getElementById('propertyModal').classList.add('active');
+  onPropTypeChange();
+}
+function closePropertyModal() {
+  document.getElementById('propertyModal').classList.remove('active');
+}
+
+// Dynamic recommendation when individual property type changes
+function onPropTypeChange() {
+  var type = document.getElementById('propType').value;
+  var urlEl = document.getElementById('propUrl');
+  var shortlinkNotice = document.getElementById('shortlinkNotice');
+  var tmaNotice = document.getElementById('tmaNotice');
+
+  if (shortlinkNotice) shortlinkNotice.style.display = (type === 'Direct Link Locker') ? 'block' : 'none';
+  if (tmaNotice) tmaNotice.style.display = (type === 'Telegram Mini App') ? 'block' : 'none';
+
+  if (!urlEl) return;
+
+  if (type === 'Website') {
+    urlEl.placeholder = 'https://mysite.com';
+  } else if (type === 'Direct Link Locker') {
+    urlEl.placeholder = 'Destination URL to shorten (e.g. https://drive.google.com/file/...)';
+  } else if (type === 'Telegram Bot') {
+    urlEl.placeholder = '@my_telegram_bot';
+  } else if (type === 'Telegram Channel' || type === 'Telegram Group') {
+    urlEl.placeholder = 'https://t.me/mychannel';
+  } else if (type === 'WhatsApp Channel' || type === 'WhatsApp Group') {
+    urlEl.placeholder = 'https://chat.whatsapp.com/...';
+  } else if (type === 'Android App' || type === 'iOS App') {
+    urlEl.placeholder = 'com.myapp.package or App Store URL';
+  } else if (type === 'Telegram Mini App') {
+    urlEl.placeholder = 'https://t.me/mybot/app (Coming Soon)';
+  } else if (type === 'Discord Server') {
+    urlEl.placeholder = 'https://discord.gg/...';
+  } else if (type === 'Instagram Page') {
+    urlEl.placeholder = 'https://instagram.com/myhandle';
+  } else if (type === 'YouTube Channel') {
+    urlEl.placeholder = 'https://youtube.com/@mychannel';
+  } else if (type === 'X Account') {
+    urlEl.placeholder = 'https://x.com/myhandle';
+  }
+}
+
+function saveProperty() {
+  var name = document.getElementById('propName').value.trim();
+  var type = document.getElementById('propType').value;
+  var url = document.getElementById('propUrl').value.trim();
+  var category = document.getElementById('propCategory').value;
+  var geo = document.getElementById('propGeo').value;
+  var volume = document.getElementById('propVolume').value;
+  var notes = document.getElementById('propNotes') ? document.getElementById('propNotes').value.trim() : '';
+
+  if (!name) {
+    showToast('Please enter a Property Name.');
+    return;
+  }
+
+  // Newly submitted properties go to "Pending Review" status for admin verification
+  var newProp = {
+    id: 'prop-' + Date.now(),
+    name: name,
+    type: type,
+    url: url || 'N/A',
+    category: category,
+    geo: geo,
+    format: 'Multi-Format (Auto)',
+    volume: volume,
+    notes: notes,
+    status: 'Pending Review',
+    submittedAt: new Date().toISOString(),
+    verifiedAt: null,
+    rejectionReason: null,
+    verificationToken: 'ET-VERIFY-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    impressions: 0,
+    clicks: 0,
+    ecpm: 0.00,
+    earnings: 0.00
+  };
+
+  properties.unshift(newProp);
+  persistProperties();
+  closePropertyModal();
+  showToast('🎉 Property submitted for review! Admin will audit and approve shortly.');
+
+  // Clear modal inputs
+  document.getElementById('propName').value = '';
+  document.getElementById('propUrl').value = '';
+  if (document.getElementById('propNotes')) document.getElementById('propNotes').value = '';
+}
+
+// ================= AD PREVIEW SANDBOX (INTERACTIVE!) =================
+
+
+// ================= CODE / TAG MODAL FOR PROPERTY =================
+function openTagModalForProperty(id) {
+  var p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  var subEl = document.getElementById('tagModalSubtitle');
+  var codeEl = document.getElementById('tagModalCode');
+  subEl.textContent = 'Integration for: ' + p.name + ' (' + p.type + ' • ' + p.format + ')';
+
+  var snippet = generateCodeSnippetForProperty(p, 'default');
+  codeEl.textContent = snippet;
+
+  document.getElementById('tagModal').classList.add('active');
+}
+
+function closeTagModal() {
+  document.getElementById('tagModal').classList.remove('active');
+}
+
+function copyTagModalCode() {
+  var code = document.getElementById('tagModalCode').textContent;
+  copyTextToClipboard(code, 'Code snippet copied to clipboard!');
+}
+
+function generateCodeSnippetForProperty(p, targetFormat) {
+  let pubId = 'ET-' + p.id.replace('prop-', 'U');
+
+  if (p.type === 'Telegram Bot' || targetFormat === 'py-bot') {
+    return `# === Telegram Bot Integration (Python) ===
+# Install: pip install aiogram eternant-sdk
+from aiogram import Bot, Dispatcher, types
+import eternant_ads
+
+ET_PUB_ID = "${pubId}"
+bot = Bot(token="YOUR_BOT_TOKEN")
+
+@dp.message_handler(commands=['start'])
+async def start_handler(message: types.Message):
+    # Fetch sponsored ad for ${p.category}
+    ad = await eternant_ads.get_sponsored_ad(pub_id=ET_PUB_ID, user_id=message.from_user.id)
+    await message.reply(f"Welcome to ${p.name}!\n\n{ad.text_with_button}")`;
+  } else if (p.type === 'Telegram Mini App' || targetFormat === 'tma-sdk') {
+    return `<!-- Eternant TMA Monetization SDK -->
+<script src="https://cdn.eternant.net/tma-sdk.js" data-app-id="${pubId}" async><\/script>
+<script>
+  window.EternantTMA.init({
+    adUnit: "${p.format}",
+    onReward: function(reward) {
+      console.log("User rewarded:", reward);
+    }
+  });
+<\/script>`;
+  } else if (p.format.includes('Smartlink') || p.type.includes('Locker') || targetFormat === 'smartlink') {
+    return `https://etn.link/s/${pubId}?url=DESTINATION_URL_HERE&ref=${encodeURIComponent(p.name)}`;
+  } else {
+    return `<!-- Eternant Ad Unit: ${p.name} (${p.format}) -->
+<script async src="https://cdn.eternant.net/tag.js"
+  data-publisher-id="${pubId}"
+  data-format="${p.format}"
+  data-category="${p.category}">
+<\/script>
+<div class="eternant-ad-unit" data-slot="${pubId}"></div>`;
+  }
+}
+
+
+
+
+
+
+
+// ================= EARNINGS & CHART FUNCTIONS =================
+let activeTimeframe = '7d';
+function changeTimeframe(tf, el) {
+  activeTimeframe = tf;
+  var pills = document.querySelectorAll('#timeframePills .filter-pill');
+  pills.forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  document.getElementById('chartRangeLabel').textContent = 'Revenue curve for: ' + tf.toUpperCase();
+  renderRevenueChart();
+  renderEarningsBreakdown();
+}
+
+function renderRevenueChart() {
+  var box = document.getElementById('revenueChartBox');
+  if (!box) return;
+
+  let totalImp = properties.reduce((acc, p) => acc + (p.impressions || 0), 0);
+  let totalEarn = properties.reduce((acc, p) => acc + (p.earnings || 0), 0);
+  let avgEcpm = totalImp > 0 ? ((totalEarn / totalImp) * 1000).toFixed(2) : '0.00';
+
+  document.getElementById('periodRevVal').textContent = '$' + totalEarn.toFixed(2);
+  document.getElementById('periodImpVal').textContent = totalImp.toLocaleString();
+  document.getElementById('periodEcpmVal').textContent = '$' + avgEcpm;
+  document.getElementById('periodRevSub').textContent = totalEarn > 0 ? 'Live recorded earnings' : 'No revenue recorded yet';
+  document.getElementById('periodImpSub').textContent = totalImp > 0 ? 'Tracking live traffic' : 'Avg CTR: 0.00%';
+
+  if (properties.length === 0 || totalEarn === 0) {
+    box.innerHTML = '<div class="empty-state" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">No traffic data recorded for this period yet. Embed your ad tags to start receiving impressions.</div>';
+    return;
+  }
+
+  let maxVal = Math.max(...properties.map(p => p.earnings || 0), 1);
+  let html = '';
+  properties.forEach(function(p) {
+    let earn = p.earnings || 0;
+    let pct = Math.max(8, Math.round((earn / maxVal) * 85));
+    html += `
+      <div class="chart-bar-col">
+        <div class="chart-bar-tooltip">${escapeHtml(p.name)}: $${earn.toFixed(2)} (${(p.impressions || 0).toLocaleString()} imp)</div>
+        <div class="chart-bar" style="height:${pct}%;"></div>
+        <div class="chart-bar-label">${escapeHtml(p.name.length > 8 ? p.name.substring(0, 8) + '..' : p.name)}</div>
+      </div>
+    `;
+  });
+  box.innerHTML = html;
+}
+
+function renderEarningsBreakdown() {
+  var tbody = document.getElementById('earningsTableBody');
+  if (!tbody) return;
+
+  if (properties.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:30px;">No properties registered yet. Add a property to start tracking impressions and earnings.</td></tr>';
+    return;
+  }
+
+  let html = '';
+  properties.forEach(function(p) {
+    let imp = p.impressions || 0;
+    let clicks = p.clicks || 0;
+    let ctr = imp > 0 ? ((clicks / imp) * 100).toFixed(2) + '%' : '0.00%';
+    let ecpm = '$' + (p.ecpm || 0.00).toFixed(2);
+    let earn = '$' + (p.earnings || 0.00).toFixed(2);
+
+    html += `
+      <tr>
+        <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+        <td><span class="prop-badge">${escapeHtml(p.type)}</span></td>
+        <td><span class="prop-badge format-badge">${escapeHtml(p.format)}</span></td>
+        <td style="font-family:'Space Mono', monospace;">${imp.toLocaleString()}</td>
+        <td style="font-family:'Space Mono', monospace;">${clicks.toLocaleString()}</td>
+        <td style="font-family:'Space Mono', monospace;">${ecpm}</td>
+        <td style="font-family:'Space Mono', monospace; font-weight:700; color:var(--success);">${earn}</td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function exportEarningsCsv() {
+  if (properties.length === 0) {
+    showToast('No property data available to export.');
+    return;
+  }
+  let csv = 'Property,Type,Ad Format,Impressions,Clicks,CTR,eCPM,Earnings\n';
+  properties.forEach(function(p) {
+    let imp = p.impressions || 0;
+    let clicks = p.clicks || 0;
+    let ctr = imp > 0 ? ((clicks / imp) * 100).toFixed(2) + '%' : '0%';
+    csv += `"${p.name}","${p.type}","${p.format}",${imp},${clicks},"${ctr}",${p.ecpm || 0},${p.earnings || 0}\n`;
+  });
+  downloadCsvFile(csv, 'eternant_earnings_report.csv');
+  showToast('Earnings report downloaded as CSV!');
+}
+
+function exportPropertiesList() {
+  if (properties.length === 0) {
+    showToast('No properties available to export.');
+    return;
+  }
+  let csv = 'ID,Name,Type,URL,Category,Geo,Format,Traffic Volume,Status,Impressions,Earnings\n';
+  properties.forEach(function(p) {
+    csv += `"${p.id}","${p.name}","${p.type}","${p.url}","${p.category}","${p.geo}","${p.format}","${p.volume}","${p.status}",${p.impressions || 0},${p.earnings || 0}\n`;
+  });
+  downloadCsvFile(csv, 'eternant_registered_properties.csv');
+  showToast('Properties list exported as CSV!');
+}
+
+function downloadCsvFile(content, fileName) {
+  var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  var link = document.createElement('a');
+  var url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// ================= PAYOUTS CONFIG & WITHDRAWAL =================
+let payoutConfig = null;
+try {
+  let saved = localStorage.getItem('et_payout_config');
+  if (saved) payoutConfig = JSON.parse(saved);
+} catch(e) {}
+
+let payoutHistory = [];
+try {
+  let savedH = localStorage.getItem('et_payout_history');
+  if (savedH) payoutHistory = JSON.parse(savedH);
+} catch(e) {
+  payoutHistory = [];
+}
+
+function renderPayoutUI() {
+  var nameEl = document.getElementById('payoutMethodNameDisplay');
+  var detailEl = document.getElementById('payoutMethodDetailDisplay');
+
+  if (payoutConfig && payoutConfig.method) {
+    if (nameEl) nameEl.textContent = payoutConfig.method + ' Transfer';
+    if (detailEl) detailEl.textContent = payoutConfig.details;
+  } else {
+    if (nameEl) nameEl.textContent = 'Not Configured';
+    if (detailEl) detailEl.textContent = "Click 'Configure Payout Method' to setup";
+  }
+
+  let lifetimePaid = payoutHistory.filter(tx => tx.status === 'Completed').reduce(function(acc, tx) {
+    let num = parseFloat(tx.amount.replace('$', '')) || 0;
+    return acc + num;
+  }, 0);
+  var ltEl = document.getElementById('lifetimePaidVal');
+  if (ltEl) ltEl.textContent = '$' + lifetimePaid.toFixed(2);
+
+  var tbody = document.getElementById('payoutHistoryBody');
+  if (!tbody) return;
+
+  if (payoutHistory.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px;">No payout transactions processed yet. Minimum threshold is $50.00.</td></tr>';
+    return;
+  }
+
+  let html = '';
+  payoutHistory.forEach(function(tx) {
+    let badgeClass = tx.status === 'Completed' ? 'active' : 'paused';
+    html += `
+      <tr>
+        <td style="font-family:'Space Mono', monospace; font-size:12px;">${tx.id}</td>
+        <td>${tx.date}</td>
+        <td>${escapeHtml(tx.method)}</td>
+        <td style="font-family:'Space Mono', monospace; font-weight:700;">${tx.amount}</td>
+        <td><span class="status-badge ${badgeClass}">${tx.status}</span></td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function openPayoutModal() {
+  document.getElementById('payoutModal').classList.add('active');
+  onPayoutMethodChange();
+}
+function closePayoutModal() {
+  document.getElementById('payoutModal').classList.remove('active');
+}
+
+function onPayoutMethodChange() {
+  var m = document.getElementById('payoutMethodSelect').value;
+  document.getElementById('payoutFieldsUPI').style.display = m === 'UPI' ? 'block' : 'none';
+  document.getElementById('payoutFieldsBank').style.display = m === 'Bank Wire' ? 'block' : 'none';
+  document.getElementById('payoutFieldsPayPal').style.display = m === 'PayPal' ? 'block' : 'none';
+  document.getElementById('payoutFieldsUSDT').style.display = m === 'USDT' ? 'block' : 'none';
+}
+
+function savePayoutMethod() {
+  var m = document.getElementById('payoutMethodSelect').value;
+  var details = '';
+
+  if (m === 'UPI') {
+    var upi = document.getElementById('payoutUpiId').value.trim();
+    if (!upi) {
+      showToast('Please enter your UPI ID.');
+      return;
+    }
+    details = upi + ' • Verified UPI';
+  } else if (m === 'Bank Wire') {
+    var acc = document.getElementById('payoutBankAcc').value.trim();
+    var ifsc = document.getElementById('payoutBankIfsc').value.trim();
+    if (!acc || !ifsc) {
+      showToast('Please enter your Bank Account and IFSC Code.');
+      return;
+    }
+    details = 'Bank Acc ' + acc.slice(-4) + ' (' + ifsc + ')';
+  } else if (m === 'PayPal') {
+    var email = document.getElementById('payoutPaypalEmail').value.trim();
+    if (!email) {
+      showToast('Please enter your PayPal email.');
+      return;
+    }
+    details = email + ' • PayPal Verified';
+  } else if (m === 'USDT') {
+    var addr = document.getElementById('payoutUsdtAddress').value.trim();
+    if (!addr) {
+      showToast('Please enter your USDT Wallet address.');
+      return;
+    }
+    details = (addr.length > 12 ? addr.slice(0, 6) + '...' + addr.slice(-4) : addr) + ' (TRC20)';
+  }
+
+  payoutConfig = { method: m, details: details };
+  try { localStorage.setItem('et_payout_config', JSON.stringify(payoutConfig)); } catch(e) {}
+
+  renderPayoutUI();
+  closePayoutModal();
+  showToast('Payout method updated to ' + m + '!');
+}
+
+function requestWithdrawal() {
+  let totalEarn = properties.reduce((acc, p) => acc + (p.earnings || 0), 0);
+  if (totalEarn < 50.00) {
+    let needed = (50.00 - totalEarn).toFixed(2);
+    showToast('Minimum threshold is $50.00. You need $' + needed + ' more to request withdrawal.');
+    return;
+  }
+
+  if (!payoutConfig || !payoutConfig.method) {
+    showToast('Please configure your payout method first.');
+    openPayoutModal();
+    return;
+  }
+
+  let txAmount = '$' + totalEarn.toFixed(2);
+  let newTx = {
+    id: 'ET-TX-' + Math.floor(10000 + Math.random() * 90000),
+    date: new Date().toISOString().split('T')[0],
+    method: payoutConfig.method + ' (' + payoutConfig.details + ')',
+    amount: txAmount,
+    status: 'Processing'
+  };
+
+  payoutHistory.unshift(newTx);
+  try { localStorage.setItem('et_payout_history', JSON.stringify(payoutHistory)); } catch(e) {}
+
+  properties.forEach(p => { p.earnings = 0.00; });
+  persistProperties();
+  renderPayoutUI();
+
+  showToast('Withdrawal of ' + txAmount + ' requested via ' + payoutConfig.method + '!');
+}
+
+// ================= SETTINGS TAB FUNCTIONS =================
+function toggleSecretKeyVisibility() {
+  var inp = document.getElementById('settingSecretKey');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+  } else {
+    inp.type = 'password';
+  }
+}
+
+function regenerateApiKey() {
+  var newKey = 'et_sec_live_' + Math.random().toString(36).substring(2, 14) + Math.random().toString(36).substring(2, 14);
+  document.getElementById('settingSecretKey').value = newKey;
+  userSettings.secretKey = newKey;
+  try { localStorage.setItem('et_settings', JSON.stringify(userSettings)); } catch(e) {}
+  showToast('New API Secret Key generated and saved!');
+}
+
+function saveAccountSettings() {
+  var pubName = document.getElementById('settingAccountName').value.trim() || 'Publisher';
+  var email = document.getElementById('settingEmail').value.trim();
+  var tg = document.getElementById('settingTelegram').value.trim();
+  var curr = document.getElementById('settingCurrency').value;
+  var webhook = document.getElementById('settingWebhook').value.trim();
+
+  userSettings.name = pubName;
+  userSettings.email = email;
+  userSettings.telegram = tg;
+  userSettings.currency = curr;
+  userSettings.webhook = webhook;
+
+  document.getElementById('userName').textContent = pubName.split(' ')[0];
+  document.getElementById('userInitial').textContent = pubName.charAt(0).toUpperCase();
+
+  try { localStorage.setItem('et_settings', JSON.stringify(userSettings)); } catch(e) {}
+  showToast('Account settings saved successfully!');
+}
+
+function copyInputVal(id) {
+  var val = document.getElementById(id).value;
+  copyTextToClipboard(val, 'Copied to clipboard!');
+}
+
+function copyTextToClipboard(text, successMsg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast(successMsg);
+    }).catch(function() {
+      fallbackCopy(text, successMsg);
+    });
+  } else {
+    fallbackCopy(text, successMsg);
+  }
+}
+
+function fallbackCopy(text, successMsg) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast(successMsg);
+  } catch(e) {
+    showToast('Failed to copy. Please copy manually.');
+  }
+  document.body.removeChild(ta);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+
+// ================= COSMIC STARFIELD ENGINE =================
+(function() {
+  var canvas = document.getElementById('starfield');
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  var W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function getStarColors() {
+    var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    return isDark
+      ? { purple: 'rgba(167,139,250,', blue: 'rgba(110,181,255,', white: 'rgba(216,230,255,' }
+      : { purple: 'rgba(100,60,200,', blue: 'rgba(30,90,200,', white: 'rgba(20,50,140,' };
+  }
+  function initStars() {
+    stars = [];
+    var C = getStarColors();
+    var count = Math.floor((W * H) / 4200);
+    for (var i = 0; i < count; i++) {
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.2+0.2, a: Math.random()*0.8+0.1, speed: Math.random()*0.2+0.04, twinkle: Math.random()*Math.PI*2, twinkleSpeed: Math.random()*0.012+0.003, color: Math.random()<0.12?C.purple:Math.random()<0.12?C.blue:C.white });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(function(s) {
+      s.twinkle += s.twinkleSpeed;
+      var alpha = s.a * (0.45 + 0.55 * Math.sin(s.twinkle));
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.color + alpha + ')'; ctx.fill();
+      s.y -= s.speed * 0.15;
+      if (s.y < -2) { s.y = H+2; s.x = Math.random()*W; }
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); initStars(); draw();
+  window.initStars = initStars;
+  var rt;
+  window.addEventListener('resize', function() { clearTimeout(rt); rt = setTimeout(function(){ resize(); initStars(); }, 200); });
+
+  function spawnShootingStar() {
+    var el = document.createElement('div'); el.className = 'shooting-star';
+    document.body.appendChild(el);
+    var startX = Math.random()*W*0.7, startY = Math.random()*H*0.4;
+    var angle = Math.random()*30+20, dist = Math.random()*200+150;
+    var dx = Math.cos(angle*Math.PI/180)*dist, dy = Math.sin(angle*Math.PI/180)*dist;
+    var dur = Math.random()*600+500;
+    el.style.cssText = 'left:'+startX+'px;top:'+startY+'px;opacity:0;transform:translate(0,0) rotate('+angle+'deg);transition:transform '+dur+'ms linear,opacity '+(dur*0.3)+'ms ease;';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      el.style.opacity='1'; el.style.transform='translate('+dx+'px,'+dy+'px) rotate('+angle+'deg)';
+      setTimeout(function(){ el.style.opacity='0'; setTimeout(function(){ el.remove(); }, 400); }, dur*0.6);
+    }); });
+    setTimeout(spawnShootingStar, Math.random()*6000+4000);
+  }
+  setTimeout(spawnShootingStar, 2500);
+})();
+
+
+// Helper function to render status badges
+function renderPropertyStatusBadge(p) {
+  if (p.status === 'Pending Review') {
+    return `<span class="status-badge pending" onclick="openReviewStatusModal('${p.id}')" title="Submitted on ${new Date(p.submittedAt || Date.now()).toLocaleDateString()}. Admin review in progress.">⏳ In Review</span>`;
+  } else if (p.status === 'Active') {
+    return `<span class="status-badge active" onclick="togglePropertyStatus('${p.id}')" title="Click to pause traffic">● Active</span>`;
+  } else if (p.status === 'Paused') {
+    return `<span class="status-badge paused" onclick="togglePropertyStatus('${p.id}')" title="Click to resume traffic">❚❚ Paused</span>`;
+  } else if (p.status === 'Rejected') {
+    return `<span class="status-badge rejected" onclick="openReviewStatusModal('${p.id}')" title="${escapeHtml(p.rejectionReason || 'Does not meet traffic criteria')}">✕ Rejected</span>`;
+  }
+  return `<span class="status-badge pending">⏳ Pending</span>`;
+}
+
+// Review Status Inspector Modal
+function openReviewStatusModal(id) {
+  var p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('inspectorPropName').textContent = p.name + ' (' + p.type + ')';
+  var badgeEl = document.getElementById('inspectorStatusBadge');
+  var descEl = document.getElementById('inspectorStatusDesc');
+  var tokenEl = document.getElementById('inspectorTokenRow');
+
+  badgeEl.innerHTML = renderPropertyStatusBadge(p);
+
+  if (p.status === 'Pending Review') {
+    descEl.innerHTML = 'Your property is currently in the <strong>Admin Review Queue</strong>. Our audit team checks traffic legitimacy, domain/channel ownership, and ad safety compliance.<br><br>⏱️ Estimated approval time: <strong>2 to 4 hours</strong>. Ad tags can be prepared in advance.';
+  } else if (p.status === 'Active') {
+    descEl.innerHTML = '✅ <strong>Approved &amp; Live</strong>. Your property is cleared to serve programmatic ads and monetize traffic. Ad units are active on the global ad server.';
+  } else if (p.status === 'Rejected') {
+    descEl.innerHTML = '❌ <strong>Review Not Approved</strong>.<br>Reason: <em>' + escapeHtml(p.rejectionReason || 'Site content does not meet minimum organic traffic or policy guidelines.') + '</em><br><br>You can re-submit after addressing the issue.';
+  } else {
+    descEl.innerHTML = 'Traffic delivery is currently paused by publisher.';
+  }
+
+  tokenEl.textContent = 'Verification ID: ' + (p.verificationToken || 'ET-VERIFY-PENDING') + ' • Submitted: ' + new Date(p.submittedAt || Date.now()).toLocaleString();
+  
+  var adminSection = document.getElementById('adminCommunicationSection');
+  var messagesContainer = document.getElementById('adminMessagesContainer');
+  var replySection = document.getElementById('publisherReplySection');
+  
+  if (p.adminMessages && p.adminMessages.length > 0) {
+    adminSection.style.display = 'block';
+    var messagesHtml = '';
+    p.adminMessages.forEach(function(msg) {
+      var msgTime = new Date(msg.timestamp).toLocaleString();
+      var sender = msg.type === 'admin' ? 'Admin' : 'You';
+      var borderColor = msg.type === 'admin' ? 'var(--accent)' : 'var(--success)';
+      messagesHtml += '<div style="margin-bottom:10px; padding:8px; background:var(--bg-card); border-radius:8px; border-left:3px solid ' + borderColor + ';">';
+      messagesHtml += '<div style="font-weight:600; color:' + borderColor + '; margin-bottom:4px;">' + sender + ' - ' + msgTime + '</div>';
+      messagesHtml += '<div style="color:var(--text);">' + escapeHtml(msg.text) + '</div>';
+      messagesHtml += '</div>';
+    });
+    messagesContainer.innerHTML = messagesHtml;
+  } else {
+    adminSection.style.display = 'none';
+  }
+  
+  if (p.status === 'Rejected' || p.status === 'Pending Review') {
+    replySection.style.display = 'block';
+    document.getElementById('publisherReplyText').value = p.publisherReply || '';
+  } else {
+    replySection.style.display = 'none';
+  }
+  
+  document.getElementById('reviewStatusModal').classList.add('active');
+}
+
+function closeReviewStatusModal() {
+  document.getElementById('reviewStatusModal').classList.remove('active');
+}
+
+// Submit publisher reply to admin
+function submitPublisherReply() {
+  var currentPropId = null;
+  var activeProps = properties.filter(p => p.status === 'Rejected' || p.status === 'Pending Review');
+  
+  var propNameEl = document.getElementById('inspectorPropName');
+  if (propNameEl) {
+    var propNameText = propNameEl.textContent;
+    for (var i = 0; i < activeProps.length; i++) {
+      var p = activeProps[i];
+      if (propNameText.includes(p.name) && propNameText.includes(p.type)) {
+        currentPropId = p.id;
+        break;
+      }
+    }
+  }
+  
+  if (!currentPropId) {
+    showToast('Could not identify property');
+    return;
+  }
+  
+  var replyText = document.getElementById('publisherReplyText').value.trim();
+  if (!replyText) {
+    showToast('Please enter your reply');
+    return;
+  }
+  
+  var p = properties.find(x => x.id === currentPropId);
+  if (p) {
+    p.publisherReply = replyText;
+    p.publisherReplyTimestamp = new Date().toISOString();
+    
+    if (!p.adminMessages) p.adminMessages = [];
+    p.adminMessages.push({
+      text: replyText,
+      timestamp: new Date().toISOString(),
+      type: 'publisher'
+    });
+    
+    persistProperties();
+    showToast('✉ Reply sent to admin for review');
+    closeReviewStatusModal();
+  }
+}
+
+// Admin Review Portal Modal Handling
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Real-time synchronization: When admin approves/rejects property in admin.html, update dashboard live!
+window.addEventListener('storage', function(e) {
+  if (e.key === 'et_properties_v2') {
+    try {
+      let saved = localStorage.getItem('et_properties_v2');
+      properties = saved ? JSON.parse(saved) : [];
+      persistProperties();
+      renderYourAssets();
+      showToast('⚡ Property status updated by admin.');
+    } catch(err) {}
+  }
+});
+
+/* ── SIGN OUT ── */
+function handleSignOut() {
+  try {
+    var keys = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('supabase.auth.token') !== -1) keys.push(k);
+    }
+    keys.forEach(function(k) { localStorage.removeItem(k); });
+    localStorage.removeItem('eternant_user_role');
+    sessionStorage.removeItem('eternant_selected_role');
+  } catch(e) {}
+  window.location.href = 'index.html';
+}
+
+// Role Switching Function
+function switchDashboardRole(role) {
+  localStorage.setItem('eternant_user_role', role);
+  var currentDashboard = window.location.pathname.split('/').pop();
+  if (role === 'advertiser' && currentDashboard !== 'advertiser-dashboard.html') {
+    window.location.href = 'advertiser-dashboard.html';
+  } else if (role === 'publisher' && currentDashboard !== 'publisher-dashboard.html') {
+    window.location.href = 'publisher-dashboard.html';
+  }
+}
+
+// Initialize role switcher on page load
+function initRoleSwitcher() {
+  var roleSwitcher = document.getElementById('dashboardRole');
+  if (roleSwitcher) {
+    var savedRole = localStorage.getItem('eternant_user_role') || 'publisher';
+    roleSwitcher.value = savedRole;
+  }
+}
+
+// ══ MONETIZE & EARN: INTEGRATION DROPDOWN SYSTEM ══
+// Open an integration pane directly (from nav/drawer dropdowns)
+function openIntNode(node, el) {
+  if (event && event.preventDefault) event.preventDefault();
+  switchTab('properties');
+  selectIntNode(node, el || null);
+}
+function toggleDrawerSub(id, ev) {
+  if (ev) ev.preventDefault();
+  var sub = document.getElementById(id);
+  if (!sub) return;
+  var parent = sub.previousElementSibling;
+  var isOpen = sub.style.display !== 'none';
+  sub.style.display = isOpen ? 'none' : 'block';
+  if (parent) parent.classList.toggle('open', !isOpen);
+}
+function toggleNavDd(menuId, btn, ev) {
+  if (ev) ev.preventDefault();
+  var menu = document.getElementById(menuId);
+  if (!menu) return;
+  var wasOpen = menu.classList.contains('open');
+  document.querySelectorAll('.int-dd-menu.open').forEach(function(m) { m.classList.remove('open'); });
+  menu.classList.toggle('open', !wasOpen);
+}
+function openAssetAction(id) {
+  var p = (typeof properties !== 'undefined') ? properties.find(function(x) { return x.id === id; }) : null;
+  if (!p) return;
+  if (p.status === 'Active' || p.status === 'Paused') { togglePropertyStatus(id); }
+  else { openReviewStatusModal(id); }
+  document.querySelectorAll('.int-dd-menu.open').forEach(function(m) { m.classList.remove('open'); });
+}
+function toggleIntDropdown(ev) {
+  if (ev) ev.stopPropagation();
+  var menu = document.getElementById('intDdMenu');
+  var btn = document.getElementById('intDdBtn');
+  var wasOpen = menu.classList.contains('open');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open', !wasOpen);
+}
+function selectIntNode(node, el) {
+  document.querySelectorAll('.int-node-pane').forEach(function(p) { p.classList.remove('active'); });
+  var pane = document.getElementById('int-pane-' + node);
+  if (pane) pane.classList.add('active');
+  document.querySelectorAll('.int-dd-item').forEach(function(i) { i.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var menu = document.getElementById('intDdMenu');
+  if (menu) menu.classList.remove('open');
+  var btn = document.getElementById('intDdBtn');
+  if (btn) btn.classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.int-dd-wrap').forEach(function(w) {
+    if (!w.contains(e.target)) {
+      w.querySelectorAll('.int-dd-menu.open').forEach(function(m) { m.classList.remove('open'); });
+    }
+  });
+});
+
+// COLLAPSIBLE SECTIONS: Get Started / Your Assets
+function toggleCollapse(id, ev) {
+  if (ev) ev.preventDefault();
+  var box = document.getElementById(id);
+  if (box) box.classList.toggle('open');
+}
+function renderYourAssets() {
+  var props = (typeof properties !== 'undefined') ? properties : [];
+  var navCnt = document.getElementById('yaCount');
+  var drCnt = document.getElementById('yaDrawerCount');
+  if (navCnt) navCnt.textContent = String(props.length);
+  if (drCnt) drCnt.textContent = String(props.length);
+  var html = '';
+  if (!props.length) {
+    html = '<div class="int-dd-item" style="color:var(--muted); cursor:default;">No assets yet</div>' +
+           '<div class="int-dd-item" onclick="openPropertyModal()">➕ &nbsp;Add your first property</div>';
+  } else {
+    props.forEach(function(p) {
+      var nm = (typeof escapeHtml === 'function') ? escapeHtml(p.name || p.url || p.id) : (p.name || p.url || p.id);
+      var st = p.status || 'Pending Review';
+      var col = st === 'Active' ? 'var(--success)' : (st === 'Rejected' ? 'var(--danger)' : 'var(--warning)');
+      var pid = String(p.id || '').replace(/'/g, '');
+      html += '<div class="int-dd-item asset-dd-item" onclick="openAssetAction(\'' + pid + '\')"><span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + nm + ' <span style="color:var(--text-sub); font-weight:400; font-size:12px;">(' + (p.type || 'Website') + ')</span></span><span style="color:' + col + '; font-size:11px; font-weight:700; flex-shrink:0;">' + st + '</span></div>';
+    });
+  }
+  var navList = document.getElementById('yaList');
+  var drList = document.getElementById('yaDrawerList');
+  if (navList) navList.innerHTML = html;
+  if (drList) drList.innerHTML = html;
+}
+// Keep Your Assets in sync whenever properties persist
+(function() {
+  var orig = persistProperties;
+  persistProperties = function() { orig.apply(null, arguments); renderYourAssets(); };
+})();
+
+// Initial Render
+persistProperties();
+renderPayoutUI();
+renderRevenueChart();
+renderEarningsBreakdown();
+initRoleSwitcher();
+</script>
+</body>
+</html>

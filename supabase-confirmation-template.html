@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirm Email - Eternant</title>
+</head>
+<body style="margin:0;padding:20px 0;background-color:#0d0d1a;font-family:Arial,Helvetica,sans-serif;">
+
+  <!-- Preheader -->
+  <div style="display:none;font-size:1px;color:#0d0d1a;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">Click the link to confirm your Eternant account email address.</div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0d0d1a;">
+    <tr>
+      <td align="center" style="padding:20px 10px;">
+
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#13132b;border:1px solid #2e2e5e;border-radius:20px;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background-color:#1a1a40;padding:36px 30px;border-bottom:1px solid #2e2e5e;">
+              <img src="https://raw.githubusercontent.com/infixify/eternant-main/79a7a6d0f146d01dacc7bb62e2d758ac274ef725/eternant-logo.png" alt="Eternant Logo" width="200" style="display:block;margin:0 auto 16px auto;width:200px;max-width:200px;">
+              <p style="margin:0;font-size:24px;font-weight:800;color:#ffffff;letter-spacing:3px;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">ETERNANT</p>
+              <p style="margin:6px 0 0 0;font-size:13px;color:#9090c0;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;">Publishers &middot; Advertisers &middot; Creators &middot; Developers &middot; Gamers</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="background-color:#13132b;padding:36px 30px;">
+              <h1 style="margin:0 0 20px 0;font-size:24px;font-weight:800;color:#ffffff;font-family:Arial,Helvetica,sans-serif;">&#9993; Welcome to Eternant!</h1>
+              <p style="margin:0 0 18px 0;font-size:15px;color:#c0c0e0;line-height:1.7;font-family:Arial,Helvetica,sans-serif;">Hello {{ .Email }},</p>
+              <p style="margin:0 0 24px 0;font-size:15px;color:#c0c0e0;line-height:1.7;font-family:Arial,Helvetica,sans-serif;">Thank you for joining Eternant! Please confirm your email address by clicking the button below to activate your account:</p>
+
+              <!-- Button -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px 0;">
+                <tr>
+                  <td align="center" style="background-color:#5b4fe0;border-radius:12px;">
+                    <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:16px 40px;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;font-family:Arial,Helvetica,sans-serif;letter-spacing:0.5px;">Confirm Email Address</a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Success box -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0;">
+                <tr>
+                  <td style="background-color:rgba(16,185,129,0.1);border:1px solid #10b981;border-radius:10px;padding:14px 18px;text-align:center;">
+                    <p style="margin:0;font-size:14px;color:#10b981;font-family:Arial,Helvetica,sans-serif;">&#9989; Once confirmed, you'll have full access to your Eternant dashboard and all features.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:18px 0 8px 0;font-size:15px;color:#c0c0e0;line-height:1.7;font-family:Arial,Helvetica,sans-serif;">If the button doesn't work, copy and paste this link in your browser:</p>
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px 0;">
+                <tr>
+                  <td style="background-color:#0d0d1a;border:1px solid #2e2e5e;border-radius:10px;padding:16px 18px;word-break:break-all;">
+                    <p style="margin:0;font-size:13px;color:#a0a0d0;font-family:'Courier New',monospace;">{{ .ConfirmationURL }}</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Divider -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;">
+                <tr><td style="height:1px;background-color:#2e2e5e;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+
+              <p style="margin:0 0 12px 0;font-size:15px;color:#ffffff;font-weight:700;font-family:Arial,Helvetica,sans-serif;">What you'll get with Eternant:</p>
+              <p style="margin:0 0 8px 0;font-size:14px;color:#c0c0e0;font-family:Arial,Helvetica,sans-serif;">&#10003; Connect with premium advertisers</p>
+              <p style="margin:0 0 8px 0;font-size:14px;color:#c0c0e0;font-family:Arial,Helvetica,sans-serif;">&#10003; Monetize your traffic effectively</p>
+              <p style="margin:0 0 8px 0;font-size:14px;color:#c0c0e0;font-family:Arial,Helvetica,sans-serif;">&#10003; Access exclusive publisher tools</p>
+              <p style="margin:0 0 8px 0;font-size:14px;color:#c0c0e0;font-family:Arial,Helvetica,sans-serif;">&#10003; Real-time analytics and reporting</p>
+              <p style="margin:0 0 18px 0;font-size:14px;color:#c0c0e0;font-family:Arial,Helvetica,sans-serif;">&#10003; Dedicated support team</p>
+
+              <p style="margin:0 0 18px 0;font-size:15px;color:#c0c0e0;line-height:1.7;font-family:Arial,Helvetica,sans-serif;">If you didn't create this account, please ignore this email.</p>
+
+              <!-- Divider -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;">
+                <tr><td style="height:1px;background-color:#2e2e5e;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+
+              <p style="margin:0 0 12px 0;font-size:15px;color:#ffffff;font-weight:700;font-family:Arial,Helvetica,sans-serif;">Need help?</p>
+              <p style="margin:0 0 8px 0;font-size:14px;color:#9090c0;font-family:Arial,Helvetica,sans-serif;">&#9993;&nbsp; <a href="mailto:contact.eternant@gmail.com" style="color:#7c6af5;text-decoration:none;">contact.eternant@gmail.com</a></p>
+              <p style="margin:0;font-size:14px;color:#9090c0;font-family:Arial,Helvetica,sans-serif;">&#127759;&nbsp; <a href="https://eternant.c0m.to" style="color:#7c6af5;text-decoration:none;">eternant.c0m.to</a></p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color:#0d0d1a;border-top:1px solid #2e2e5e;padding:24px 30px;">
+              <p style="margin:0 0 8px 0;font-size:12px;color:#6060a0;font-family:Arial,Helvetica,sans-serif;">&copy; 2026 Eternant. All rights reserved.</p>
+              <p style="margin:0;font-size:12px;font-family:Arial,Helvetica,sans-serif;">
+                <a href="https://eternant.c0m.to" style="color:#7c6af5;text-decoration:none;margin:0 8px;">Home</a> |
+                <a href="https://eternant.c0m.to/terms.html" style="color:#7c6af5;text-decoration:none;margin:0 8px;">Terms</a> |
+                <a href="https://eternant.c0m.to/privacy.html" style="color:#7c6af5;text-decoration:none;margin:0 8px;">Privacy</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

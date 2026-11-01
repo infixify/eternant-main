@@ -1,0 +1,6 @@
+{
+  "name": "Grow with Eternant — Publishers & Advertisers",
+  "description": "Eternant connects publishers and advertisers to grow together.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="webview-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Email Confirmed — Eternant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #03050d; --bg-card: #070c1a; --border: #141f38; --border-lt: #1e3058;
+  --text: #d8e6ff; --text-sub: #8aa4c8; --muted: #4a6080;
+  --accent: #6eb5ff; --accent2: #a78bfa;
+}
+html, body {
+  min-height: 100%; font-family: 'Syne', Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px;
+}
+canvas#starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.card {
+  position: relative; z-index: 1; max-width: 460px; width: 100%;
+  background: var(--bg-card); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 36px 28px; text-align: center;
+  box-shadow: 0 0 60px rgba(110,181,255,0.08), 0 0 120px rgba(167,139,250,0.05);
+}
+.logo { display: block; width: 130px; margin: 0 auto 8px; }
+.brand { font-size: 17px; font-weight: 800; letter-spacing: 3px; color: #fff; margin-bottom: 3px; }
+.brand-sub { font-size: 11px; color: var(--text-sub); letter-spacing: 1px; margin-bottom: 28px; }
+.icon-wrap {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.12));
+  border: 2px solid var(--accent); display: flex; align-items: center;
+  justify-content: center; margin: 0 auto 20px; font-size: 30px;
+}
+.state { display: none; }
+.state.active { display: block; }
+h1 { font-size: 21px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+p { font-size: 14px; color: var(--text-sub); line-height: 1.7; margin-bottom: 14px; }
+.role-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(110,181,255,0.12), rgba(167,139,250,0.12));
+  border: 1px solid var(--border-lt); border-radius: 20px;
+  padding: 4px 14px; font-size: 11px; font-weight: 700;
+  color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+}
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px 20px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; font-family: 'Syne', Arial, sans-serif;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: opacity 0.2s, transform 0.15s; margin-bottom: 10px;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: linear-gradient(135deg, #6eb5ff, #a78bfa); color: #03050d; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-secondary { background: transparent; color: var(--accent); border: 1px solid var(--border-lt); }
+.btn-secondary:hover { background: rgba(110,181,255,0.06); }
+.btn-copy { background: rgba(167,139,250,0.1); color: var(--accent2); border: 1px solid rgba(167,139,250,0.25); }
+.btn-copy:hover { background: rgba(167,139,250,0.18); }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.help-text { font-size: 12px; color: var(--muted); margin-bottom: 0; }
+.help-text a { color: var(--accent2); text-decoration: none; }
+.spinner {
+  width: 34px; height: 34px;
+  border: 3px solid rgba(110,181,255,0.12); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 18px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hint-box {
+  background: rgba(110,181,255,0.06); border: 1px solid rgba(110,181,255,0.18);
+  border-radius: 10px; padding: 11px 14px;
+  font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 14px;
+}
+.hint-box strong { color: var(--accent); }
+.copy-url-box {
+  background: #03050d; border: 1px solid var(--border-lt); border-radius: 10px;
+  padding: 11px 14px; font-size: 12px; color: var(--muted);
+  font-family: 'Courier New', monospace; word-break: break-all;
+  text-align: left; margin-bottom: 10px; display: none; line-height: 1.5;
+}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+
+<div class="card">
+  <img src="https://raw.githubusercontent.com/infixify/eternant-main/79a7a6d0f146d01dacc7bb62e2d758ac274ef725/eternant-logo.png"
+       alt="Eternant" class="logo">
+  <div class="brand">ETERNANT</div>
+  <div class="brand-sub">Publishers · Advertisers · Creators</div>
+
+  <!-- LOADING -->
+  <div id="stateLoading" class="state active">
+    <div class="spinner"></div>
+    <h1>Verifying your email…</h1>
+    <p>Please wait a moment.</p>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="stateSuccess" class="state">
+    <div class="icon-wrap"><span>✅</span></div>
+    <h1>Email Confirmed!</h1>
+    <p>Your Eternant account is active. Open your dashboard below.</p>
+    <div id="roleBadge" class="role-badge">Publisher</div>
+
+    <!-- Step 1: Open in Browser (primary) -->
+    <div id="hintInApp" class="hint-box" style="display:none;">
+      📱 <strong>Gmail app detected.</strong> Tap "Open in Browser" — Chrome mein dashboard khulega aur aap automatically logged in honge.
+    </div>
+
+    <a id="btnOpenBrowser" href="#" class="btn btn-primary">
+      <span>🌐</span><span>Open Dashboard in Browser</span>
+    </a>
+
+    <!-- Step 2: Copy link fallback -->
+    <button onclick="toggleCopySection()" class="btn btn-copy">
+      <span>📋</span><span id="copyBtnLabel">Manually Copy Link</span>
+    </button>
+
+    <div id="copySection" style="display:none;">
+      <div class="hint-box" style="margin-top:4px;">
+        Copy this link → paste in Chrome/Safari → dashboard khul jayega, logged in hoga ✅
+      </div>
+      <div id="copyUrlBox" class="copy-url-box"></div>
+      <button onclick="copyLink()" class="btn btn-secondary" id="copyLinkBtn">
+        <span>📋</span><span>Copy Link</span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+    <p class="help-text">
+      Questions? <a href="mailto:contact.eternant@gmail.com">contact.eternant@gmail.com</a>
+    </p>
+  </div>
+
+  <!-- ERROR -->
+  <div id="stateError" class="state">
+    <div class="icon-wrap" style="border-color:#f87171;"><span>⚠️</span></div>
+    <h1>Confirmation Failed</h1>
+    <p id="errorMsg">This link may have expired or already been used.</p>
+    <a href="https://eternant.c0m.to" class="btn btn-primary">Back to Eternant</a>
+    <div class="divider"></div>
+    <p class="help-text">
+      Help: <a href="mailto:contact.eternant@gmail.com">contact.eternant@gmail.com</a>
+    </p>
+  </div>
+</div>
+
+<script>
+(function () {
+
+  var SUPABASE_URL  = 'https://pcnbgyudptwliocjcdlm.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbmJneXVkcHR3bGlvY2pjZGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0ODE2NTQsImV4cCI6MjEwODA1NzY1NH0.DoxrQfbhsBdWCgotdNWPh1E_VLaA01L-_kwiQwRVbqA';
+  var SITE_ORIGIN   = 'https://eternant.c0m.to';
+
+  /* ── URL PARAMS ── */
+  function qp(name) { return new URLSearchParams(window.location.search).get(name) || ''; }
+  function hp(name) {
+    var h = {}; window.location.hash.replace(/^#/,'').split('&').forEach(function(p){
+      var kv=p.split('='); h[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||'');
+    }); return h[name]||'';
+  }
+
+  /* ── ROLE ── */
+  var role = qp('role') || 'publisher';
+  if (role !== 'advertiser') role = 'publisher';
+
+  function dashFile() { return role==='advertiser'?'advertiser-dashboard.html':'publisher-dashboard.html'; }
+
+  /* ── IN-APP BROWSER DETECT ── */
+  function isInApp() {
+    return /GSA\/|Gmail|FBAN|FBAV|Instagram|wv\b|WebView/i.test(navigator.userAgent||'');
+  }
+
+  /* ── STATE HELPERS ── */
+  function showState(id) {
+    ['stateLoading','stateSuccess','stateError'].forEach(function(s){
+      document.getElementById(s).classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+  }
+
+  /* ── GLOBAL dashboard URL (filled after verify) ── */
+  var _dashUrl = '';
+
+  /* ── MAIN ── */
+  var tokenHash = qp('token_hash') || qp('token');
+  var type      = qp('type') || 'signup';
+  var hashToken = hp('access_token');
+
+  if (hashToken) {
+    // Supabase implicit flow — already have token
+    buildSuccess(hashToken, hp('refresh_token'));
+  } else if (tokenHash) {
+    verify(tokenHash, type);
+  } else {
+    showState('stateError');
+    document.getElementById('errorMsg').textContent = 'No confirmation token found in this link.';
+  }
+
+  /* ── VERIFY ── */
+  async function verify(token, vtype) {
+    try {
+      var res = await fetch(SUPABASE_URL + '/auth/v1/verify', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token_hash: token, type: vtype })
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error_description || data.msg || data.error || 'Verification failed.');
+      // data has access_token + refresh_token
+      buildSuccess(data.access_token, data.refresh_token);
+    } catch (e) {
+      showState('stateError');
+      document.getElementById('errorMsg').textContent = e.message || 'Link expired or already used.';
+    }
+  }
+
+  /* ── BUILD SUCCESS ── */
+  function buildSuccess(accessToken, refreshToken) {
+    // Save role
+    try { localStorage.setItem('eternant_user_role', role); } catch(e) {}
+
+    // Build dashboard URL with tokens in hash
+    // Dashboard's session-check code already handles #access_token=...
+    var hash = 'access_token=' + encodeURIComponent(accessToken||'')
+             + '&refresh_token=' + encodeURIComponent(refreshToken||'')
+             + '&type=signup';
+
+    _dashUrl = SITE_ORIGIN + '/' + dashFile() + '#' + hash;
+
+    // Role badge - will be set after user selects role
+    document.getElementById('roleBadge').textContent = 'Eternant User';
+
+    // Copy URL box
+    document.getElementById('copyUrlBox').textContent = _dashUrl;
+
+    // "Open in Browser" button
+    var btn = document.getElementById('btnOpenBrowser');
+
+    if (isInApp()) {
+      // Show hint
+      document.getElementById('hintInApp').style.display = '';
+
+      // Android intent:// trick — opens URL in Chrome directly
+      var intentUrl = 'intent://' + _dashUrl.replace(/^https?:\/\//, '')
+                    + '#Intent;scheme=https;package=com.android.chrome;end';
+
+      btn.href = intentUrl;
+      // Fallback: if intent doesn't work in 1.5s, show copy section automatically
+      btn.addEventListener('click', function() {
+        setTimeout(function() {
+          document.getElementById('copySection').style.display = '';
+          document.getElementById('copyUrlBox').style.display = '';
+        }, 1500);
+      });
+    } else {
+      // Not in-app — direct link works fine
+      btn.href = _dashUrl;
+      btn.innerHTML = '<span>🚀</span><span>Go to My Dashboard</span>';
+    }
+
+    showState('stateSuccess');
+  }
+
+  /* ── COPY SECTION TOGGLE ── */
+  window.toggleCopySection = function() {
+    var sec = document.getElementById('copySection');
+    var box = document.getElementById('copyUrlBox');
+    var visible = sec.style.display !== 'none';
+    sec.style.display = visible ? 'none' : '';
+    box.style.display = visible ? 'none' : '';
+    document.getElementById('copyBtnLabel').textContent = visible ? 'Manually Copy Link' : 'Hide Link';
+  };
+
+  /* ── COPY ── */
+  window.copyLink = function() {
+    var btn = document.getElementById('copyLinkBtn');
+    var copy = function(text) {
+      try {
+        navigator.clipboard.writeText(text).catch(function() { fallback(text); });
+      } catch(e) { fallback(text); }
+    };
+    var fallback = function(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(ta);
+    };
+    copy(_dashUrl);
+    btn.innerHTML = '<span>✓</span><span>Copied!</span>';
+    setTimeout(function(){ btn.innerHTML = '<span>📋</span><span>Copy Link</span>'; }, 2500);
+  };
+
+  /* ── STARFIELD ── */
+  (function() {
+    var c = document.getElementById('starfield'), ctx = c.getContext('2d'), S=[], W, H;
+    function rsz(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+    function init(){
+      S=[];
+      var n=Math.floor((W*H)/4200);
+      for(var i=0;i<n;i++) S.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.2,
+        a:Math.random()*0.7+0.1,sp:Math.random()*0.2+0.03,tw:Math.random()*Math.PI*2,
+        tws:Math.random()*0.012+0.003,
+        c:Math.random()<0.12?'rgba(167,139,250,':Math.random()<0.12?'rgba(110,181,255,':'rgba(216,230,255,'});
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      S.forEach(function(s){
+        s.tw+=s.tws; var a=s.a*(0.4+0.6*Math.sin(s.tw));
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle=s.c+a+')'; ctx.fill();
+        s.y-=s.sp*0.12; if(s.y<-2){s.y=H+2;s.x=Math.random()*W;}
+      });
+      requestAnimationFrame(draw);
+    }
+    rsz(); init(); draw();
+    window.addEventListener('resize',function(){ rsz(); init(); });
+  })();
+
+})();
+</script>
+</body>
+</html>
