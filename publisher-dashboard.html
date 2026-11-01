@@ -1568,12 +1568,13 @@ body {
     <!-- STEP 2: PLACEMENT INFORMATION -->
     <div class="ow-step" id="owStep2" style="display:none;">
       <div class="form-group">
-        <label class="form-label">Placement Name</label>
-        <input type="text" class="form-control" id="owPlacementName" placeholder="e.g. Rewarded Wall - Android App">
+        <label class="form-label">Placement Name *</label>
+        <input type="text" class="form-control" id="owPlacementName" placeholder="e.g. Rewarded Wall - Android App" oninput="clearOwStepError(2)">
       </div>
       <div class="form-group">
-        <label class="form-label">Domain / Full App URL</label>
-        <input type="text" class="form-control" id="owDomain" placeholder="example.com or https://play.google.com/store/apps/details?id=...">
+        <label class="form-label">Domain / Full App URL *</label>
+        <input type="text" class="form-control" id="owDomain" placeholder="https://example.com or example.com" oninput="clearOwStepError(2)">
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Enter a valid domain or full URL (e.g. <code style="color:var(--accent);">lootify.com</code> or <code style="color:var(--accent);">https://app.lootify.com</code>).</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="form-group">
@@ -1594,6 +1595,7 @@ body {
           </select>
         </div>
       </div>
+      <div id="owStep2Error" style="display:none; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.35); color:var(--danger); padding:10px 12px; border-radius:8px; font-size:12px; font-weight:600; margin-top:8px;"></div>
       <div style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
         <button class="btn-secondary" onclick="nextOfferwallStep(1)">← Back</button>
         <button class="action-btn-primary" onclick="nextOfferwallStep(3)">Next Step →</button>
@@ -1603,25 +1605,26 @@ body {
     <!-- STEP 3: CURRENCY CONFIGURATION -->
     <div class="ow-step" id="owStep3" style="display:none;">
       <div class="form-group">
-        <label class="form-label">Currency Name</label>
-        <input type="text" class="form-control" id="owCurrencyName" value="Points" placeholder="e.g. Points, Coins, Gems" oninput="updateOwPreview()">
+        <label class="form-label">Currency Name *</label>
+        <input type="text" class="form-control" id="owCurrencyName" value="Points" placeholder="e.g. Points, Coins, Gems" oninput="updateOwPreview(); clearOwStepError(3);">
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="form-group">
           <label class="form-label">Allow Decimals</label>
           <select class="form-control" id="owAllowDecimals" onchange="updateOwPreview()">
-            <option value="Yes" selected>Yes (e.g. 250.00)</option>
+            <option value="Yes" selected>Yes (e.g. 100.00)</option>
             <option value="No">No (Whole numbers)</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">% To Give Users</label>
-          <input type="number" class="form-control" id="owPercentToGive" value="100" min="1" max="1000" oninput="updateOwPreview()">
+          <label class="form-label">% To Give Users (0 - 1000)</label>
+          <input type="number" class="form-control" id="owPercentToGive" value="100" min="0" max="1000" step="any" oninput="updateOwPreview(); clearOwStepError(3);">
         </div>
       </div>
-      <div style="background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--text-sub); margin-bottom:20px;">
-        Preview: For a $0.50 offer, your users will receive <span id="owPreviewVal" style="color:var(--accent); font-weight:700;">250.00 Points</span>.
+      <div style="background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--text-sub); margin-bottom:12px; line-height:1.6;">
+        Preview: For a <strong style="color:var(--text);">$1.00</strong> offer (<span id="owPreviewPct">100%</span> to users), your users will receive <span id="owPreviewVal" style="color:var(--accent); font-weight:700;">100.00 Points</span>.
       </div>
+      <div id="owStep3Error" style="display:none; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.35); color:var(--danger); padding:10px 12px; border-radius:8px; font-size:12px; font-weight:600; margin-bottom:12px;"></div>
       <div style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
         <button class="btn-secondary" onclick="nextOfferwallStep(2)">← Back</button>
         <button class="action-btn-primary" onclick="nextOfferwallStep(4)">Next Step →</button>
@@ -1631,21 +1634,17 @@ body {
     <!-- STEP 4: POSTBACK CONFIGURATION -->
     <div class="ow-step" id="owStep4" style="display:none;">
       <div class="form-group">
-        <label class="form-label">Postback Configuration</label>
-        <div style="display:flex; gap:12px; margin-top:6px; margin-bottom:14px;">
-          <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer;">
-            <input type="radio" name="owPostbackType" value="Single" checked accent-color="var(--accent)"> Single Postback
-          </label>
-          <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer;">
-            <input type="radio" name="owPostbackType" value="Multi"> Multi-Postback
-          </label>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+          <label class="form-label" style="margin-bottom:0;">Postback URL *</label>
+          <span id="owDomainMatchBadge" style="font-size:11px; font-family:'Space Mono',monospace; color:var(--accent); background:rgba(110,181,255,0.1); padding:2px 8px; border-radius:6px;">Must match placement domain</span>
+        </div>
+        <input type="url" class="form-control" id="owPostbackUrl" placeholder="https://your-domain.com/lootify/api/postback" oninput="clearOwStepError(4)">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; flex-wrap:wrap;">
+          <div style="font-size:11px; color:var(--muted);">Must use the same domain as your Step 2 App/Website URL (e.g. <code style="color:var(--accent);">/lootify/api/postback</code>).</div>
+          <button type="button" class="btn-secondary" style="padding:3px 8px; font-size:10.5px;" onclick="autofillOwPostbackUrl()">Auto-fill Domain Postback</button>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Postback URL *</label>
-        <input type="text" class="form-control" id="owPostbackUrl" value="https://api.lootify.net/lootify/api/postback">
-        <div style="font-size:11px; color:var(--muted); margin-top:4px;">This URL will receive approval, reversal, and task postbacks via server-to-server notification.</div>
-      </div>
+      <div id="owStep4Error" style="display:none; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.35); color:var(--danger); padding:10px 12px; border-radius:8px; font-size:12px; font-weight:600; margin-top:10px;"></div>
       <div style="display:flex; justify-content:space-between; gap:10px; margin-top:24px;">
         <button class="btn-secondary" onclick="nextOfferwallStep(3)">← Back</button>
         <button class="action-btn-primary" onclick="submitOfferwallUnit()">Submit &amp; Verify Offerwall 🚀</button>
@@ -2365,12 +2364,17 @@ function saveProperty() {
   var geo = document.getElementById('propGeo').value;
 
   if (!name) { showToast('Please enter an Asset Name.'); return; }
+  if (!url) { showToast('Please enter a valid URL or Domain.'); return; }
+  if (!extractCleanHostname(url) && !/^@[a-zA-Z0-9_]{3,}$/.test(url)) {
+    showToast('Please enter a valid domain/URL (e.g. https://example.com).');
+    return;
+  }
 
   var newAsset = {
     id: 'prop-' + Date.now(),
     name: name,
     type: type,
-    url: url || 'N/A',
+    url: url,
     category: cat,
     geo: geo,
     format: type === 'Direct Link Locker' ? 'Smartlink' : 'Auto Ad Tag',
@@ -2895,6 +2899,79 @@ function switchDashboardRole(r) {
 // Offerwall Multi-Step Wizard Functions
 var currentOwStep = 1;
 
+function extractCleanHostname(rawInput) {
+  if (!rawInput) return null;
+  var str = String(rawInput).trim();
+  if (!str || /\s/.test(str)) return null;
+  if (!/^https?:\/\//i.test(str)) {
+    str = 'https://' + str;
+  }
+  try {
+    var u = new URL(str);
+    var host = (u.hostname || '').toLowerCase().replace(/^www\./, '');
+    if (!host || host.indexOf('.') === -1) return null;
+    if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(host)) return null;
+    var parts = host.split('.');
+    var tld = parts[parts.length - 1];
+    if (!tld || tld.length < 2) return null;
+    return host;
+  } catch (e) {
+    return null;
+  }
+}
+
+function doDomainsMatch(appHost, pbHost) {
+  if (!appHost || !pbHost) return false;
+  var a = appHost.toLowerCase().replace(/^www\./, '');
+  var b = pbHost.toLowerCase().replace(/^www\./, '');
+  if (a === b) return true;
+  if (b.endsWith('.' + a) || a.endsWith('.' + b)) return true;
+  // Also allow sibling subdomains on the same custom root domain (e.g. app.lootify.net and api.lootify.net)
+  var sharedPublicSuffixes = ['workers.dev', 'pages.dev', 'github.io', 'vercel.app', 'netlify.app', 'herokuapp.com', 'web.app', 'firebaseapp.com'];
+  var aParts = a.split('.');
+  var bParts = b.split('.');
+  if (aParts.length >= 2 && bParts.length >= 2) {
+    var aRoot2 = aParts.slice(-2).join('.');
+    var bRoot2 = bParts.slice(-2).join('.');
+    if (aRoot2 === bRoot2 && sharedPublicSuffixes.indexOf(aRoot2) === -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function showOwStepError(stepNum, msg) {
+  var el = document.getElementById('owStep' + stepNum + 'Error');
+  if (el) {
+    el.textContent = '⚠️ ' + msg;
+    el.style.display = 'block';
+  }
+  showToast(msg);
+}
+
+function clearOwStepError(stepNum) {
+  var el = document.getElementById('owStep' + stepNum + 'Error');
+  if (el) {
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+}
+
+function autofillOwPostbackUrl() {
+  var domEl = document.getElementById('owDomain');
+  var pbEl = document.getElementById('owPostbackUrl');
+  var host = extractCleanHostname(domEl ? domEl.value : '');
+  if (!host) {
+    showToast('Please enter a valid domain in Step 2 first.');
+    return;
+  }
+  if (pbEl) {
+    pbEl.value = 'https://' + host + '/lootify/api/postback';
+    clearOwStepError(4);
+    showToast('Postback URL auto-filled for ' + host);
+  }
+}
+
 function openOfferwallModal() {
   currentOwStep = 1;
   var chk = document.getElementById('owTermsCheck');
@@ -2910,7 +2987,13 @@ function openOfferwallModal() {
   var pctEl = document.getElementById('owPercentToGive');
   if (pctEl) pctEl.value = '100';
   var pbEl = document.getElementById('owPostbackUrl');
-  if (pbEl) pbEl.value = 'https://api.lootify.net/lootify/api/postback';
+  if (pbEl) {
+    pbEl.value = '';
+    pbEl.placeholder = 'https://your-domain.com/lootify/api/postback';
+  }
+  clearOwStepError(2);
+  clearOwStepError(3);
+  clearOwStepError(4);
   updateOwStepUI();
   updateOwPreview();
   var modal = document.getElementById('offerwallModal');
@@ -2927,9 +3010,43 @@ function nextOfferwallStep(step) {
     showToast('Please accept the Terms & Conditions to proceed.');
     return;
   }
-  if (step === 3 && document.getElementById('owPlacementName') && (!document.getElementById('owPlacementName').value.trim() || !document.getElementById('owDomain').value.trim())) {
-    showToast('Please enter Placement Name and Domain/URL.');
-    return;
+  if (step === 3 && currentOwStep === 2) {
+    var pName = (document.getElementById('owPlacementName').value || '').trim();
+    var pDom = (document.getElementById('owDomain').value || '').trim();
+    if (!pName) {
+      showOwStepError(2, 'Please enter a Placement Name.');
+      return;
+    }
+    if (!pDom) {
+      showOwStepError(2, 'Please enter your App URL or Website Domain.');
+      return;
+    }
+    var cleanHost = extractCleanHostname(pDom);
+    if (!cleanHost) {
+      showOwStepError(2, 'Invalid Domain / URL! Please enter a valid domain like example.com or https://app.example.com.');
+      return;
+    }
+    clearOwStepError(2);
+    var badge = document.getElementById('owDomainMatchBadge');
+    if (badge) badge.textContent = 'Required Domain: ' + cleanHost;
+    var pbInput = document.getElementById('owPostbackUrl');
+    if (pbInput) {
+      pbInput.placeholder = 'https://' + cleanHost + '/lootify/api/postback';
+    }
+  }
+  if (step === 4 && currentOwStep === 3) {
+    var cName = (document.getElementById('owCurrencyName').value || '').trim();
+    var rawPct = (document.getElementById('owPercentToGive').value || '').trim();
+    var pctVal = parseFloat(rawPct);
+    if (!cName) {
+      showOwStepError(3, 'Please enter a Currency Name (e.g. Points, Coins).');
+      return;
+    }
+    if (rawPct === '' || isNaN(pctVal) || pctVal < 0 || pctVal > 1000) {
+      showOwStepError(3, 'Please enter a valid % To Give Users between 0 and 1000.');
+      return;
+    }
+    clearOwStepError(3);
   }
   currentOwStep = step;
   updateOwStepUI();
@@ -2948,29 +3065,53 @@ function updateOwStepUI() {
 }
 
 function updateOwPreview() {
-  var pct = parseFloat(document.getElementById('owPercentToGive').value) || 100;
+  var rawVal = document.getElementById('owPercentToGive') ? document.getElementById('owPercentToGive').value.trim() : '100';
+  var pct = rawVal === '' ? 0 : parseFloat(rawVal);
+  if (isNaN(pct) || pct < 0) pct = 0;
   var allowDecimals = document.getElementById('owAllowDecimals').value === 'Yes';
-  var curName = document.getElementById('owCurrencyName').value || 'Points';
-  var sampleUsd = 0.50;
-  var basePoints = sampleUsd * 500 * (pct / 100);
+  var curName = (document.getElementById('owCurrencyName').value || '').trim() || 'Points';
+  var sampleUsd = 1.00;
+  var basePoints = sampleUsd * pct;
   var formatted = allowDecimals ? basePoints.toFixed(2) : Math.round(basePoints).toString();
+  var pctSpan = document.getElementById('owPreviewPct');
+  if (pctSpan) pctSpan.textContent = pct + '%';
   var el = document.getElementById('owPreviewVal');
   if (el) el.textContent = formatted + ' ' + curName;
 }
 
 function submitOfferwallUnit() {
-  var name = document.getElementById('owPlacementName').value.trim();
-  var domain = document.getElementById('owDomain').value.trim();
-  if (!name || !domain) {
-    showToast('Please complete all required fields.');
+  var name = (document.getElementById('owPlacementName').value || '').trim();
+  var domain = (document.getElementById('owDomain').value || '').trim();
+  var appHost = extractCleanHostname(domain);
+  if (!name || !appHost) {
+    showOwStepError(4, 'Placement Name or Domain in Step 2 is missing or invalid.');
     return;
   }
-  var currency = document.getElementById('owCurrencyName').value.trim() || 'Points';
+  var currency = (document.getElementById('owCurrencyName').value || '').trim() || 'Points';
   var allowDecimals = document.getElementById('owAllowDecimals').value;
-  var percentToGive = document.getElementById('owPercentToGive').value;
-  var pbRadio = document.querySelector('input[name="owPostbackType"]:checked');
-  var postbackType = pbRadio ? pbRadio.value : 'Single';
-  var postbackUrl = document.getElementById('owPostbackUrl').value.trim();
+  var rawPct = (document.getElementById('owPercentToGive').value || '').trim();
+  var pctVal = rawPct === '' ? 0 : parseFloat(rawPct);
+  if (isNaN(pctVal) || pctVal < 0) pctVal = 0;
+
+  var postbackUrl = (document.getElementById('owPostbackUrl').value || '').trim();
+  if (!postbackUrl) {
+    showOwStepError(4, 'Please enter your Postback URL (e.g. https://' + appHost + '/lootify/api/postback).');
+    return;
+  }
+  if (!/^https?:\/\//i.test(postbackUrl)) {
+    showOwStepError(4, 'Postback URL must start with https:// or http:// (e.g. https://' + appHost + '/lootify/api/postback).');
+    return;
+  }
+  var pbHost = extractCleanHostname(postbackUrl);
+  if (!pbHost) {
+    showOwStepError(4, 'Please enter a valid Postback URL.');
+    return;
+  }
+  if (!doDomainsMatch(appHost, pbHost)) {
+    showOwStepError(4, 'Postback URL domain (' + pbHost + ') must match your App/Website domain (' + appHost + ')!');
+    return;
+  }
+  clearOwStepError(4);
 
   var newUnit = {
     id: 'ow-' + Date.now(),
@@ -2981,8 +3122,8 @@ function submitOfferwallUnit() {
     geo: document.getElementById('owGeo').value,
     currencyName: currency,
     allowDecimals: allowDecimals,
-    percentToGive: percentToGive,
-    postbackType: postbackType,
+    percentToGive: String(pctVal),
+    postbackType: 'Single',
     postbackUrl: postbackUrl,
     termsAccepted: true,
     status: 'Pending Review',
