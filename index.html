@@ -2,6 +2,18 @@
 <html lang="en" data-theme="dark">
 <head>
 <script src="webview-guard.js"></script>
+<script>
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+  window.addEventListener('DOMContentLoaded', function() {
+    window.scrollTo(0, 0);
+  });
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+  });
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Grow with Eternant — Publishers & Advertisers</title>
