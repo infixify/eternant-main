@@ -1528,6 +1528,129 @@ body {
   </div>
 </div>
 
+<!-- ── MODAL: OFFERWALL MULTI-STEP WIZARD ── -->
+<div class="modal-overlay" id="offerwallModal">
+  <div class="modal-box" style="max-width: 560px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+      <div>
+        <h2 style="font-size:18px; font-weight:800;">Add New Offerwall Unit</h2>
+        <p id="owStepIndicator" style="font-size:12px; color:var(--accent); font-family:'Space Mono'; margin-top:2px;">Step 1 of 4: Terms &amp; Conditions</p>
+      </div>
+      <button class="btn-secondary" onclick="closeOfferwallModal()" style="padding:4px 10px; font-size:16px; line-height:1;">&times;</button>
+    </div>
+
+    <!-- Progress bar -->
+    <div style="width:100%; height:4px; background:var(--border); border-radius:4px; margin-bottom:24px; overflow:hidden;">
+      <div id="owProgressBar" style="width:25%; height:100%; background:linear-gradient(135deg, var(--accent), var(--accent2)); transition:width 0.3s ease;"></div>
+    </div>
+
+    <!-- STEP 1: TERMS & CONDITIONS -->
+    <div class="ow-step" id="owStep1">
+      <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:20px; font-size:12.5px; color:var(--text-sub); line-height:1.7;">
+        <div style="font-weight:700; color:var(--text); margin-bottom:8px;">Please read carefully:</div>
+        <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px;">
+          <li>You agree not to use proxies, VPNs, or automated bots to generate traffic.</li>
+          <li>You must have full ownership of the domain or app you are adding.</li>
+          <li>Fraudulent activity will result in an immediate ban and forfeiture of earnings.</li>
+          <li>We reserve the right to reject any placement that violates our quality standards.</li>
+        </ul>
+      </div>
+      <label style="display:flex; align-items:flex-start; gap:10px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:24px;">
+        <input type="checkbox" id="owTermsCheck" style="margin-top:3px; accent-color:var(--accent); width:16px; height:16px;">
+        <span>I hereby confirm this placement doesn't violate website's Terms &amp; Conditions and I agree to Eternant Publisher Agreement.</span>
+      </label>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn-secondary" onclick="closeOfferwallModal()">Cancel</button>
+        <button class="action-btn-primary" onclick="nextOfferwallStep(2)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: PLACEMENT INFORMATION -->
+    <div class="ow-step" id="owStep2" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Placement Name</label>
+        <input type="text" class="form-control" id="owPlacementName" placeholder="e.g. Rewarded Wall - Android App">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Domain / Full App URL</label>
+        <input type="text" class="form-control" id="owDomain" placeholder="example.com or https://play.google.com/store/apps/details?id=...">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-control" id="owCategory">
+            <option value="Gaming">Gaming &amp; Rewards</option>
+            <option value="Utility">Utility &amp; Apps</option>
+            <option value="Crypto">Crypto &amp; Earn</option>
+            <option value="General">General Web/App</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Traffic Geo</label>
+          <select class="form-control" id="owGeo">
+            <option value="Global">Worldwide / Mixed</option>
+            <option value="India">India (IN)</option>
+            <option value="Tier 1">Tier 1 (US, UK, CA)</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
+        <button class="btn-secondary" onclick="nextOfferwallStep(1)">← Back</button>
+        <button class="action-btn-primary" onclick="nextOfferwallStep(3)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: CURRENCY CONFIGURATION -->
+    <div class="ow-step" id="owStep3" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Currency Name</label>
+        <input type="text" class="form-control" id="owCurrencyName" value="Points" placeholder="e.g. Points, Coins, Gems">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Rounding (0-8)</label>
+          <input type="number" class="form-control" id="owRounding" value="2" min="0" max="8">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Exchange Rate (per $1)</label>
+          <input type="number" class="form-control" id="owExchangeRate" value="500" min="1" oninput="updateOwPreview()">
+        </div>
+      </div>
+      <div style="background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--text-sub); margin-bottom:20px;">
+        Preview: For a $0.50 offer, your users will receive <span id="owPreviewVal" style="color:var(--accent); font-weight:700;">250.00 Points</span>.
+      </div>
+      <div style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
+        <button class="btn-secondary" onclick="nextOfferwallStep(2)">← Back</button>
+        <button class="action-btn-primary" onclick="nextOfferwallStep(4)">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: POSTBACK CONFIGURATION -->
+    <div class="ow-step" id="owStep4" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Postback Configuration</label>
+        <div style="display:flex; gap:12px; margin-top:6px; margin-bottom:14px;">
+          <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer;">
+            <input type="radio" name="owPostbackType" value="Single" checked accent-color="var(--accent)"> Single Postback
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer;">
+            <input type="radio" name="owPostbackType" value="Multi"> Multi-Postback
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Postback URL *</label>
+        <input type="text" class="form-control" id="owPostbackUrl" value="https://api.lootify.net/lootify/api/postback">
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">This URL will receive approval, reversal, and task postbacks via server-to-server notification.</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; gap:10px; margin-top:24px;">
+        <button class="btn-secondary" onclick="nextOfferwallStep(3)">← Back</button>
+        <button class="action-btn-primary" onclick="submitOfferwallUnit()">Submit &amp; Verify Offerwall 🚀</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── MODAL: AD FORMATS ON REQUEST (WEBSITE / APP) ── -->
 <div class="modal-overlay" id="adFormatsModal">
   <div class="modal-box" style="max-width: 680px;">
@@ -2106,6 +2229,11 @@ window.addEventListener('click', function(e) {
 
 // Modal & Forms
 function openPropertyModal(defaultType) {
+  var t = defaultType || currentPropFilter;
+  if (t === 'Offerwalls') {
+    openOfferwallModal();
+    return;
+  }
   closeAllAssetDropdowns();
   var modal = document.getElementById('propertyModal');
   var propTypeSelect = document.getElementById('propType');
@@ -2682,6 +2810,116 @@ function handleSignOut() {
 function switchDashboardRole(r) {
   localStorage.setItem('eternant_user_role', r);
   window.location.href = r === 'advertiser' ? 'advertiser-dashboard.html' : 'publisher-dashboard.html';
+}
+
+// Offerwall Multi-Step Wizard Functions
+var currentOwStep = 1;
+
+function openOfferwallModal() {
+  currentOwStep = 1;
+  var chk = document.getElementById('owTermsCheck');
+  if (chk) chk.checked = false;
+  var nameEl = document.getElementById('owPlacementName');
+  if (nameEl) nameEl.value = '';
+  var domEl = document.getElementById('owDomain');
+  if (domEl) domEl.value = '';
+  var curEl = document.getElementById('owCurrencyName');
+  if (curEl) curEl.value = 'Points';
+  var rateEl = document.getElementById('owExchangeRate');
+  if (rateEl) rateEl.value = '500';
+  var pbEl = document.getElementById('owPostbackUrl');
+  if (pbEl) pbEl.value = 'https://api.lootify.net/lootify/api/postback';
+  updateOwStepUI();
+  updateOwPreview();
+  var modal = document.getElementById('offerwallModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeOfferwallModal() {
+  var modal = document.getElementById('offerwallModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function nextOfferwallStep(step) {
+  if (step === 2 && document.getElementById('owTermsCheck') && !document.getElementById('owTermsCheck').checked) {
+    showToast('Please accept the Terms & Conditions to proceed.');
+    return;
+  }
+  if (step === 3 && document.getElementById('owPlacementName') && (!document.getElementById('owPlacementName').value.trim() || !document.getElementById('owDomain').value.trim())) {
+    showToast('Please enter Placement Name and Domain/URL.');
+    return;
+  }
+  currentOwStep = step;
+  updateOwStepUI();
+}
+
+function updateOwStepUI() {
+  for (var i = 1; i <= 4; i++) {
+    var stepEl = document.getElementById('owStep' + i);
+    if (stepEl) stepEl.style.display = i === currentOwStep ? 'block' : 'none';
+  }
+  var bar = document.getElementById('owProgressBar');
+  if (bar) bar.style.width = (currentOwStep * 25) + '%';
+  var indicator = document.getElementById('owStepIndicator');
+  var titles = ['', 'Terms & Conditions', 'Placement Information', 'Currency Configuration', 'Postback Configuration'];
+  if (indicator) indicator.textContent = 'Step ' + currentOwStep + ' of 4: ' + titles[currentOwStep];
+}
+
+function updateOwPreview() {
+  var rate = parseFloat(document.getElementById('owExchangeRate').value) || 500;
+  var decimals = parseInt(document.getElementById('owRounding').value) || 2;
+  var curName = document.getElementById('owCurrencyName').value || 'Points';
+  var sample = 0.50 * rate;
+  var el = document.getElementById('owPreviewVal');
+  if (el) el.textContent = sample.toFixed(decimals) + ' ' + curName;
+}
+
+function submitOfferwallUnit() {
+  var name = document.getElementById('owPlacementName').value.trim();
+  var domain = document.getElementById('owDomain').value.trim();
+  if (!name || !domain) {
+    showToast('Please complete all required fields.');
+    return;
+  }
+  var currency = document.getElementById('owCurrencyName').value.trim() || 'Points';
+  var rounding = document.getElementById('owRounding').value;
+  var rate = document.getElementById('owExchangeRate').value;
+  var pbRadio = document.querySelector('input[name="owPostbackType"]:checked');
+  var postbackType = pbRadio ? pbRadio.value : 'Single';
+  var postbackUrl = document.getElementById('owPostbackUrl').value.trim();
+
+  var newUnit = {
+    id: 'ow-' + Date.now(),
+    name: name,
+    type: 'Offerwalls',
+    url: domain,
+    category: document.getElementById('owCategory').value,
+    geo: document.getElementById('owGeo').value,
+    currencyName: currency,
+    rounding: rounding,
+    exchangeRate: rate,
+    postbackType: postbackType,
+    postbackUrl: postbackUrl,
+    termsAccepted: true,
+    status: 'Pending Review',
+    submittedAt: new Date().toISOString(),
+    verificationToken: 'ET-OW-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    messages: [{
+      sender: 'system',
+      text: 'Offerwall unit submitted for Admin Review. Our audit team checks currency setup and postback S2S integration.',
+      timestamp: new Date().toISOString()
+    }],
+    impressions: 0,
+    clicks: 0,
+    ecpm: 0.00,
+    earnings: 0.00
+  };
+
+  properties.unshift(newUnit);
+  persistProperties();
+  closeOfferwallModal();
+  showToast('Offerwall unit submitted! Now pending admin verification.');
+  renderAllViews();
 }
 
 // Init
