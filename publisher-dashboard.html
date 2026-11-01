@@ -2012,18 +2012,18 @@ function renderAllViews() {
   var avgEcpm = totalImp > 0 ? ((totalEarn / totalImp) * 1000).toFixed(2) : '0.00';
   var inrEst = Math.round(totalEarn * 83.5);
 
-  // Top stats
-  document.getElementById('statBalance').textContent = '$' + totalEarn.toFixed(2);
-  document.getElementById('sidebarEarningsVal').textContent = '$' + totalEarn.toFixed(2);
-  document.getElementById('payoutAvailableVal').textContent = '$' + totalEarn.toFixed(2);
-  document.getElementById('statInr').textContent = '₹' + inrEst.toLocaleString();
-  document.getElementById('statImpressions').textContent = totalImp.toLocaleString();
-  document.getElementById('statEcpm').textContent = '$' + avgEcpm;
-  document.getElementById('statProperties').textContent = properties.length;
-  document.getElementById('sidebarAssetCount').textContent = properties.length;
+  // Top stats safely updated
+  var sb = document.getElementById('statBalance'); if (sb) sb.textContent = '$' + totalEarn.toFixed(2);
+  var se = document.getElementById('sidebarEarningsVal'); if (se) se.textContent = '$' + totalEarn.toFixed(2);
+  var pa = document.getElementById('payoutAvailableVal'); if (pa) pa.textContent = '$' + totalEarn.toFixed(2);
+  var si = document.getElementById('statInr'); if (si) si.textContent = '₹' + inrEst.toLocaleString();
+  var sim = document.getElementById('statImpressions'); if (sim) sim.textContent = totalImp.toLocaleString();
+  var sec = document.getElementById('statEcpm'); if (sec) sec.textContent = '$' + avgEcpm;
+  var spr = document.getElementById('statProperties'); if (spr) spr.textContent = properties.length;
+  var sac = document.getElementById('sidebarAssetCount'); if (sac) sac.textContent = properties.length;
 
   var activeProps = properties.filter(function(p) { return p.status === 'Active'; });
-  document.getElementById('statActiveRatio').textContent = activeProps.length + ' of ' + properties.length + ' serving ads';
+  var sar = document.getElementById('statActiveRatio'); if (sar) sar.textContent = activeProps.length + ' of ' + properties.length + ' serving ads';
 
   // Render overview list & full list & stats
   var ovEl = document.getElementById('overviewPropertyList');
