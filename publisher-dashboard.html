@@ -1604,16 +1604,19 @@ body {
     <div class="ow-step" id="owStep3" style="display:none;">
       <div class="form-group">
         <label class="form-label">Currency Name</label>
-        <input type="text" class="form-control" id="owCurrencyName" value="Points" placeholder="e.g. Points, Coins, Gems">
+        <input type="text" class="form-control" id="owCurrencyName" value="Points" placeholder="e.g. Points, Coins, Gems" oninput="updateOwPreview()">
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="form-group">
-          <label class="form-label">Rounding (0-8)</label>
-          <input type="number" class="form-control" id="owRounding" value="2" min="0" max="8">
+          <label class="form-label">Allow Decimals</label>
+          <select class="form-control" id="owAllowDecimals" onchange="updateOwPreview()">
+            <option value="Yes" selected>Yes (e.g. 250.00)</option>
+            <option value="No">No (Whole numbers)</option>
+          </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Exchange Rate (per $1)</label>
-          <input type="number" class="form-control" id="owExchangeRate" value="500" min="1" oninput="updateOwPreview()">
+          <label class="form-label">% To Give Users</label>
+          <input type="number" class="form-control" id="owPercentToGive" value="100" min="1" max="1000" oninput="updateOwPreview()">
         </div>
       </div>
       <div style="background:rgba(110,181,255,0.08); border:1px solid rgba(110,181,255,0.25); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--text-sub); margin-bottom:20px;">
@@ -2902,8 +2905,10 @@ function openOfferwallModal() {
   if (domEl) domEl.value = '';
   var curEl = document.getElementById('owCurrencyName');
   if (curEl) curEl.value = 'Points';
-  var rateEl = document.getElementById('owExchangeRate');
-  if (rateEl) rateEl.value = '500';
+  var decEl = document.getElementById('owAllowDecimals');
+  if (decEl) decEl.value = 'Yes';
+  var pctEl = document.getElementById('owPercentToGive');
+  if (pctEl) pctEl.value = '100';
   var pbEl = document.getElementById('owPostbackUrl');
   if (pbEl) pbEl.value = 'https://api.lootify.net/lootify/api/postback';
   updateOwStepUI();
@@ -2943,12 +2948,14 @@ function updateOwStepUI() {
 }
 
 function updateOwPreview() {
-  var rate = parseFloat(document.getElementById('owExchangeRate').value) || 500;
-  var decimals = parseInt(document.getElementById('owRounding').value) || 2;
+  var pct = parseFloat(document.getElementById('owPercentToGive').value) || 100;
+  var allowDecimals = document.getElementById('owAllowDecimals').value === 'Yes';
   var curName = document.getElementById('owCurrencyName').value || 'Points';
-  var sample = 0.50 * rate;
+  var sampleUsd = 0.50;
+  var basePoints = sampleUsd * 500 * (pct / 100);
+  var formatted = allowDecimals ? basePoints.toFixed(2) : Math.round(basePoints).toString();
   var el = document.getElementById('owPreviewVal');
-  if (el) el.textContent = sample.toFixed(decimals) + ' ' + curName;
+  if (el) el.textContent = formatted + ' ' + curName;
 }
 
 function submitOfferwallUnit() {
@@ -2959,8 +2966,8 @@ function submitOfferwallUnit() {
     return;
   }
   var currency = document.getElementById('owCurrencyName').value.trim() || 'Points';
-  var rounding = document.getElementById('owRounding').value;
-  var rate = document.getElementById('owExchangeRate').value;
+  var allowDecimals = document.getElementById('owAllowDecimals').value;
+  var percentToGive = document.getElementById('owPercentToGive').value;
   var pbRadio = document.querySelector('input[name="owPostbackType"]:checked');
   var postbackType = pbRadio ? pbRadio.value : 'Single';
   var postbackUrl = document.getElementById('owPostbackUrl').value.trim();
@@ -2973,8 +2980,8 @@ function submitOfferwallUnit() {
     category: document.getElementById('owCategory').value,
     geo: document.getElementById('owGeo').value,
     currencyName: currency,
-    rounding: rounding,
-    exchangeRate: rate,
+    allowDecimals: allowDecimals,
+    percentToGive: percentToGive,
     postbackType: postbackType,
     postbackUrl: postbackUrl,
     termsAccepted: true,
