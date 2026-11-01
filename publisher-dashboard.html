@@ -1865,6 +1865,83 @@ function showToast(text) {
   window._toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2600);
 }
 
+function toggleNavMonetizeMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  var wrap = document.getElementById('navMonetizeWrap');
+  var sub = document.getElementById('sidebarMonetizeSubmenu');
+  if (wrap && sub) {
+    wrap.classList.toggle('open');
+    sub.classList.toggle('open');
+  }
+}
+
+function switchMonetizeCategory(category, subItemEl) {
+  currentPropFilter = category || 'Offerwalls';
+
+  // Highlight active submenu item
+  document.querySelectorAll('.submenu-item').forEach(function(item) {
+    item.classList.remove('active');
+  });
+  if (subItemEl) {
+    subItemEl.classList.add('active');
+  } else {
+    var matchingSub = document.getElementById('subitem-' + currentPropFilter);
+    if (matchingSub) matchingSub.classList.add('active');
+  }
+
+  // Highlight parent item in sidebar
+  document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+  var parentNav = document.getElementById('navItemMonetize');
+  if (parentNav) parentNav.classList.add('active');
+
+  // Switch to monetize tab pane
+  switchNavTab('monetize', null);
+
+  var titleMap = {
+    'Offerwalls': 'Offerwalls Monetization',
+    'Web/App Ads': 'Web/App Ads Monetization',
+    'Link Locker': 'Link Locker Monetization',
+    'Native Ads': 'Native Ads Monetization',
+    'Direct/Smart Link Ads': 'Direct / Smart Link Ads Monetization'
+  };
+  var subMap = {
+    'Offerwalls': 'Interactive reward wall with paid surveys, mobile app downloads, and micro-tasks. Separate verification required.',
+    'Web/App Ads': 'High-converting banners, popunders, and interstitials for mobile apps and websites. Separate verification required.',
+    'Link Locker': 'Monetized shortlinks and link locking for content creators and publishers. Separate verification required.',
+    'Native Ads': 'Blended native ad units matching your content style. Separate verification required.',
+    'Direct/Smart Link Ads': 'Smart routing direct links to maximize revenue per click across any traffic source. Separate verification required.'
+  };
+  var supportMap = {
+    'Offerwalls': 'Support: Apps + Webs',
+    'Web/App Ads': 'Support: Apps + Webs',
+    'Link Locker': 'Support: Used by all',
+    'Native Ads': 'Support: Used by all',
+    'Direct/Smart Link Ads': 'Support: Used by all'
+  };
+  var btnTextMap = {
+    'Offerwalls': '+ Add Offerwall Unit',
+    'Web/App Ads': '+ Add Web/App Ad Unit',
+    'Link Locker': '+ Create Link Locker',
+    'Native Ads': '+ Add Native Ad Unit',
+    'Direct/Smart Link Ads': '+ Create Direct Link'
+  };
+
+  var headerTitle = document.getElementById('monetizeHeaderTitle');
+  var headerSub = document.getElementById('monetizeHeaderSub');
+  var supportBadge = document.getElementById('monetizeSupportBadge');
+  var btnText = document.getElementById('btnAddMonetizeBtnText');
+
+  if (headerTitle) headerTitle.textContent = titleMap[currentPropFilter] || currentPropFilter;
+  if (headerSub) headerSub.textContent = subMap[currentPropFilter] || 'Manage your monetization units.';
+  if (supportBadge) supportBadge.textContent = supportMap[currentPropFilter] || 'Support: Used by all';
+  if (btnText) btnText.textContent = btnTextMap[currentPropFilter] || '+ Add New Unit';
+
+  renderAllViews();
+}
+
 // Navigation Tab Switcher
 function switchNavTab(tabId, el) {
   document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
