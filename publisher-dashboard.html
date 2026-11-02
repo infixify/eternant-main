@@ -1359,14 +1359,14 @@ body {
                 <tr>
                   <td style="font-weight:700; color:var(--accent2);">Web/App Ads</td>
                   <td><span style="background:rgba(110,181,255,0.12); color:var(--accent); padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700;">Apps + Webs</span></td>
-                  <td>Banners, Popunders, Interstitials JS Tag</td>
+                  <td>Popunder, In-Page Push, Vignette, Direct Link &amp; Banners</td>
                   <td><strong style="color:var(--warning);">Separate Verification Required</strong></td>
                 </tr>
                 <tr>
                   <td style="font-weight:700; color:#34d399;">Link Locker</td>
                   <td><span style="background:rgba(52,211,153,0.15); color:#34d399; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700;">Used by all</span></td>
                   <td>Content locking shortlinks &amp; URLs</td>
-                  <td><strong style="color:var(--warning);">Separate Verification Required</strong></td>
+                  <td><strong style="color:var(--success);">No Verification Required (Instant Active)</strong></td>
                 </tr>
                 <tr>
                   <td style="font-weight:700; color:#f59e0b;">Native Ads</td>
@@ -1377,8 +1377,8 @@ body {
                 <tr>
                   <td style="font-weight:700; color:#ec4899;">Direct/Smart Link Ads</td>
                   <td><span style="background:rgba(236,72,153,0.15); color:#ec4899; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700;">Used by all</span></td>
-                  <td>Direct smartlink routing across social channels</td>
-                  <td><strong style="color:var(--warning);">Separate Verification Required</strong></td>
+                  <td>Submit traffic source &rarr; Admin verification &rarr; Direct Link unlocked</td>
+                  <td><strong style="color:var(--warning);">Source Verification Required (Direct Link Locked First)</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -1474,30 +1474,38 @@ body {
   </div>
 </div>
 
-<!-- ── MODAL: ADD ASSET (4 Clean Options) ── -->
+<!-- ── MODAL: ADD WEB/APP AD UNIT & OTHER MONETIZE UNITS ── -->
 <div class="modal-overlay" id="propertyModal">
   <div class="modal-box">
-    <h2 id="propertyModalHeading" style="font-size:18px; font-weight:800; margin-bottom:6px;">Add New Asset / Property</h2>
-    <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:18px;">Select your monetization asset type and enter details.</p>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+      <h2 id="propertyModalHeading" style="font-size:18px; font-weight:800;">Add New Web/App Ad Unit</h2>
+      <button class="btn-secondary" onclick="closePropertyModal()" style="padding:4px 10px; font-size:16px; line-height:1;">&times;</button>
+    </div>
+    <p id="propertyModalSub" style="font-size:12.5px; color:var(--text-sub); margin-bottom:16px;">Register your website domain or mobile app for verification.</p>
 
-    <div class="form-group">
-      <label class="form-label">Monetization Channel</label>
-      <select class="form-control" id="propType" onchange="onPropTypeChange()">
-        <option value="Website">APP / WEBSITES (Banners, Popunder, Native, SDK, Offerwall)</option>
-        <option value="Direct Link Locker">SOCIALS - GROUPS + CHANNELS + SOCIAL (Monetized Shortlink &amp; Offerwall)</option>
-        <option value="Telegram Bot" disabled>BOTS - TELEGRAM + DISCORD (Coming Soon)</option>
-        <option value="Telegram Mini App" disabled>TELEGRAM MINI APP (Coming Soon)</option>
+    <div class="form-group" id="propChannelGroup" style="display:none;">
+      <label class="form-label" id="propChannelLabel">Traffic Channel *</label>
+      <select class="form-control" id="propChannel" onchange="onPropChannelChange()">
+        <option value="Telegram Channel">Telegram Channel / Group</option>
+        <option value="WhatsApp Channel">WhatsApp Channel / Group</option>
+        <option value="YouTube Channel">YouTube Channel</option>
+        <option value="Instagram / Social">Instagram / TikTok / Social Bio</option>
+        <option value="Website / Blog">Website / Blog</option>
+        <option value="Mobile App">Mobile Application (Android / iOS)</option>
+        <option value="Discord Community">Discord Server / Bot</option>
+        <option value="Other Channel">Other Traffic Channel</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Asset / Property Name</label>
-      <input type="text" class="form-control" id="propName" placeholder="e.g. Tech News Blog, Movies Channel">
+      <label class="form-label" id="propNameLabel">App / Website Name *</label>
+      <input type="text" class="form-control" id="propName" placeholder="e.g. Tech News Blog, Gaming Portal" oninput="clearPropModalError()">
     </div>
 
     <div class="form-group">
-      <label class="form-label" id="propUrlLabel">URL / Handle / Destination Link</label>
-      <input type="text" class="form-control" id="propUrl" placeholder="https://example.com or @channel">
+      <label class="form-label" id="propUrlLabel">Website Domain / App URL *</label>
+      <input type="text" class="form-control" id="propUrl" placeholder="https://example.com or example.com" oninput="clearPropModalError()" onblur="validatePropUrlLive()">
+      <div id="propUrlHelp" style="font-size:11px; color:var(--muted); margin-top:4px;">Enter a valid domain or full URL (e.g. <code style="color:var(--accent);">example.com</code> or <code style="color:var(--accent);">https://app.example.com</code>).</div>
     </div>
 
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -1514,16 +1522,18 @@ body {
       <div class="form-group">
         <label class="form-label">Traffic Geo</label>
         <select class="form-control" id="propGeo">
+          <option value="Global">Worldwide / Mixed</option>
           <option value="India">India (IN)</option>
           <option value="Tier 1">Tier 1 (US, UK, CA)</option>
-          <option value="Global">Worldwide / Mixed</option>
         </select>
       </div>
     </div>
 
+    <div id="propModalError" style="display:none; background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.35); color:var(--danger); padding:10px 12px; border-radius:8px; font-size:12px; font-weight:600; margin-top:8px;"></div>
+
     <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
       <button class="btn-secondary" onclick="closePropertyModal()">Cancel</button>
-      <button class="action-btn-primary" onclick="saveProperty()">Submit Asset</button>
+      <button class="action-btn-primary" id="propSubmitBtn" onclick="saveProperty()">Submit for Verification →</button>
     </div>
   </div>
 </div>
@@ -1908,10 +1918,10 @@ function switchMonetizeCategory(category, subItemEl) {
   };
   var subMap = {
     'Offerwalls': 'Interactive reward wall with paid surveys, mobile app downloads, and micro-tasks. Separate verification required.',
-    'Web/App Ads': 'High-converting banners, popunders, and interstitials for mobile apps and websites. Separate verification required.',
-    'Link Locker': 'Monetized shortlinks and link locking for content creators and publishers. Separate verification required.',
+    'Web/App Ads': 'Includes Popunder, In-Page Push, Vignette, Direct Link, and Banners for mobile apps and websites. Separate verification required.',
+    'Link Locker': 'Monetized shortlinks and link locking for content creators and publishers. No verification required — instant activation.',
     'Native Ads': 'Blended native ad units matching your content style. Separate verification required.',
-    'Direct/Smart Link Ads': 'Smart routing direct links to maximize revenue per click across any traffic source. Separate verification required.'
+    'Direct/Smart Link Ads': 'Direct links require prior traffic source verification. Submit your channel/domain for verification first. Direct link unlocks once approved.'
   };
   var supportMap = {
     'Offerwalls': 'Support: Apps + Webs',
@@ -1925,7 +1935,7 @@ function switchMonetizeCategory(category, subItemEl) {
     'Web/App Ads': '+ Add Web/App Ad Unit',
     'Link Locker': '+ Create Link Locker',
     'Native Ads': '+ Add Native Ad Unit',
-    'Direct/Smart Link Ads': '+ Create Direct Link'
+    'Direct/Smart Link Ads': '+ Submit Traffic Source'
   };
 
   var headerTitle = document.getElementById('monetizeHeaderTitle');
@@ -1974,6 +1984,12 @@ var properties = [];
 try {
   var saved = localStorage.getItem('et_properties_v2');
   if (saved) properties = JSON.parse(saved);
+  // Auto-activate Link Locker since no verification is required (Direct/Smart Link Ads requires on-request verification)
+  properties.forEach(function(p) {
+    if (p.type === 'Link Locker' && p.status !== 'Rejected') {
+      p.status = 'Active';
+    }
+  });
 } catch(e) {}
 
 function persistProperties() {
@@ -2044,17 +2060,17 @@ function renderAllViews() {
 
   // Render Full list empty state if filtered list is empty
   if (!filteredProps.length) {
-    var emptyMessage = 'No assets added yet in this section.';
-    if (currentPropFilter === 'Website') {
-      emptyMessage = 'No App / Websites added yet. Click <strong>Add New Asset</strong> to submit your website domain or app.';
-    } else if (currentPropFilter === 'Telegram Mini App') {
-      emptyMessage = 'Telegram Mini App monetization is <span style="color:var(--warning); font-weight:700;">Coming Soon</span>. Click <strong>Add New Asset</strong> to register early for beta access.';
-    } else if (currentPropFilter === 'Telegram Bot') {
-      emptyMessage = 'Bot Monetization (Telegram & Discord) is <span style="color:var(--warning); font-weight:700;">Coming Soon</span>. Register your bot handle to join the early access list.';
-    } else if (currentPropFilter === 'Direct Link Locker') {
-      emptyMessage = 'No Social Channels or Monetized Shortlinks added yet. Click <strong>Add New Asset</strong> to create your first monetized shortlink!';
-    } else {
-      emptyMessage = 'No assets added yet. Click <strong>Add New Asset</strong> above to begin!';
+    var emptyMessage = 'No monetization units added yet in this section.';
+    if (currentPropFilter === 'Offerwalls') {
+      emptyMessage = 'No Offerwall units added yet. Click <strong>+ Add Offerwall Unit</strong> above to configure your first Offerwall placement.';
+    } else if (currentPropFilter === 'Web/App Ads') {
+      emptyMessage = 'No Web/App Ad units added yet. Click <strong>+ Add Web/App Ad Unit</strong> above to get Popunder, In-Page Push, Vignette, Direct Link &amp; Banners.';
+    } else if (currentPropFilter === 'Link Locker') {
+      emptyMessage = 'No Link Lockers created yet. Click <strong>+ Create Link Locker</strong> above to begin.';
+    } else if (currentPropFilter === 'Native Ads') {
+      emptyMessage = 'No Native Ad units added yet. Click <strong>+ Add Native Ad Unit</strong> above to begin.';
+    } else if (currentPropFilter === 'Direct/Smart Link Ads') {
+      emptyMessage = 'No traffic sources submitted yet. Click <strong>+ Submit Traffic Source</strong> above to submit your channel/domain for verification first.';
     }
 
     var emptyFullHtml = '<div style="text-align:center; padding:36px; color:var(--text-sub); font-size:13.5px; line-height:1.6;">' + emptyMessage + '</div>';
@@ -2065,13 +2081,20 @@ function renderAllViews() {
 
   // Helper to generate property card HTML
   function buildPropertyCardHtml(p) {
-    var icon = p.type === 'Website' ? SVG_ICONS.globe : (p.type === 'Telegram Bot' ? SVG_ICONS.bot : SVG_ICONS.link);
+    var isWebApp = p.type === 'Web/App Ads' || p.type === 'Website';
+    var isNoVerifyType = p.type === 'Link Locker';
+    var icon = (isWebApp || p.type === 'Offerwalls') ? SVG_ICONS.globe : (p.type === 'Telegram Bot' ? SVG_ICONS.bot : SVG_ICONS.link);
+    if (isNoVerifyType && p.status !== 'Rejected') {
+      p.status = 'Active';
+    }
     var isPending = p.status === 'Pending Review' || !p.status;
     var isRejected = p.status === 'Rejected';
     var isActive = p.status === 'Active';
     
     var statusClass = isActive ? 'status-active' : (isRejected ? 'status-rejected' : 'status-pending');
-    var statusLabel = isActive ? `${SVG_ICONS.check} Active &amp; Serving` : (isRejected ? `${SVG_ICONS.x} Rejected` : `${SVG_ICONS.clock} In Admin Review`);
+    var statusLabel = isActive
+      ? (isNoVerifyType ? `${SVG_ICONS.check} Active (No Verification Required)` : `${SVG_ICONS.check} Active &amp; Serving`)
+      : (isRejected ? `${SVG_ICONS.x} Rejected` : (p.type === 'Direct/Smart Link Ads' ? `${SVG_ICONS.clock} On-Request Verification Pending` : `${SVG_ICONS.clock} In Admin Review`));
 
     var msgs = p.messages || [];
     var adminMsgCount = msgs.filter(function(m) { return m.sender === 'admin'; }).length;
@@ -2082,47 +2105,60 @@ function renderAllViews() {
     var pendingFormats = Object.keys(formatReqs).filter(function(k) { return formatReqs[k].status === 'Pending'; });
 
     var formatStatusBadge = '';
-    if (p.type === 'Website') {
+    if (isWebApp) {
       if (approvedFormats.length > 0) {
         formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--success); font-weight:700; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.check} ${approvedFormats.length} Active Formats</span>`;
       } else if (pendingFormats.length > 0) {
         formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--warning); font-weight:700; background:rgba(251,191,36,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.clock} ${pendingFormats.length} Format Appeals Pending</span>`;
       } else {
-        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--muted); background:var(--bg-hover); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.target} Formats On Request</span>`;
+        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--muted); background:var(--bg-hover); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.target} 5 Ad Formats Available</span>`;
       }
-    } else if (p.type === 'Direct Link Locker') {
-      formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--accent); background:rgba(110,181,255,0.1); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.link} 1 Format (Monetized Shortlink)</span>`;
+    } else if (p.type === 'Offerwalls') {
+      formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--accent); background:rgba(110,181,255,0.1); padding:2px 8px; border-radius:6px; margin-left:6px;">🎁 ${escapeHtml(p.currencyName || 'Points')} (${escapeHtml(p.percentToGive || '0')}%)</span>`;
+    } else if (p.type === 'Direct/Smart Link Ads') {
+      if (isActive) {
+        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--success); font-weight:700; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.check} Source Verified</span>`;
+      } else {
+        formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--warning); font-weight:700; background:rgba(251,191,36,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">${SVG_ICONS.clock} Source Verification Pending</span>`;
+      }
+    } else if (isNoVerifyType) {
+      formatStatusBadge = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--success); font-weight:700; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:6px; margin-left:6px;">⚡ Instant Active</span>`;
     }
 
     var actionButtons = '';
-    if (p.type === 'Website') {
+    if (isWebApp) {
       actionButtons = `
         <button class="btn-secondary" style="border-color:var(--accent); color:var(--accent); display:inline-flex; align-items:center; gap:6px;" onclick="openAdFormatsModal('${p.id}')">
-          ${SVG_ICONS.target} Ad Formats (On Request) ${pendingFormats.length ? `<span style="background:var(--warning); color:#000; font-size:10px; border-radius:10px; padding:1px 5px; margin-left:4px;">${pendingFormats.length}</span>` : (approvedFormats.length ? `<span style="background:var(--success); color:#000; font-size:10px; border-radius:10px; padding:1px 5px; margin-left:4px;">${approvedFormats.length}</span>` : '')}
+          ${SVG_ICONS.target} Ad Formats (5) ${pendingFormats.length ? `<span style="background:var(--warning); color:#000; font-size:10px; border-radius:10px; padding:1px 5px; margin-left:4px;">${pendingFormats.length}</span>` : (approvedFormats.length ? `<span style="background:var(--success); color:#000; font-size:10px; border-radius:10px; padding:1px 5px; margin-left:4px;">${approvedFormats.length}</span>` : '')}
         </button>
-        <button class="btn-secondary" style="border-color:rgba(110,181,255,0.5); color:var(--text); display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.link} Shortlink Generator</button>
         <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
       `;
-    } else if (p.type === 'Direct Link Locker') {
+    } else if (p.type === 'Link Locker') {
+      actionButtons = `
+        <button class="btn-secondary" style="border-color:#34d399; color:#34d399; display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">
+          ${SVG_ICONS.link} Get Locked Link
+        </button>
+        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
+      `;
+    } else if (p.type === 'Direct/Smart Link Ads') {
       if (isActive) {
         actionButtons = `
-          <button class="btn-secondary" style="border-color:var(--accent); color:var(--accent); display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.link} Monetized Shortlink</button>
+          <button class="btn-secondary" style="border-color:#ec4899; color:#ec4899; display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">
+            ${SVG_ICONS.link} Generate Direct Link
+          </button>
           <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
-        `;
-      } else if (isRejected) {
-        actionButtons = `
-          <button class="btn-secondary" style="border-color:var(--danger); color:var(--danger); display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Appeal / Chat ${chatBadge}</button>
         `;
       } else {
         actionButtons = `
-          <button class="btn-secondary" style="border-color:var(--warning); color:var(--warning); display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat with Admin ${chatBadge}</button>
-          <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.clock} Status</button>
+          <button class="btn-secondary" style="opacity:0.75; border-color:rgba(251,191,36,0.4); color:var(--warning); display:inline-flex; align-items:center; gap:6px;" onclick="showToast('Direct Link is locked! Traffic Source verification is pending admin review.')">
+            🔒 Direct Link Locked
+          </button>
+          <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat with Admin ${chatBadge}</button>
         `;
       }
     } else {
       actionButtons = `
-        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">${SVG_ICONS.bot} Bot API</button>
-        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
+        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat with Admin ${chatBadge}</button>
       `;
     }
 
@@ -2136,7 +2172,11 @@ function renderAllViews() {
               <span class="prop-badge">${escapeHtml(p.type)}</span>
               ${formatStatusBadge}
             </div>
-            <div class="asset-meta">${escapeHtml(p.url || 'No URL')} &bull; Niche: ${escapeHtml(p.category)} &bull; Geo: ${escapeHtml(p.geo || 'Global')}</div>
+            <div class="asset-meta">${escapeHtml(p.url || 'No URL')}${p.channel ? ' &bull; <span style="color:var(--accent); font-weight:700;">[' + escapeHtml(p.channel) + ']</span>' : ''} &bull; Niche: ${escapeHtml(p.category)} &bull; Geo: ${escapeHtml(p.geo || 'Global')}</div>
+            ${p.type === 'Direct/Smart Link Ads' ? (isActive
+              ? `<div style="font-size:11.5px; color:var(--success); background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.25); border-radius:6px; padding:4px 8px; margin-top:6px; display:inline-flex; align-items:center; gap:5px;">✓ Source Verified: Direct Link generation is unlocked!</div>`
+              : (isRejected ? '' : `<div style="font-size:11.5px; color:var(--warning); background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:6px; padding:4px 8px; margin-top:6px; display:inline-flex; align-items:center; gap:5px;">🔒 Direct Link Locked: Traffic source is pending admin verification. Direct link unlocks once approved.</div>`))
+              : ''}
             ${p.rejectionReason ? `<div style="font-size:11.5px; color:var(--danger); margin-top:4px;">Reason: ${escapeHtml(p.rejectionReason)}</div>` : ''}
           </div>
         </div>
@@ -2303,7 +2343,26 @@ window.addEventListener('click', function(e) {
   }
 });
 
-// Modal & Forms
+// Modal & Forms (No Monetization Channel dropdown; uses active category directly)
+var currentAddingCategory = 'Web/App Ads';
+
+function showPropModalError(msg) {
+  var el = document.getElementById('propModalError');
+  if (el) {
+    el.textContent = '⚠️ ' + msg;
+    el.style.display = 'block';
+  }
+  showToast(msg);
+}
+
+function clearPropModalError() {
+  var el = document.getElementById('propModalError');
+  if (el) {
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+}
+
 function openPropertyModal(defaultType) {
   var t = defaultType || currentPropFilter;
   if (t === 'Offerwalls') {
@@ -2311,77 +2370,192 @@ function openPropertyModal(defaultType) {
     return;
   }
   closeAllAssetDropdowns();
-  var modal = document.getElementById('propertyModal');
-  var propTypeSelect = document.getElementById('propType');
-  var heading = document.getElementById('propertyModalHeading');
+  currentAddingCategory = (t && t !== 'ALL') ? t : 'Web/App Ads';
 
-  var targetType = defaultType || (currentPropFilter !== 'ALL' ? currentPropFilter : 'Website');
-  if (propTypeSelect) {
-    propTypeSelect.value = targetType;
-  }
+  var modal = document.getElementById('propertyModal');
+  var heading = document.getElementById('propertyModalHeading');
+  var sub = document.getElementById('propertyModalSub');
+  var channelGroup = document.getElementById('propChannelGroup');
+  var channelLbl = document.getElementById('propChannelLabel');
+  var nameInp = document.getElementById('propName');
+  var urlInp = document.getElementById('propUrl');
+  var nameLbl = document.getElementById('propNameLabel');
+  var urlLbl = document.getElementById('propUrlLabel');
+  var submitBtn = document.getElementById('propSubmitBtn');
+
+  if (nameInp) nameInp.value = '';
+  if (urlInp) urlInp.value = '';
+  clearPropModalError();
+
+  var isNoVerify = (currentAddingCategory === 'Link Locker');
 
   var headingMap = {
-    'Website': 'Add New App / Website Asset',
-    'Direct Link Locker': 'Add New Social Asset / Monetized Shortlink',
-    'Telegram Mini App': 'Register Telegram Mini App (Early Access)',
-    'Telegram Bot': 'Register Bot (Telegram + Discord)'
+    'Web/App Ads': 'Add New Web/App Ad Unit',
+    'Link Locker': 'Create New Link Locker Unit',
+    'Native Ads': 'Add New Native Ad Unit',
+    'Direct/Smart Link Ads': 'Submit Traffic Source for Verification'
   };
-  if (heading) heading.textContent = headingMap[targetType] || 'Add New Asset / Property';
+  var subMap = {
+    'Web/App Ads': 'Register your website domain or mobile app for verification.',
+    'Link Locker': 'Create a Link Locker shortlink instantly — No verification required.',
+    'Native Ads': 'Register your domain or app for Native Ad widgets.',
+    'Direct/Smart Link Ads': 'Direct links cannot be created directly. Submit your traffic source / channel URL for admin verification first. Direct links will unlock after approval.'
+  };
+
+  if (heading) heading.textContent = headingMap[currentAddingCategory] || 'Add New Monetization Unit';
+  if (sub) sub.textContent = subMap[currentAddingCategory] || 'Enter your property details.';
+
+  if (currentAddingCategory === 'Direct/Smart Link Ads') {
+    if (channelGroup) channelGroup.style.display = 'block';
+    if (channelLbl) channelLbl.textContent = 'Traffic Channel Platform *';
+    if (nameLbl) nameLbl.textContent = 'Traffic Source / Channel Name *';
+    if (nameInp) nameInp.placeholder = 'e.g. VIP Crypto Calls Telegram, Tech Reviews YouTube, Gaming Blog';
+    if (urlLbl) urlLbl.textContent = 'Traffic Source URL (Channel / Site / Bio) *';
+    if (urlInp) urlInp.placeholder = 'e.g. https://t.me/mychannel or https://youtube.com/@mychannel';
+    if (submitBtn) submitBtn.textContent = 'Submit Traffic Source for Verification →';
+  } else if (currentAddingCategory === 'Link Locker') {
+    if (channelGroup) channelGroup.style.display = 'block';
+    if (channelLbl) channelLbl.textContent = 'Distribution Channel (Optional)';
+    if (nameLbl) nameLbl.textContent = 'Link Locker Title / Name *';
+    if (nameInp) nameInp.placeholder = 'e.g. Premium File Download Locker';
+    if (urlLbl) urlLbl.textContent = 'Destination URL (To Lock) *';
+    if (urlInp) urlInp.placeholder = 'https://drive.google.com/... or https://example.com';
+    if (submitBtn) submitBtn.textContent = 'Create & Activate Link Locker ⚡';
+  } else {
+    if (channelGroup) channelGroup.style.display = 'none';
+    if (nameLbl) nameLbl.textContent = 'App / Website Name *';
+    if (nameInp) nameInp.placeholder = 'e.g. Tech News Blog, Gaming Portal';
+    if (urlLbl) urlLbl.textContent = 'Website Domain / App URL *';
+    if (urlInp) urlInp.placeholder = 'https://example.com or example.com';
+    if (submitBtn) submitBtn.textContent = 'Submit for Verification →';
+  }
 
   if (modal) modal.classList.add('active');
-  onPropTypeChange();
-}
-function closePropertyModal() {
-  document.getElementById('propertyModal').classList.remove('active');
-}
-function onPropTypeChange() {
-  var t = document.getElementById('propType').value;
-  var lbl = document.getElementById('propUrlLabel');
-  var inp = document.getElementById('propUrl');
-  if (t === 'Website') {
-    lbl.textContent = 'App Store URL or Website Domain';
-    inp.placeholder = 'https://mysite.com or App Store link';
-  } else if (t === 'Direct Link Locker') {
-    lbl.textContent = 'Social Channel / Group / Destination Link';
-    inp.placeholder = 'https://t.me/yourchannel or destination URL';
-  } else if (t === 'Telegram Bot') {
-    lbl.textContent = 'Bot Username / Bot Token';
-    inp.placeholder = '@my_telegram_bot';
-  } else if (t === 'Telegram Mini App') {
-    lbl.textContent = 'Telegram Mini App Link / Web App URL';
-    inp.placeholder = 'https://t.me/mybot/app';
+  if (currentAddingCategory === 'Direct/Smart Link Ads') {
+    onPropChannelChange();
   }
+}
+
+function onPropChannelChange() {
+  var ch = document.getElementById('propChannel') ? document.getElementById('propChannel').value : '';
+  var urlInp = document.getElementById('propUrl');
+  var helpEl = document.getElementById('propUrlHelp');
+  if (!urlInp) return;
+
+  var placeholders = {
+    'Telegram Channel': 'https://t.me/yourchannel or t.me/yourchannel',
+    'WhatsApp Channel': 'https://chat.whatsapp.com/yourgroup',
+    'YouTube Channel': 'https://youtube.com/@yourchannel',
+    'Instagram / Social': 'https://instagram.com/yourprofile',
+    'Website / Blog': 'https://example.com or example.com',
+    'Mobile App': 'https://play.google.com/store/apps/details?id=com.app',
+    'Discord Community': 'https://discord.gg/yourserver',
+    'Other Channel': 'https://yourdomain.com'
+  };
+
+  if (currentAddingCategory === 'Direct/Smart Link Ads') {
+    urlInp.placeholder = placeholders[ch] || 'https://t.me/yourchannel or example.com';
+    if (helpEl) helpEl.innerHTML = 'Enter a valid URL or domain for your ' + escapeHtml(ch || 'channel') + ' (verified via URL checker).';
+  }
+}
+
+function validatePropUrlLive() {
+  var urlInp = document.getElementById('propUrl');
+  if (!urlInp) return;
+  var val = urlInp.value.trim();
+  if (!val) return;
+  var cleanHost = extractCleanHostname(val);
+  if (!cleanHost) {
+    if (currentAddingCategory === 'Direct/Smart Link Ads') {
+      showPropModalError('Invalid Channel URL / Domain! Enter a valid URL like https://t.me/channel or yoursite.com');
+    } else if (currentAddingCategory === 'Link Locker') {
+      showPropModalError('Invalid Destination URL! Enter a valid link like https://drive.google.com/...');
+    } else {
+      showPropModalError('Invalid Domain / URL! Enter a valid domain like example.com or https://app.example.com');
+    }
+  } else {
+    clearPropModalError();
+  }
+}
+
+function closePropertyModal() {
+  var modal = document.getElementById('propertyModal');
+  if (modal) modal.classList.remove('active');
+  clearPropModalError();
 }
 
 function saveProperty() {
-  var name = document.getElementById('propName').value.trim();
-  var type = document.getElementById('propType').value;
-  var url = document.getElementById('propUrl').value.trim();
+  var name = (document.getElementById('propName').value || '').trim();
+  var url = (document.getElementById('propUrl').value || '').trim();
   var cat = document.getElementById('propCategory').value;
   var geo = document.getElementById('propGeo').value;
+  var channel = (document.getElementById('propChannel') && document.getElementById('propChannelGroup') && document.getElementById('propChannelGroup').style.display !== 'none')
+    ? document.getElementById('propChannel').value
+    : '';
+  var type = currentAddingCategory || 'Web/App Ads';
+  var isNoVerify = (type === 'Link Locker');
 
-  if (!name) { showToast('Please enter an Asset Name.'); return; }
-  if (!url) { showToast('Please enter a valid URL or Domain.'); return; }
-  if (!extractCleanHostname(url) && !/^@[a-zA-Z0-9_]{3,}$/.test(url)) {
-    showToast('Please enter a valid domain/URL (e.g. https://example.com).');
+  if (!name) {
+    showPropModalError(isNoVerify ? 'Please enter a name for your ' + type + ' unit.' : 'Please enter your Unit / Placement Name.');
     return;
   }
+
+  if (!url) {
+    if (type === 'Direct/Smart Link Ads') {
+      showPropModalError('Please enter your Traffic Channel URL or Domain (e.g. https://t.me/mychannel or your website).');
+    } else if (type === 'Link Locker') {
+      showPropModalError('Please enter the Destination URL you want to lock.');
+    } else {
+      showPropModalError('Please enter your Website Domain or App URL.');
+    }
+    return;
+  }
+
+  // Strict URL & Domain Checker (Prevents non-URL strings like 'abc', requires valid domain/URL)
+  var cleanHost = extractCleanHostname(url);
+  if (!cleanHost) {
+    if (type === 'Direct/Smart Link Ads') {
+      showPropModalError('Invalid Channel URL / Domain! Please enter a valid URL (e.g. https://t.me/yourchannel, https://youtube.com/@channel, or yoursite.com).');
+    } else if (type === 'Link Locker') {
+      showPropModalError('Invalid Destination URL! Please enter a valid link (e.g. https://drive.google.com/... or https://example.com).');
+    } else {
+      showPropModalError('Invalid Domain / URL! Please enter a valid domain or URL (e.g. example.com or https://app.example.com).');
+    }
+    return;
+  }
+
+  // Prepend https:// if user omitted protocol
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+  clearPropModalError();
+
+  var formatLabel = type === 'Web/App Ads'
+    ? 'Popunder, In-Page Push, Vignette, Direct Link, Banners'
+    : type;
+
+  var systemNote = isNoVerify
+    ? (type + ' unit created and activated instantly (No verification required). Your monetization link is ready to use!')
+    : (type === 'Direct/Smart Link Ads'
+        ? 'Direct / Smart Link unit submitted for On-Request Verification. Our audit team checks traffic sources and activates direct links typically within 15–30 minutes.'
+        : (type + ' unit submitted for Admin Review. Our audit team checks traffic guidelines and activates ad units typically within 15–30 minutes.'));
 
   var newAsset = {
     id: 'prop-' + Date.now(),
     name: name,
     type: type,
+    channel: channel,
     url: url,
     category: cat,
     geo: geo,
-    format: type === 'Direct Link Locker' ? 'Smartlink' : 'Auto Ad Tag',
-    status: 'Pending Review', // Set to Pending Admin Review by default
+    format: formatLabel,
+    status: isNoVerify ? 'Active' : 'Pending Review',
     submittedAt: new Date().toISOString(),
     verificationToken: 'ET-VERIFY-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
     messages: [
       {
         sender: 'system',
-        text: 'Property submitted for Admin Review. Our audit team checks traffic guidelines and activates ad units typically within 15–30 minutes.',
+        text: systemNote,
         timestamp: new Date().toISOString()
       }
     ],
@@ -2394,7 +2568,14 @@ function saveProperty() {
   properties.unshift(newAsset);
   persistProperties();
   closePropertyModal();
-  showToast('Property submitted! It is now under Admin Review.');
+  if (isNoVerify) {
+    showToast(type + ' created & activated instantly! No verification required.');
+    openTagModal(newAsset.id);
+  } else if (type === 'Direct/Smart Link Ads') {
+    showToast('Direct / Smart Link request submitted! Pending on-request verification.');
+  } else {
+    showToast(type + ' unit submitted! Now pending admin verification.');
+  }
 }
 
 function deleteAsset(id) {
@@ -2404,85 +2585,62 @@ function deleteAsset(id) {
 }
 
 // ══════════════════════════════════════════════
-// AD FORMATS ON REQUEST (WEBSITE & APP MONETIZATION)
+// WEB / APP AD FORMATS (5 CORE FORMATS)
 // ══════════════════════════════════════════════
 var WEBSITE_AD_FORMATS = [
   {
     id: 'popunder',
-    name: 'Popunder (OnClick)',
+    name: 'Popunder',
     icon: SVG_ICONS.zap,
     badge: 'High eCPM',
     cpm: '$3.50 – $8.20',
-    desc: 'High-converting background full-tab ad triggered on first user click. Highest revenue per 1000 visitors with zero banner blindness or layout shift.',
+    desc: 'High-converting full-tab Popunder ad triggered on user click. Highest revenue per 1,000 visitors with zero layout shift.',
     codeSnippet: function(p) {
       return `<!-- Eternant Popunder Tag: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/popunder.js" data-zone="${p.id}-pop"><\/script>`;
     }
   },
   {
-    id: 'social_bar',
-    name: 'Social Bar / In-Page Push',
+    id: 'in_page_push',
+    name: 'In-Page Push',
     icon: SVG_ICONS.bell,
     badge: 'High CTR',
     cpm: '$2.80 – $6.50',
-    desc: 'Interactive chat bubbles, native notifications, and alert bars. Up to 30x higher CTR than classic web push without needing user browser permission.',
+    desc: 'Native notification-style In-Page Push alert banners that work on all browsers and iOS/Android devices without requiring push permissions.',
     codeSnippet: function(p) {
-      return `<!-- Eternant Social Bar Tag: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/socialbar.js" data-zone="${p.id}-sb"><\/script>`;
+      return `<!-- Eternant In-Page Push Tag: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/inpagepush.js" data-zone="${p.id}-ipp"><\/script>`;
     }
   },
   {
-    id: 'native_banner',
-    name: 'Native Banner (Recommendations)',
-    icon: SVG_ICONS.newspaper,
-    badge: 'Editorial',
-    cpm: '$1.50 – $4.00',
-    desc: 'Content recommendation widgets that blend natively into blog posts, article lists, download feeds, and news grids for maximum engagement.',
-    codeSnippet: function(p) {
-      return `<!-- Eternant Native Widget: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/native.js" data-zone="${p.id}-nat"><\/script>\n<div class="eternant-native-widget" data-zone="${p.id}-nat"></div>`;
-    }
-  },
-  {
-    id: 'rewarded_interstitial',
-    name: 'Rewarded Interstitial / Fullscreen',
+    id: 'vignette',
+    name: 'Vignette',
     icon: SVG_ICONS.gift,
-    badge: 'Highest Yield',
-    cpm: '$4.50 – $12.00',
-    desc: 'Fullscreen overlay ad with countdown/reward trigger. Ideal for web apps, tools, file download portals, quizzes, and browser games.',
+    badge: 'Max Visibility',
+    cpm: '$4.50 – $11.00',
+    desc: 'Full-screen Vignette / interstitial overlay ads displayed between page transitions or app loads with frequency capping.',
     codeSnippet: function(p) {
-      return `<!-- Eternant Rewarded Interstitial: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/interstitial.js" data-zone="${p.id}-int"><\/script>\n<script>\nfunction triggerEternantAd() {\n  if (window.EternantAd) window.EternantAd.showInterstitial('${p.id}-int');\n}\n<\/script>`;
+      return `<!-- Eternant Vignette Tag: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/vignette.js" data-zone="${p.id}-vig"><\/script>`;
     }
   },
   {
-    id: 'display_banner',
-    name: 'Standard Display Banners (300x250, 728x90)',
-    icon: SVG_ICONS.banner,
-    badge: 'Classic IAB',
-    cpm: '$1.00 – $2.50',
-    desc: 'Standard IAB banner zones for header top, sidebar right, in-article, and sticky bottom footer placements.',
-    codeSnippet: function(p) {
-      return `<!-- Eternant 300x250 Banner: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/banner.js" data-zone="${p.id}-ban" data-size="300x250"><\/script>\n<div class="eternant-banner-zone" data-zone="${p.id}-ban" style="width:300px; height:250px;"></div>`;
-    }
-  },
-  {
-    id: 'direct_smartlink',
-    name: 'Direct Smartlink URL',
-    icon: SVG_ICONS.zap,
+    id: 'direct_link',
+    name: 'Direct Link',
+    icon: SVG_ICONS.link,
     badge: 'High Conversion',
     cpm: '$3.00 – $9.00',
-    desc: 'Algorithmically optimized direct monetization link. Ideal for CTA buttons, download redirects, and high-converting traffic routing.',
+    desc: 'Smart-routed Direct Link URL for buttons, download links, and in-app placements.',
     codeSnippet: function(p) {
-      return `https://etn.link/s/${p.id}-smart?tag=website_direct`;
+      return `https://etn.link/d/${p.id}-direct`;
     }
   },
   {
-    id: 'offerwall',
-    name: 'Offerwall / Micro-Task Wall (Rewarded)',
-    icon: SVG_ICONS.trophy,
-    badge: 'Top Yield',
-    cpm: '$8.00 – $25.00+',
-    desc: 'Interactive reward wall with paid surveys, mobile app downloads, and micro-tasks. Generates high eCPM and maximum revenue per user with postback callback support.',
+    id: 'banners',
+    name: 'Banners',
+    icon: SVG_ICONS.banner,
+    badge: 'Display IAB',
+    cpm: '$1.20 – $3.00',
+    desc: 'Responsive Display Banners (300x250, 728x90, 320x50) for headers, sidebars, in-article, and sticky footers.',
     codeSnippet: function(p) {
-      var pbEndpoint = p.postbackUrl || ('https://' + (extractCleanHostname(p.url) || 'your-domain.com') + '/api/postback');
-      return `<!-- Eternant Offerwall iFrame: ${escapeHtml(p.name)} -->\n<iframe src="https://wall.eternant.net/v1/wall?zone=${p.id}-wall&uid=USER_ID" width="100%" height="650" frameborder="0" style="border:none; border-radius:12px;" allow="payment"><\/iframe>\n<!-- Your Server Postback Endpoint: ${escapeHtml(pbEndpoint)} -->`;
+      return `<!-- Eternant Display Banner: ${escapeHtml(p.name)} -->\n<script async src="https://cdn.eternant.net/v1/banner.js" data-zone="${p.id}-ban" data-size="300x250"><\/script>\n<div class="eternant-banner-zone" data-zone="${p.id}-ban" style="width:300px; height:250px;"></div>`;
     }
   }
 ];
@@ -2682,19 +2840,20 @@ function openTagModal(id) {
   var copyBtn = document.getElementById('tagModalCopyBtn');
   var codeBox = document.getElementById('tagModalCode');
 
-  // If Under Review
+  // If Under Review (Traffic Source verification pending)
   if (p.status === 'Pending Review' || !p.status) {
-    if (heading) heading.innerHTML = `${SVG_ICONS.clock} Property Under Admin Review`;
-    if (sub) sub.textContent = 'Property: ' + p.name + ' • Verification in Progress';
+    var isDirect = p.type === 'Direct/Smart Link Ads';
+    if (heading) heading.innerHTML = `${SVG_ICONS.clock} ${isDirect ? 'Traffic Source Verification Pending' : 'Property Under Admin Review'}`;
+    if (sub) sub.textContent = (isDirect ? 'Traffic Source: ' : 'Property: ') + p.name + ' • Verification in Progress';
     if (helper) helper.style.display = 'none';
     if (copyBtn) copyBtn.style.display = 'none';
     codeBox.innerHTML = `
       <div style="padding:10px 0; color:var(--warning); font-family:'Syne',sans-serif; font-size:13px; line-height:1.6;">
-        ${SVG_ICONS.alert} <strong>This property is currently under compliance review by Eternant Admin.</strong><br>
-        Monetized shortlinks will activate immediately once approved. You can message the Admin below to expedite approval.
+        ${SVG_ICONS.alert} <strong>${isDirect ? 'Direct Link is locked! Traffic source verification is pending.' : 'This property is currently under compliance review by Eternant Admin.'}</strong><br>
+        ${isDirect ? 'Direct Link generator will unlock automatically once our compliance team approves this source (' + escapeHtml(p.url) + ').' : 'Monetized shortlinks will activate immediately once approved.'} You can message the Admin below to expedite approval.
       </div>
       <button class="action-btn-primary" onclick="closeTagModal(); openChatModal('${p.id}');" style="margin-top:10px; width:100%; justify-content:center;">
-        ${SVG_ICONS.chat} Chat with Admin
+        ${SVG_ICONS.chat} Chat with Admin to Expedite Verification
       </button>
     `;
     document.getElementById('tagModal').classList.add('active');
@@ -2720,22 +2879,28 @@ function openTagModal(id) {
     return;
   }
 
-  // Active (Monetized Shortlink Generator for Websites, Apps, and Direct Link Lockers)
+  // Active (Monetized Shortlink Generator for Link Locker, Direct/Smart Link Ads, Websites, Apps)
   if (copyBtn) copyBtn.style.display = 'inline-block';
-  if (p.type === 'Website' || p.type === 'Direct Link Locker') {
-    if (heading) heading.innerHTML = `${SVG_ICONS.link} Monetized Shortlink & Link Customizer`;
-    if (sub) sub.textContent = 'Property: ' + p.name + ' • Monetized Link Shortener Tool';
+  if (p.type === 'Link Locker' || p.type === 'Direct Link Locker' || p.type === 'Website') {
+    if (heading) heading.innerHTML = `${SVG_ICONS.link} Link Locker — Monetized Locked Link`;
+    if (sub) sub.textContent = 'Unit: ' + p.name + ' • Instant Active (No Verification Required)';
     if (helper) {
       helper.style.display = 'block';
       var customInp = document.getElementById('assetShortlinkCustomUrl');
       if (customInp) customInp.value = p.url && p.url !== 'N/A' ? p.url : '';
     }
-    if (copyBtn) copyBtn.textContent = 'Copy Shortlink';
-    var shortUrl = 'https://etn.link/s/' + p.id;
+    if (copyBtn) copyBtn.textContent = 'Copy Locked Link';
+    var shortUrl = 'https://etn.link/lock/' + p.id;
     if (p.url && p.url !== 'N/A') {
       shortUrl += '?dest=' + encodeURIComponent(p.url);
     }
     codeBox.textContent = shortUrl;
+  } else if (p.type === 'Direct/Smart Link Ads') {
+    if (heading) heading.innerHTML = `${SVG_ICONS.link} Direct / Smart Link URL`;
+    if (sub) sub.textContent = 'Unit: ' + p.name + ' • Approved & Active (On-Request Verified)';
+    if (helper) helper.style.display = 'none';
+    if (copyBtn) copyBtn.textContent = 'Copy Direct Link';
+    codeBox.textContent = 'https://etn.link/smart/' + p.id + '?geo=' + encodeURIComponent(p.geo || 'Global');
   } else if (p.type === 'Telegram Bot') {
     if (heading) heading.innerHTML = `${SVG_ICONS.bot} Telegram Bot API (Legacy)`;
     if (sub) sub.textContent = 'Property: ' + p.name + ' (Bot API)';
@@ -2744,6 +2909,80 @@ function openTagModal(id) {
     codeBox.textContent = `# Eternant Bot API Token Integration\nET_BOT_KEY = "et_bot_${p.id}"\n# Sponsored ad broadcast active for ${escapeHtml(p.name)}`;
   }
   document.getElementById('tagModal').classList.add('active');
+}
+
+function closeTagModal() {
+  var m = document.getElementById('tagModal');
+  if (m) m.classList.remove('active');
+}
+
+function copyTagModalCode() {
+  var codeBox = document.getElementById('tagModalCode');
+  if (!codeBox) return;
+  navigator.clipboard.writeText(codeBox.textContent.trim()).then(function() {
+    showToast('Link / Code copied to clipboard!');
+  });
+}
+
+function generateAssetShortlinkUrl() {
+  if (!currentModalAssetId) return;
+  var p = properties.find(function(x) { return x.id === currentModalAssetId; });
+  if (!p) return;
+  var customInp = document.getElementById('assetShortlinkCustomUrl');
+  var dest = customInp ? customInp.value.trim() : '';
+  if (!dest) {
+    showToast('Please enter a destination URL to lock.');
+    return;
+  }
+  var clean = extractCleanHostname(dest);
+  if (!clean) {
+    showToast('Invalid Destination URL! Please enter a valid link (e.g. https://drive.google.com/...).');
+    return;
+  }
+  if (!/^https?:\/\//i.test(dest)) dest = 'https://' + dest;
+  p.url = dest;
+  persistProperties();
+  var codeBox = document.getElementById('tagModalCode');
+  if (codeBox) {
+    codeBox.textContent = 'https://etn.link/lock/' + p.id + '?dest=' + encodeURIComponent(dest);
+  }
+  showToast('Locked link updated!');
+}
+
+var currentChatPropId = null;
+
+function openChatModal(id) {
+  var p = properties.find(function(x) { return x.id === id; });
+  if (!p) return;
+  currentChatPropId = id;
+  var titleEl = document.getElementById('chatModalTitle');
+  if (titleEl) titleEl.textContent = 'Property Chat: ' + p.name;
+  var urlEl = document.getElementById('chatModalUrl');
+  if (urlEl) urlEl.textContent = p.url || 'N/A';
+  var tokEl = document.getElementById('chatModalToken');
+  if (tokEl) tokEl.textContent = 'ID: ' + (p.verificationToken || p.id);
+  var badge = document.getElementById('chatModalStatusBadge');
+  if (badge) {
+    badge.className = 'prop-status-pill ' + (p.status === 'Active' ? 'status-active' : (p.status === 'Rejected' ? 'status-rejected' : 'status-pending'));
+    badge.textContent = p.status || 'In Review';
+  }
+  var rejBox = document.getElementById('chatModalRejectAlert');
+  if (rejBox) {
+    if (p.status === 'Rejected' && p.rejectionReason) {
+      rejBox.style.display = 'block';
+      document.getElementById('chatModalRejectReason').textContent = p.rejectionReason;
+    } else {
+      rejBox.style.display = 'none';
+    }
+  }
+  renderChatMessages(id);
+  document.getElementById('chatModal').classList.add('active');
+}
+
+function closeChatModal() {
+  var m = document.getElementById('chatModal');
+  if (m) m.classList.remove('active');
+  currentChatPropId = null;
 }
 
 function renderChatMessages(id) {

@@ -1245,6 +1245,11 @@ function loadPropertiesForAudit() {
   try {
     var raw = localStorage.getItem(PROP_STORE);
     properties = raw ? JSON.parse(raw) : [];
+    properties.forEach(function(p) {
+      if (p.type === 'Link Locker' && p.status !== 'Rejected') {
+        p.status = 'Active';
+      }
+    });
   } catch(e) {
     properties = [];
   }
@@ -1285,13 +1290,14 @@ function setAuditFilter(filterVal, btn) {
   renderAuditQueue();
 }
 
-function getPlatformIcon(type) {
-  if (type.includes('Telegram')) return '✈️';
-  if (type.includes('WhatsApp')) return '💬';
-  if (type.includes('App')) return '📱';
-  if (type.includes('Discord')) return '👾';
-  if (type.includes('YouTube')) return '▶️';
-  if (type.includes('Instagram')) return '📸';
+function getPlatformIcon(type, channel) {
+  var t = ((channel ? channel + ' ' : '') + (type || '')).toLowerCase();
+  if (t.includes('telegram')) return '✈️';
+  if (t.includes('whatsapp')) return '💬';
+  if (t.includes('youtube')) return '▶️';
+  if (t.includes('instagram') || t.includes('tiktok') || t.includes('social')) return '📸';
+  if (t.includes('discord')) return '👾';
+  if (t.includes('app')) return '📱';
   return '🌐';
 }
 
@@ -1315,7 +1321,7 @@ function renderAuditQueue() {
 
   var html = '';
   filtered.forEach(function(p) {
-    var icon = getPlatformIcon(p.type || '');
+    var icon = getPlatformIcon(p.type || '', p.channel || '');
     var statusClass = p.status === 'Active' ? 'active' : (p.status === 'Rejected' ? 'rejected' : 'pending');
     var dateStr = p.submittedAt ? new Date(p.submittedAt).toLocaleDateString() : 'Recent';
 
@@ -1326,11 +1332,11 @@ function renderAuditQueue() {
             <div class="review-platform-icon">${icon}</div>
             <div>
               <div class="review-name">${escapeHtml(p.name)}</div>
-              <div class="review-meta">${escapeHtml(p.type)} &bull; Submitted ${dateStr}</div>
+              <div class="review-meta">${p.type === 'Direct/Smart Link Ads' ? 'Direct / Smart Link • Traffic Source' : escapeHtml(p.type)} ${p.channel ? '&bull; 📢 ' + escapeHtml(p.channel) : ''} &bull; Submitted ${dateStr}</div>
             </div>
           </div>
           <span class="review-status-badge ${statusClass}">
-            ${p.status === 'Active' ? '● Approved & Active' : (p.status === 'Rejected' ? '✕ Rejected' : '⏳ Pending Audit')}
+            ${p.status === 'Active' ? (p.type === 'Direct/Smart Link Ads' ? '● Source Verified (Direct Link Active)' : (p.type === 'Link Locker' ? '⚡ Instant Active (No Verification)' : '● Approved & Active')) : (p.status === 'Rejected' ? '✕ Rejected' : (p.type === 'Direct/Smart Link Ads' ? '⏳ Source Verification Pending' : '⏳ Pending Audit'))}
           </span>
         </div>
 
@@ -1339,6 +1345,12 @@ function renderAuditQueue() {
             <span class="review-k">Destination / URL</span>
             <span class="review-v"><a href="${escapeHtml(p.url)}" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">${escapeHtml(p.url || 'None')} ↗</a></span>
           </div>
+          ${p.channel ? `
+            <div class="review-kv">
+              <span class="review-k">Traffic Channel</span>
+              <span class="review-v" style="color:var(--accent); font-weight:700;">📢 ${escapeHtml(p.channel)}</span>
+            </div>
+          ` : ''}
           <div class="review-kv">
             <span class="review-k">Niche / Category</span>
             <span class="review-v">${escapeHtml(p.category || 'General')}</span>
@@ -1352,6 +1364,16 @@ function renderAuditQueue() {
             <span class="review-v">${escapeHtml(p.geo || 'Global')}</span>
           </div>
         </div>
+
+        ${p.type === 'Direct/Smart Link Ads' ? `
+          <div class="review-notes-box" style="border-color:rgba(236,72,153,0.4); background:rgba(236,72,153,0.06);">
+            <strong style="color:#ec4899; font-size:12px; display:block; margin-bottom:4px;">🔗 Traffic Source Verification for Direct / Smart Links:</strong>
+            <div style="font-size:12px; line-height:1.5;">
+              Publisher submitted this traffic source for compliance verification.
+              ${p.status === 'Active' ? '<div style="color:var(--success); font-weight:700; margin-top:4px;">✓ Source Verified: Publisher Direct Link generator is unlocked.</div>' : '<div style="color:var(--warn); font-weight:700; margin-top:4px;">🔒 Direct Link Locked: Publisher cannot generate direct links until this source is approved.</div>'}
+            </div>
+          </div>
+        ` : ''}
 
         ${p.type === 'Offerwalls' ? `
           <div class="review-notes-box" style="border-color:rgba(110,181,255,0.4); background:rgba(110,181,255,0.05);">
@@ -1380,7 +1402,7 @@ function renderAuditQueue() {
         ` : ''}
 
         ${(function() {
-          if (p.type !== 'Website') return '';
+          if (p.type !== 'Web/App Ads' && p.type !== 'Website') return '';
           var reqs = p.formatRequests || {};
           var pKeys = Object.keys(reqs).filter(function(k) { return reqs[k].status === 'Pending'; });
           var aKeys = Object.keys(reqs).filter(function(k) { return reqs[k].status === 'Approved'; });
@@ -1458,23 +1480,23 @@ function renderAuditQueue() {
 
 /* ── AD FORMAT DEFINITIONS & ADMIN REPRESENTATIVE ACTIONS ── */
 var AD_FORMAT_NAMES = {
-  popunder: 'Popunder (OnClick)',
-  social_bar: 'Social Bar / In-Page Push',
-  native_banner: 'Native Banner (Recommendations)',
-  rewarded_interstitial: 'Rewarded Interstitial / Fullscreen',
-  display_banner: 'Display Banner (300x250 / 728x90)',
-  direct_smartlink: 'Direct Smartlink URL',
-  offerwall: 'Offerwall / Micro-Task Wall (Rewarded)'
+  popunder: 'Popunder',
+  in_page_push: 'In-Page Push',
+  vignette: 'Vignette',
+  direct_link: 'Direct Link',
+  banners: 'Banners',
+  social_bar: 'In-Page Push',
+  rewarded_interstitial: 'Vignette',
+  display_banner: 'Banners',
+  direct_smartlink: 'Direct Link'
 };
 
 var ALL_WEBSITE_FORMAT_KEYS = [
   'popunder',
-  'social_bar',
-  'native_banner',
-  'rewarded_interstitial',
-  'display_banner',
-  'direct_smartlink',
-  'offerwall'
+  'in_page_push',
+  'vignette',
+  'direct_link',
+  'banners'
 ];
 
 function adminApproveFormat(propId, formatId) {
@@ -1558,7 +1580,7 @@ function renderAdminChatFormats(p) {
   var list = document.getElementById('adminChatFormatList');
   if (!sec || !list) return;
 
-  if (p.type !== 'Website') {
+  if (p.type !== 'Web/App Ads' && p.type !== 'Website') {
     sec.style.display = 'none';
     return;
   }
