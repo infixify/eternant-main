@@ -2061,25 +2061,25 @@ function switchMonetizeCategory(category, subItemEl) {
 function renderCategoryFormatPreviews(category) {
   var formatMap = {
     'Offerwalls': [
-      { name: 'Offerwalls', dim: '400 × 600 px Modal', desc: 'Interactive reward center with surveys, app downloads, and micro-tasks.' }
+      { name: 'Offerwalls', dim: '400 × 600 px Modal', desc: 'Interactive reward center with surveys, app downloads, and micro-tasks.', hasPreview: true }
     ],
     'Web/App Ads': [
-      { name: 'Display Banners (300x250 / 728x90 / 320x50)', dim: 'Multiple Sizes', desc: 'Standard IAB banner sizes with interactive size toggles.' },
-      { name: 'Popunder Ads', dim: 'Full Screen Underlay', desc: 'High-volume tab-under ad opened on user click for high advertiser ROI.' },
-      { name: 'In-Page Push (Social)', dim: '300 × 100 px Widget', desc: 'Floating alert widget styled as native social/browser push notifications.' }
+      { name: 'Display Banners (300x250 / 728x90 / 320x50)', dim: 'Multiple Sizes', desc: 'Standard IAB banner sizes with interactive size toggles.', hasPreview: true },
+      { name: 'Popunder Ads', dim: 'Full Screen Underlay', desc: 'High-volume tab-under ad opened on user click for high advertiser ROI.', hasPreview: true },
+      { name: 'In-Page Push (Social)', dim: '300 × 100 px Widget', desc: 'Floating alert widget styled as native social/browser push notifications.', hasPreview: true }
     ],
-    'Link Locker': [
-      { name: 'Link Locker', dim: 'Secure URL Gate', desc: 'Redirect gate requiring quick user verification before unlocking downloads.' }
-    ],
+    'Link Locker': [],
     'Native Ads': [
-      { name: 'Native In-Feed (0 ads available)', dim: 'Fluid / Responsive', desc: 'Contextual sponsored content feed unit. Currently 0 ads available.' }
+      { name: 'Native In-Feed (0 ads available)', dim: 'Fluid / Responsive', desc: 'Contextual sponsored content feed unit. Currently 0 ads available.', hasPreview: false }
     ],
-    'Direct/Smart Link Ads': [
-      { name: 'SmartLink AI Routing', dim: 'Smart Direct Link', desc: 'Single URL intelligently routing traffic by geo and device for max RPM.' }
-    ]
+    'Direct/Smart Link Ads': []
   };
 
-  var formats = formatMap[category] || formatMap['Web/App Ads'];
+  var formats = formatMap[category] || [];
+  if (!formats.length) {
+    return '<div style="font-size:12.5px; color:var(--text-sub); padding:12px 0;">No active ad format previews in this section (Instant activation / direct setup).</div>';
+  }
+
   var html = '<div style="margin-bottom:16px;"><div style="font-size:13px; font-weight:700; margin-bottom:10px; color:var(--text); display:flex; align-items:center; gap:6px;"><span>🖼️ Ad Formats &amp; Picture Specs for ' + escapeHtml(category) + '</span></div><div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">';
 
   formats.forEach(function(f) {
@@ -2090,9 +2090,13 @@ function renderCategoryFormatPreviews(category) {
           '<span class="prop-badge">' + escapeHtml(f.dim) + '</span>' +
         '</div>' +
         '<p style="font-size:11.5px; color:var(--text-sub); line-height:1.4;">' + escapeHtml(f.desc) + '</p>' +
-      '</div>' +
-      '<button class="btn-secondary" style="width:100%; justify-content:center; padding:6px; font-size:11px;" onclick="openAdFormatPicturePreview(\'' + escapeHtml(f.name) + '\')">🖼️ Preview Picture Format</button>' +
-    '</div>';
+      '</div>';
+    if (f.hasPreview) {
+      html += '<button class="action-btn-primary" style="width:100%; justify-content:center; padding:6px; font-size:11px;" onclick="openAdFormatPicturePreview(\'' + escapeHtml(f.name) + '\')">🖼️ Preview Picture Format</button>';
+    } else {
+      html += '<div style="font-size:11px; color:var(--danger); font-family:\'Space Mono\'; font-weight:700; text-align:center; padding:4px;">0 ads available</div>';
+    }
+    html += '</div>';
   });
 
   html += '</div></div>';
@@ -3598,7 +3602,7 @@ function openAdFormatPicturePreview(formatName) {
         </div>
 
         <!-- Screen Dummy Container -->
-        <div id="screenDummyContainer" style="background:#030712; border:2px solid var(--border-lt); border-radius:14px; padding:16px; min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; box-shadow:0 16px 40px rgba(0,0,0,0.5);">
+        <div id="screenDummyContainer" style="background:#f8fafc; border:2px solid var(--accent); border-radius:14px; padding:16px; min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; box-shadow:0 16px 40px rgba(0,0,0,0.2); color:#0f172a;">
           <!-- Rendered dynamically -->
         </div>
 
