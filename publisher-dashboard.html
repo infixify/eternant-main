@@ -1062,7 +1062,7 @@ body {
           <a class="submenu-item" id="subitem-Link Locker" onclick="switchMonetizeCategory('Link Locker', this)">
             <span class="sub-dot" style="background:#34d399;"></span>
             <span>Link Locker</span>
-            <span class="sub-badge" style="font-size:9px; background:rgba(52,211,153,0.15); color:#34d399;">Used by all</span>
+            <span class="sub-badge" style="font-size:9px; background:rgba(251,191,36,0.15); color:var(--warning);">On-Request</span>
           </a>
           <a class="submenu-item" id="subitem-Native Ads" onclick="switchMonetizeCategory('Native Ads', this)">
             <span class="sub-dot" style="background:#f59e0b;"></span>
@@ -2021,21 +2021,21 @@ function switchMonetizeCategory(category, subItemEl) {
   var subMap = {
     'Offerwalls': 'Interactive reward wall with paid surveys, mobile app downloads, and micro-tasks. Separate verification required.',
     'Web/App Ads': 'Includes Popunder, In-Page Push, Vignette, Direct Link, and Banners for mobile apps and websites. Separate verification required.',
-    'Link Locker': 'Monetized shortlinks and link locking for content creators and publishers. No verification required — instant activation.',
+    'Link Locker': 'Monetized shortlinks and link locking require prior verification. Submit your destination/content for verification first. Link locker unlocks once approved.',
     'Native Ads': 'Blended native ad units matching your content style. Separate verification required.',
     'Direct/Smart Link Ads': 'Direct links require prior traffic source verification. Submit your channel/domain for verification first. Direct link unlocks once approved.'
   };
   var supportMap = {
     'Offerwalls': 'Support: Apps + Webs',
     'Web/App Ads': 'Support: Apps + Webs',
-    'Link Locker': 'Support: Used by all',
+    'Link Locker': 'Support: On-Request',
     'Native Ads': 'Support: Used by all',
-    'Direct/Smart Link Ads': 'Support: Used by all'
+    'Direct/Smart Link Ads': 'Support: On-Request'
   };
   var btnTextMap = {
     'Offerwalls': '+ Add Offerwall Unit',
     'Web/App Ads': '+ Add Web/App Ad Unit',
-    'Link Locker': '+ Create Link Locker',
+    'Link Locker': '+ Submit Link Locker Request',
     'Native Ads': '+ Add Native Ad Unit',
     'Direct/Smart Link Ads': '+ Submit Traffic Source'
   };
@@ -2136,12 +2136,7 @@ var properties = [];
 try {
   var saved = localStorage.getItem('et_properties_v2');
   if (saved) properties = JSON.parse(saved);
-  // Auto-activate Link Locker since no verification is required (Direct/Smart Link Ads requires on-request verification)
-  properties.forEach(function(p) {
-    if (p.type === 'Link Locker' && p.status !== 'Rejected') {
-      p.status = 'Active';
-    }
-  });
+  // Link Locker now follows on-request review workflow
 } catch(e) {}
 
 function persistProperties() {
@@ -2286,12 +2281,21 @@ function renderAllViews() {
         <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
       `;
     } else if (p.type === 'Link Locker') {
-      actionButtons = `
-        <button class="btn-secondary" style="border-color:#34d399; color:#34d399; display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">
-          ${SVG_ICONS.link} Get Locked Link
-        </button>
-        <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
-      `;
+      if (isActive) {
+        actionButtons = `
+          <button class="btn-secondary" style="border-color:#34d399; color:#34d399; display:inline-flex; align-items:center; gap:6px;" onclick="openTagModal('${p.id}')">
+            ${SVG_ICONS.link} Get Locked Link
+          </button>
+          <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat ${chatBadge}</button>
+        `;
+      } else {
+        actionButtons = `
+          <button class="btn-secondary" style="opacity:0.75; border-color:rgba(251,191,36,0.4); color:var(--warning); display:inline-flex; align-items:center; gap:6px;" onclick="showToast('Link Locker is locked! Verification is pending admin review.')">
+            🔒 Link Locker Locked
+          </button>
+          <button class="btn-secondary" style="display:inline-flex; align-items:center; gap:6px;" onclick="openChatModal('${p.id}')">${SVG_ICONS.chat} Chat with Admin ${chatBadge}</button>
+        `;
+      }
     } else if (p.type === 'Direct/Smart Link Ads') {
       if (isActive) {
         actionButtons = `
@@ -2590,13 +2594,13 @@ function openPropertyModal(defaultType) {
 
   var headingMap = {
     'Web/App Ads': 'Add New Web/App Ad Unit',
-    'Link Locker': 'Create New Link Locker Unit',
+    'Link Locker': 'Submit Link Locker for Verification',
     'Native Ads': 'Add New Native Ad Unit',
     'Direct/Smart Link Ads': 'Submit Traffic Source for Verification'
   };
   var subMap = {
     'Web/App Ads': 'Register your website domain or mobile app for verification.',
-    'Link Locker': 'Create a Link Locker shortlink instantly — No verification required.',
+    'Link Locker': 'Link Locker shortlinks require admin verification before activation. Submit your link/destination for review first.',
     'Native Ads': 'Register your domain or app for Native Ad widgets.',
     'Direct/Smart Link Ads': 'Direct links cannot be created directly. Submit your traffic source / channel URL for admin verification first. Direct links will unlock after approval.'
   };
@@ -2619,7 +2623,7 @@ function openPropertyModal(defaultType) {
     if (nameInp) nameInp.placeholder = 'e.g. Premium File Download Locker';
     if (urlLbl) urlLbl.textContent = 'Destination URL (To Lock) *';
     if (urlInp) urlInp.placeholder = 'https://drive.google.com/... or https://example.com';
-    if (submitBtn) submitBtn.textContent = 'Create & Activate Link Locker ⚡';
+    if (submitBtn) submitBtn.textContent = 'Submit Link Locker for Verification →';
   } else {
     if (channelGroup) channelGroup.style.display = 'none';
     if (nameLbl) nameLbl.textContent = 'App / Website Name *';
