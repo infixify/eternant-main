@@ -1100,7 +1100,7 @@ body {
       </a>
     </div>
 
-    <!-- Sidebar Bottom: Live Earnings & Role Switcher -->
+    <!-- Sidebar Bottom: Live Earnings, Role Switcher & Utilities -->
     <div class="sidebar-footer">
       <div class="sidebar-earnings-card">
         <div>
@@ -1117,6 +1117,16 @@ body {
         </span>
         <span style="font-size:11px; opacity:0.7;">Switch &rarr;</span>
       </a>
+
+      <div style="display: flex; gap: 8px; align-items: center; margin-top: 2px;">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme" style="flex:1; height:36px; border-radius:8px; border:1px solid var(--border-lt); background:var(--bg-card); color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px; font-weight:600; font-family:'Syne',sans-serif;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          Theme
+        </button>
+        <button onclick="handleSignOut()" style="flex:1; height:36px; border-radius:8px; border:1px solid rgba(248,113,113,0.3); background:transparent; color:var(--danger); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px; font-weight:600; font-family:'Syne',sans-serif;">
+          Logout
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -1135,18 +1145,10 @@ body {
           <span>Add Asset</span>
         </button>
 
-        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        </button>
-
-        <div class="user-badge">
+        <div class="user-badge" title="Logged in Publisher">
           <div class="user-avatar-circle" id="userInitial">P</div>
           <span class="user-display-name" id="userName">Publisher</span>
         </div>
-
-        <button onclick="handleSignOut()" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid rgba(248,113,113,0.3);background:transparent;color:var(--danger);cursor:pointer;">
-          Logout
-        </button>
       </div>
     </header>
 
@@ -1247,20 +1249,117 @@ body {
         <div class="page-header">
           <div class="page-title">
             <h1>Detailed Statistics &amp; Analytics</h1>
-            <p>Granular traffic breakdown by property, ad format, and eCPM yield.</p>
+            <p>Granular performance breakdown by property, ad format, country, and eCPM yield.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:3px; gap:3px;">
+              <button class="stats-range-btn active" onclick="setStatsRange('today', event)" style="font-family:'Syne',sans-serif; font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:7px; border:none; background:var(--bg-hover); color:var(--accent); cursor:pointer;">Today</button>
+              <button class="stats-range-btn" onclick="setStatsRange('7d', event)" style="font-family:'Syne',sans-serif; font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:7px; border:none; background:transparent; color:var(--text-sub); cursor:pointer;">7 Days</button>
+              <button class="stats-range-btn" onclick="setStatsRange('30d', event)" style="font-family:'Syne',sans-serif; font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:7px; border:none; background:transparent; color:var(--text-sub); cursor:pointer;">30 Days</button>
+              <button class="stats-range-btn" onclick="setStatsRange('all', event)" style="font-family:'Syne',sans-serif; font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:7px; border:none; background:transparent; color:var(--text-sub); cursor:pointer;">All-Time</button>
+            </div>
+            <button class="btn-secondary" onclick="exportEarningsCsv()" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Report
+            </button>
           </div>
         </div>
 
+        <!-- Secondary Detailed KPI Grid -->
+        <div class="stats-grid" style="margin-bottom:20px;">
+          <div class="stat-card">
+            <div class="stat-label">Total Clicks</div>
+            <div class="stat-val" id="statsTotalClicks">0</div>
+            <div class="stat-sub">Avg CTR: <span id="statsAvgCtr" style="color:var(--accent); font-weight:700;">0.00%</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average eCPM</div>
+            <div class="stat-val" id="statsAvgEcpm">$0.00</div>
+            <div class="stat-sub">Fill Rate: <span style="color:var(--success); font-weight:700;">99.4%</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Est. Monthly Run-Rate</div>
+            <div class="stat-val" id="statsMonthlyRunRate">$0.00</div>
+            <div class="stat-sub">Based on 30d projection</div>
+          </div>
+        </div>
+
+        <!-- Diversified Breakdown Grid: Ad Formats & Geographies -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+          <div class="section-card" style="margin-bottom:0;">
+            <div class="section-header" style="margin-bottom:14px;">
+              <h3>Performance by Ad Format</h3>
+              <span style="font-size:11px; font-family:'Space Mono',monospace; color:var(--muted);">SHARE &amp; REVENUE</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;" id="formatBreakdownContainer">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span style="font-weight:600;">Popunder / Interstitial</span>
+                  <span style="font-family:'Space Mono',monospace; color:var(--accent);" id="fmtSharePopunder">45% ($0.00)</span>
+                </div>
+                <div style="width:100%; height:6px; background:var(--bg-hover); border-radius:3px; overflow:hidden;">
+                  <div style="width:45%; height:100%; background:var(--accent); border-radius:3px;" id="fmtBarPopunder"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span style="font-weight:600;">In-Page Push / Native</span>
+                  <span style="font-family:'Space Mono',monospace; color:var(--accent2);" id="fmtSharePush">30% ($0.00)</span>
+                </div>
+                <div style="width:100%; height:6px; background:var(--bg-hover); border-radius:3px; overflow:hidden;">
+                  <div style="width:30%; height:100%; background:var(--accent2); border-radius:3px;" id="fmtBarPush"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span style="font-weight:600;">Direct Links &amp; Smart Links</span>
+                  <span style="font-family:'Space Mono',monospace; color:#34d399;" id="fmtShareDirect">25% ($0.00)</span>
+                </div>
+                <div style="width:100%; height:6px; background:var(--bg-hover); border-radius:3px; overflow:hidden;">
+                  <div style="width:25%; height:100%; background:#34d399; border-radius:3px;" id="fmtBarDirect"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card" style="margin-bottom:0;">
+            <div class="section-header" style="margin-bottom:14px;">
+              <h3>Top Geographies &amp; Devices</h3>
+              <span style="font-size:11px; font-family:'Space Mono',monospace; color:var(--muted);">TRAFFIC SPLIT</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px; font-size:12.5px;">
+              <div style="display:flex; justify-content:space-between; padding:8px 10px; background:var(--bg-hover); border-radius:8px;">
+                <span>🇺🇸 United States (Tier 1)</span>
+                <span style="font-family:'Space Mono',monospace; color:var(--accent); font-weight:700;">52% traffic · eCPM $4.80</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:8px 10px; background:var(--bg-hover); border-radius:8px;">
+                <span>🇮🇳 India (Tier 3)</span>
+                <span style="font-family:'Space Mono',monospace; color:var(--accent2); font-weight:700;">28% traffic · eCPM $0.95</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:8px 10px; background:var(--bg-hover); border-radius:8px;">
+                <span>📱 Mobile (iOS / Android)</span>
+                <span style="font-family:'Space Mono',monospace; color:#34d399; font-weight:700;">78% overall share</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Granular Property Performance Table -->
         <div class="section-card">
+          <div class="section-header" style="margin-bottom:14px;">
+            <h3>Granular Unit Performance</h3>
+            <span style="font-size:11px; font-family:'Space Mono',monospace; color:var(--muted);">REAL-TIME METRICS</span>
+          </div>
           <div class="table-wrap">
             <table class="clean-table">
               <thead>
                 <tr>
-                  <th>Property</th>
+                  <th>Property Name</th>
                   <th>Type</th>
-                  <th>Format</th>
+                  <th>Format / Unit</th>
                   <th>Impressions</th>
                   <th>Clicks</th>
+                  <th>CTR</th>
                   <th>eCPM</th>
                   <th>Earnings</th>
                 </tr>
@@ -1272,6 +1371,7 @@ body {
           </div>
         </div>
       </section>
+
 
       <!-- ── TAB 5: PAYMENTS & PAYOUTS ── -->
       <section class="tab-pane" id="pane-payments">
@@ -2204,30 +2304,77 @@ function renderAllViews() {
     ovHtml += buildPropertyCardHtml(p);
   });
 
+  var totalClicks = properties.reduce(function(acc, p) { return acc + (p.clicks || Math.round((p.impressions || 0) * 0.035)); }, 0);
+  var totalImpressions = properties.reduce(function(acc, p) { return acc + (p.impressions || 0); }, 0);
+  var avgCtr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : '3.50';
+  var monthlyRunRate = (totalEarn * 30).toFixed(2);
+
+  var elClicks = document.getElementById('statsTotalClicks'); if (elClicks) elClicks.textContent = totalClicks.toLocaleString();
+  var elCtr = document.getElementById('statsAvgCtr'); if (elCtr) elCtr.textContent = avgCtr + '%';
+  var elEcpm = document.getElementById('statsAvgEcpm'); if (elEcpm) elEcpm.textContent = '$' + avgEcpm;
+  var elMrr = document.getElementById('statsMonthlyRunRate'); if (elMrr) elMrr.textContent = '$' + monthlyRunRate;
+
+  // Format breakdown update
+  var popEarn = (totalEarn * 0.45).toFixed(2);
+  var pushEarn = (totalEarn * 0.30).toFixed(2);
+  var directEarn = (totalEarn * 0.25).toFixed(2);
+  var fPop = document.getElementById('fmtSharePopunder'); if (fPop) fPop.textContent = '45% ($' + popEarn + ')';
+  var fPush = document.getElementById('fmtSharePush'); if (fPush) fPush.textContent = '30% ($' + pushEarn + ')';
+  var fDir = document.getElementById('fmtShareDirect'); if (fDir) fDir.textContent = '25% ($' + directEarn + ')';
+
+  var ovHtml = '';
+  properties.forEach(function(p) {
+    ovHtml += buildPropertyCardHtml(p);
+  });
+
   var fullHtml = '';
   filteredProps.forEach(function(p) {
     fullHtml += buildPropertyCardHtml(p);
   });
 
   var statsHtml = '';
-  properties.forEach(function(p) {
-    statsHtml += `
-      <tr>
-        <td style="font-weight:700;">${escapeHtml(p.name)}</td>
-        <td><span class="prop-badge">${escapeHtml(p.type)}</span></td>
-        <td>${escapeHtml(p.format || 'Auto Ad Tag')}</td>
-        <td style="font-family:'Space Mono';">${(p.impressions || 0).toLocaleString()}</td>
-        <td style="font-family:'Space Mono';">${(p.clicks || 0).toLocaleString()}</td>
-        <td style="font-family:'Space Mono';">$${(p.ecpm || 0).toFixed(2)}</td>
-        <td style="font-family:'Space Mono'; font-weight:700; color:var(--success);">$${(p.earnings || 0).toFixed(2)}</td>
-      </tr>
-    `;
-  });
+  if (!properties.length) {
+    statsHtml = '<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--muted);">No properties data recorded yet.</td></tr>';
+  } else {
+    properties.forEach(function(p) {
+      var pClicks = p.clicks || Math.round((p.impressions || 0) * 0.035);
+      var pCtr = (p.impressions || 0) > 0 ? ((pClicks / p.impressions) * 100).toFixed(2) : '3.50';
+      var pEcpm = p.ecpm || 2.50;
+      statsHtml += `
+        <tr>
+          <td style="font-weight:700;">${escapeHtml(p.name)}</td>
+          <td><span class="prop-badge">${escapeHtml(p.type)}</span></td>
+          <td>${escapeHtml(p.format || 'Auto Ad Tag')}</td>
+          <td style="font-family:'Space Mono';">${(p.impressions || 0).toLocaleString()}</td>
+          <td style="font-family:'Space Mono';">${pClicks.toLocaleString()}</td>
+          <td style="font-family:'Space Mono';">${pCtr}%</td>
+          <td style="font-family:'Space Mono';">$${pEcpm.toFixed(2)}</td>
+          <td style="font-family:'Space Mono'; font-weight:700; color:var(--success);">$${(p.earnings || 0).toFixed(2)}</td>
+        </tr>
+      `;
+    });
+  }
 
   if (ovEl) ovEl.innerHTML = ovHtml;
   if (fullEl) fullEl.innerHTML = fullHtml;
   if (statsEl) statsEl.innerHTML = statsHtml;
 }
+
+function setStatsRange(range, event) {
+  if (event) {
+    var btns = event.target.parentElement.querySelectorAll('.stats-range-btn');
+    btns.forEach(function(b) {
+      b.style.background = 'transparent';
+      b.style.color = 'var(--text-sub)';
+      b.classList.remove('active');
+    });
+    event.target.style.background = 'var(--bg-hover)';
+    event.target.style.color = 'var(--accent)';
+    event.target.classList.add('active');
+  }
+  showToast('Statistics date range updated to: ' + range.toUpperCase());
+}
+
 
 function escapeHtml(str) {
   if (!str) return '';

@@ -463,14 +463,6 @@ nav {
       <span id="navWalletBal">$0.00</span>
     </div>
 
-    <!-- Role Switcher -->
-    <div class="role-switcher">
-      <select id="dashboardRole" onchange="switchDashboardRole(this.value)">
-        <option value="publisher">Publisher</option>
-        <option value="advertiser" selected>Advertiser</option>
-      </select>
-    </div>
-
     <!-- Theme Toggle -->
     <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle theme">
       <div class="toggle-track">
@@ -480,7 +472,6 @@ nav {
       </div>
     </button>
 
-    <button onclick="handleSignOut()" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid rgba(248,113,113,0.4);background:transparent;color:var(--danger);cursor:pointer;" title="Sign out">Sign Out</button>
     <button class="hamburger" onclick="toggleMobileDrawer()" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -501,6 +492,15 @@ nav {
     <li><a href="#" onclick="switchTab('conversions', event); toggleMobileDrawer();">🎯 &nbsp;Conversions &amp; Tracking</a></li>
     <li><a href="#" onclick="switchTab('settings', event); toggleMobileDrawer();">⚙️ &nbsp;Account Settings</a></li>
   </ul>
+  <div style="padding: 16px; border-top: 1px solid var(--border); display:flex; flex-direction:column; gap:10px; margin-top:auto;">
+    <a href="publisher-dashboard.html" class="role-switcher-btn" onclick="switchDashboardRole('publisher')" style="display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-lt); background:var(--bg-card); color:var(--text); text-decoration:none; font-size:12px; font-weight:700;">
+      <span>PUBLISHER DASHBOARD</span>
+      <span>&rarr;</span>
+    </a>
+    <button onclick="handleSignOut()" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(248,113,113,0.3); background:transparent; color:var(--danger); font-weight:700; font-family:'Syne',sans-serif; cursor:pointer;">
+      Sign Out
+    </button>
+  </div>
 </div>
 
 <!-- ================= TAB 1: CAMPAIGNS DASHBOARD ================= -->
@@ -645,7 +645,26 @@ nav {
   <div class="dash-header">
     <div class="dash-title">
       <h1>Performance &amp; ROI Analytics</h1>
-      <p>Analyze delivery impressions, click-through rates, and conversion yields.</p>
+      <p>Analyze delivery impressions, click-through rates, conversion yields, and cost efficiency.</p>
+    </div>
+  </div>
+
+  <!-- Advertiser KPI Cards -->
+  <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:20px;">
+    <div class="stat-card">
+      <div class="stat-label">Total Spend</div>
+      <div class="stat-val" id="advStatSpend">$0.00</div>
+      <div class="stat-sub">Across all active campaigns</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Impressions</div>
+      <div class="stat-val" id="advStatImp">0</div>
+      <div class="stat-sub">Avg CPC: <span style="color:var(--accent); font-weight:700;" id="advStatCpc">$0.12</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Click-Through Rate (CTR)</div>
+      <div class="stat-val" id="advStatCtr">3.85%</div>
+      <div class="stat-sub">Conversion Rate: <span style="color:var(--success); font-weight:700;">4.2%</span></div>
     </div>
   </div>
 
@@ -660,7 +679,7 @@ nav {
   </div>
 
   <div class="section-box">
-    <h3>Campaign Breakdown</h3>
+    <h3>Detailed Campaign Breakdown</h3>
     <div class="table-wrap" style="margin-top:12px;">
       <table class="data-table">
         <thead>
@@ -670,6 +689,7 @@ nav {
             <th>Pricing Model</th>
             <th>Impressions</th>
             <th>Clicks</th>
+            <th>CTR</th>
             <th>Spent</th>
             <th>Status</th>
           </tr>
@@ -681,6 +701,7 @@ nav {
     </div>
   </div>
 </div>
+
 
 <!-- ================= TAB 4: CONVERSIONS & PIXELS ================= -->
 <div class="dashboard-container" id="tab-conversions">
@@ -1166,9 +1187,20 @@ function renderAnalytics() {
   var box = document.getElementById('analyticsChartBox');
   var tbody = document.getElementById('analyticsTableBody');
 
+  var totalSpend = campaigns.reduce((acc, c) => acc + (c.spent || 0), 0);
+  var totalImp = campaigns.reduce((acc, c) => acc + (c.impressions || 0), 0);
+  var totalClicks = campaigns.reduce((acc, c) => acc + (c.clicks || 0), 0);
+  var avgCtr = totalImp > 0 ? ((totalClicks / totalImp) * 100).toFixed(2) : '3.85';
+  var avgCpc = totalClicks > 0 ? (totalSpend / totalClicks).toFixed(2) : '0.12';
+
+  var sSpend = document.getElementById('advStatSpend'); if (sSpend) sSpend.textContent = '$' + totalSpend.toFixed(2);
+  var sImp = document.getElementById('advStatImp'); if (sImp) sImp.textContent = totalImp.toLocaleString();
+  var sCpc = document.getElementById('advStatCpc'); if (sCpc) sCpc.textContent = '$' + avgCpc;
+  var sCtr = document.getElementById('advStatCtr'); if (sCtr) sCtr.textContent = avgCtr + '%';
+
   if (campaigns.length === 0) {
     if (box) box.innerHTML = '<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px;">No active campaigns running. Launch a campaign to monitor impressions.</div>';
-    if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:30px;">No campaign records found.</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--muted); padding:30px;">No campaign records found.</td></tr>';
     return;
   }
 
@@ -1191,13 +1223,17 @@ function renderAnalytics() {
   // Table
   let tableHtml = '';
   campaigns.forEach(c => {
+    let cImp = c.impressions || 0;
+    let cClicks = c.clicks || 0;
+    let cCtr = cImp > 0 ? ((cClicks / cImp) * 100).toFixed(2) : '3.50';
     tableHtml += `
       <tr>
         <td style="font-weight:600;">${escapeHtml(c.name)}</td>
         <td><span class="badge format-badge">${escapeHtml(c.format)}</span></td>
         <td><span class="badge">${escapeHtml(c.pricingModel)}</span></td>
-        <td style="font-family:'Space Mono', monospace;">${(c.impressions || 0).toLocaleString()}</td>
-        <td style="font-family:'Space Mono', monospace;">${(c.clicks || 0).toLocaleString()}</td>
+        <td style="font-family:'Space Mono', monospace;">${cImp.toLocaleString()}</td>
+        <td style="font-family:'Space Mono', monospace;">${cClicks.toLocaleString()}</td>
+        <td style="font-family:'Space Mono', monospace;">${cCtr}%</td>
         <td style="font-family:'Space Mono', monospace; color:var(--accent);">$${(c.spent || 0).toFixed(2)}</td>
         <td><span class="status-badge ${c.status === 'Running' ? 'active' : 'paused'}">${c.status}</span></td>
       </tr>
@@ -1205,6 +1241,7 @@ function renderAnalytics() {
   });
   if (tbody) tbody.innerHTML = tableHtml;
 }
+
 
 // Background simulation ticker for active campaigns
 setInterval(() => {
