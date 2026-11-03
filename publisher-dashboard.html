@@ -3805,6 +3805,8 @@ function renderScreenDummy(device, formatName, bannerSize) {
 
 // Init
 persistProperties();
+var initBox = document.getElementById('categoryFormatPreviewsBox');
+if (initBox) initBox.innerHTML = renderCategoryFormatPreviews('Web/App Ads');
 </script>
 </body>
 </html>
