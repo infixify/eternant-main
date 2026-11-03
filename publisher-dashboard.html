@@ -3659,6 +3659,7 @@ function renderScreenDummy(device, formatName, bannerSize) {
   if (!container) return;
 
   var isMobile = device === 'mobile';
+  var isBanner = formatName.includes('Banner') || formatName.includes('Display');
   container.style.maxWidth = isMobile ? '320px' : '100%';
   container.style.margin = isMobile ? '0 auto' : '0';
 
