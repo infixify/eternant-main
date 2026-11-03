@@ -450,7 +450,6 @@ nav {
   <!-- Desktop Nav Links -->
   <ul class="nav-links">
     <li><a href="#" class="active" onclick="switchTab('dashboard', event)">Campaigns</a></li>
-    <li><a href="#" onclick="switchTab('gallery', event)">Ad Formats Gallery</a></li>
     <li><a href="#" onclick="switchTab('wallet', event)">Deposit &amp; Wallet</a></li>
     <li><a href="#" onclick="switchTab('analytics', event)">Analytics</a></li>
     <li><a href="#" onclick="switchTab('conversions', event)">Conversions / Pixels</a></li>
@@ -488,7 +487,6 @@ nav {
   </div>
   <ul class="mobile-nav-links">
     <li><a href="#" class="active" onclick="switchTab('dashboard', event); toggleMobileDrawer();">🚀 &nbsp;Campaigns</a></li>
-    <li><a href="#" onclick="switchTab('gallery', event); toggleMobileDrawer();">🖼️ &nbsp;Ad Formats Gallery</a></li>
     <li><a href="#" onclick="switchTab('wallet', event); toggleMobileDrawer();">💳 &nbsp;Deposit &amp; Wallet</a></li>
     <li><a href="#" onclick="switchTab('analytics', event); toggleMobileDrawer();">📊 &nbsp;Live Analytics</a></li>
     <li><a href="#" onclick="switchTab('conversions', event); toggleMobileDrawer();">🎯 &nbsp;Conversions &amp; Tracking</a></li>
@@ -632,124 +630,6 @@ nav {
           <!-- Populated dynamically -->
         </tbody>
       </table>
-    </div>
-  </div>
-</div>
-
-<!-- ================= TAB: AD FORMATS GALLERY ================= -->
-<div class="dashboard-container" id="tab-gallery">
-  <div class="breadcrumb">
-    <a href="#" onclick="switchTab('dashboard', event)">Eternant</a>
-    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    <span>Ad Formats Gallery</span>
-  </div>
-
-  <div class="dash-header">
-    <div class="dash-title">
-      <h1>Ad Formats &amp; Picture Specs Gallery</h1>
-      <p>Explore all available advertising formats, picture dimensions, and live mockups instantly without creating campaigns.</p>
-    </div>
-    <button class="btn-primary" onclick="openCampaignModal()">+ Create Campaign Now</button>
-  </div>
-
-  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; margin-bottom:24px;">
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Display Banner (300x250)</h3>
-          <span class="badge">300 × 250 px</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Standard desktop and mobile medium rectangle banner. Broadest publisher inventory.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Display Banner (300x250)')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Leaderboard Banner</h3>
-          <span class="badge">728 × 90 px</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Wide horizontal header placement for maximum desktop brand exposure.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Display Leaderboard (728x90)')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Mobile Sticky Banner</h3>
-          <span class="badge">320 × 50 px</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Pinned footer banner optimized for mobile web and PWA applications.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Mobile Sticky Banner')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Native In-Feed Ad</h3>
-          <span class="badge">Fluid / Responsive</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Contextual sponsored content feed unit matching editorial site design.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Native In-Feed')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Rewarded Offerwall</h3>
-          <span class="badge">400 × 600 px Modal</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Interactive reward center with surveys, app downloads, and micro-tasks.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Offerwalls')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Popunder Ad</h3>
-          <span class="badge">Full Screen Underlay</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">High-volume tab-under ad opened on user click for high advertiser ROI.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Popunder Ads')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Push Notifications</h3>
-          <span class="badge">300 × 100 px Widget</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">High-click push alert widget delivered directly to desktop and mobile subscribers.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Push Notifications')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">Telegram Broadcast Ad</h3>
-          <span class="badge">Telegram Chat Card</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Sponsored broadcast message card injected into high-reach Telegram channels.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('Telegram Broadcast Ad')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-    </div>
-
-    <div class="section-box" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h3 style="font-size:15px; font-weight:700;">SmartLink AI Routing</h3>
-          <span class="badge">Smart Direct Link</span>
-        </div>
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Single URL intelligently routing traffic by geo and device for maximum RPM.</p>
-      </div>
-      <button class="btn-primary" onclick="openAdFormatPicturePreview('SmartLink AI Routing')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
     </div>
   </div>
 </div>

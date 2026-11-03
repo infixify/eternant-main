@@ -1089,11 +1089,6 @@ body {
 
       <div class="menu-label">Integrations &amp; Help</div>
 
-      <a class="sidebar-item" onclick="switchNavTab('gallery', this)">
-        <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
-        <span>Ad Formats Gallery</span>
-      </a>
-
       <a class="sidebar-item" onclick="switchNavTab('getstarted', this)">
         <span class="item-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></span>
         <span>Get Started Guide</span>
@@ -1242,120 +1237,11 @@ body {
           </button>
         </div>
 
+        <div id="categoryFormatPreviewsBox"></div>
+
         <div class="section-card">
           <div id="fullPropertyList">
             <!-- Populated dynamically -->
-          </div>
-        </div>
-      </section>
-
-      <!-- ── TAB: AD FORMATS GALLERY (ALWAYS ACCESSIBLE) ── -->
-      <section class="tab-pane" id="pane-gallery">
-        <div class="page-header">
-          <div class="page-title">
-            <h1>Ad Formats &amp; Picture Specs Gallery</h1>
-            <p>Browse all available ad types, sizes, picture formats, and live mockups instantly without adding any assets.</p>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; margin-bottom:24px;">
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Display Banner (300x250)</h3>
-                <span class="prop-badge">300 × 250 px</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Standard medium rectangle desktop and mobile sidebar banner with high eCPM yield.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Display Banner (300x250)')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Leaderboard Banner</h3>
-                <span class="prop-badge">728 × 90 px</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Wide horizontal desktop header banner for maximum brand visibility.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Display Leaderboard (728x90)')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Mobile Sticky Banner</h3>
-                <span class="prop-badge">320 × 50 px</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Pinned footer banner optimized for mobile web and PWA applications.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Mobile Sticky Banner')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Native In-Feed Ad</h3>
-                <span class="prop-badge">Fluid / Responsive</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Contextual sponsored content feed unit matching editorial site design.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Native In-Feed')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Rewarded Offerwall</h3>
-                <span class="prop-badge">400 × 600 px Modal</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Interactive reward center with surveys, app downloads, and micro-tasks.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Offerwalls')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Popunder Ad</h3>
-                <span class="prop-badge">Full Screen Underlay</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">High-volume tab-under ad opened on user click for high advertiser ROI.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Popunder Ads')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Push Notifications</h3>
-                <span class="prop-badge">300 × 100 px Widget</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">High-click push alert widget delivered directly to desktop and mobile subscribers.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Push Notifications')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">Telegram Broadcast Ad</h3>
-                <span class="prop-badge">Telegram Chat Card</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Sponsored broadcast message card injected into high-reach Telegram channels.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('Telegram Broadcast Ad')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
-          </div>
-
-          <div class="section-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="font-size:15px; font-weight:700;">SmartLink AI Routing</h3>
-                <span class="prop-badge">Smart Direct Link</span>
-              </div>
-              <p style="font-size:12px; color:var(--text-sub); margin-bottom:14px; line-height:1.5;">Single URL intelligently routing traffic by geo and device for maximum RPM.</p>
-            </div>
-            <button class="action-btn-primary" onclick="openAdFormatPicturePreview('SmartLink AI Routing')" style="width:100%; justify-content:center;">🖼️ Preview Picture Format</button>
           </div>
         </div>
       </section>
@@ -2164,7 +2050,55 @@ function switchMonetizeCategory(category, subItemEl) {
   if (supportBadge) supportBadge.textContent = supportMap[currentPropFilter] || 'Support: Used by all';
   if (btnText) btnText.textContent = btnTextMap[currentPropFilter] || '+ Add New Unit';
 
+  var formatPreviewsBox = document.getElementById('categoryFormatPreviewsBox');
+  if (formatPreviewsBox) {
+    formatPreviewsBox.innerHTML = renderCategoryFormatPreviews(currentPropFilter);
+  }
+
   renderAllViews();
+}
+
+function renderCategoryFormatPreviews(category) {
+  var formatMap = {
+    'Offerwalls': [
+      { name: 'Offerwalls', dim: '400 × 600 px Modal', desc: 'Interactive reward center with surveys, app downloads, and micro-tasks.' }
+    ],
+    'Web/App Ads': [
+      { name: 'Display Banner (300x250)', dim: '300 × 250 px', desc: 'Standard medium rectangle desktop and mobile sidebar banner.' },
+      { name: 'Display Leaderboard (728x90)', dim: '728 × 90 px', desc: 'Wide horizontal desktop header banner for maximum brand visibility.' },
+      { name: 'Mobile Sticky Banner', dim: '320 × 50 px', desc: 'Pinned footer banner optimized for mobile web and PWA apps.' },
+      { name: 'Popunder Ads', dim: 'Full Screen Underlay', desc: 'High-volume tab-under ad opened on user click for high advertiser ROI.' },
+      { name: 'Push Notifications', dim: '300 × 100 px Widget', desc: 'High-click push alert widget delivered directly to subscribers.' }
+    ],
+    'Link Locker': [
+      { name: 'SmartLink AI Routing', dim: 'Smart Direct Link', desc: 'Single URL intelligently routing traffic by geo and device for max RPM.' }
+    ],
+    'Native Ads': [
+      { name: 'Native In-Feed', dim: 'Fluid / Responsive', desc: 'Contextual sponsored content feed unit matching editorial site design.' }
+    ],
+    'Direct/Smart Link Ads': [
+      { name: 'Telegram Broadcast Ad', dim: 'Telegram Chat Card', desc: 'Sponsored broadcast message card injected into high-reach Telegram channels.' }
+    ]
+  };
+
+  var formats = formatMap[category] || formatMap['Web/App Ads'];
+  var html = '<div style="margin-bottom:16px;"><div style="font-size:13px; font-weight:700; margin-bottom:10px; color:var(--text); display:flex; align-items:center; gap:6px;"><span>🖼️ Ad Formats &amp; Picture Specs for ' + escapeHtml(category) + '</span></div><div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">';
+
+  formats.forEach(function(f) {
+    html += '<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+      '<div>' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+          '<strong style="font-size:13px; color:var(--text);">' + escapeHtml(f.name) + '</strong>' +
+          '<span class="prop-badge">' + escapeHtml(f.dim) + '</span>' +
+        '</div>' +
+        '<p style="font-size:11.5px; color:var(--text-sub); line-height:1.4;">' + escapeHtml(f.desc) + '</p>' +
+      '</div>' +
+      '<button class="btn-secondary" style="width:100%; justify-content:center; padding:6px; font-size:11px;" onclick="openAdFormatPicturePreview(\'' + escapeHtml(f.name) + '\')">🖼️ Preview Picture Format</button>' +
+    '</div>';
+  });
+
+  html += '</div></div>';
+  return html;
 }
 
 // Navigation Tab Switcher
