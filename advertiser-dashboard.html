@@ -779,7 +779,10 @@ nav {
 
     <!-- Individual Ad Format Selection -->
     <div class="form-group">
-      <label class="form-label">Individual Ad Format</label>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+        <label class="form-label" style="margin-bottom:0;">Individual Ad Format</label>
+        <button type="button" class="btn-secondary" style="padding:2px 8px; font-size:10px;" onclick="openAdFormatPicturePreview(document.getElementById('campFormat').value)">🖼️ Preview Picture Format</button>
+      </div>
       <select class="form-select" id="campFormat">
         <option value="Push Notifications">Push Notifications (Direct to Device)</option>
         <option value="In-Page Push">In-Page Push (Banner floating - iOS Compatible)</option>
@@ -1335,6 +1338,62 @@ function initRoleSwitcher() {
 // Initial run
 persistAll();
 initRoleSwitcher();
+
+// ══════════════════════════════════════════════════════
+// AD FORMAT PICTURE PREVIEW MODAL & MOCKUPS (ADVERTISER)
+// ══════════════════════════════════════════════════════
+function openAdFormatPicturePreview(formatName) {
+  var specs = {
+    'Display Banner (300x250)': { dim: '300 × 250 px', type: 'Medium Rectangle Banner', desc: 'Standard desktop and mobile content sidebar banner. High eCPM yield and broad advertiser demand.', mockup: '<div style="width:240px; height:180px; background:linear-gradient(135deg,#2563eb,#7c3aed); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; padding:12px; box-shadow:0 8px 24px rgba(0,0,0,0.3);"><div style="font-size:10px; font-family:Space Mono; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px; margin-bottom:8px;">ADVERTISEMENT 300x250</div><div style="font-weight:700; font-size:14px; margin-bottom:4px;">Special Offer 50% Off</div><div style="font-size:11px; opacity:0.8; margin-bottom:10px;">Click here to claim bonus today!</div><div style="background:#fff; color:#1e1b4b; font-size:10px; font-weight:700; padding:4px 12px; border-radius:4px;">LEARN MORE</div></div>' },
+    'Display Leaderboard (728x90)': { dim: '728 × 90 px', type: 'Header Leaderboard Banner', desc: 'Wide horizontal banner positioned at the top or bottom of desktop websites and web portals.', mockup: '<div style="width:100%; max-width:420px; height:60px; background:linear-gradient(135deg,#059669,#2563eb); border-radius:6px; display:flex; align-items:center; justify-content:space-between; color:#fff; padding:0 14px; box-shadow:0 6px 20px rgba(0,0,0,0.3);"><div style="display:flex; flex-direction:column; text-align:left;"><div style="font-weight:700; font-size:12px;">Leaderboard Ad Banner</div><div style="font-size:9px; opacity:0.8;">728x90 px Standard</div></div><div style="background:#fff; color:#065f46; font-size:10px; font-weight:700; padding:3px 10px; border-radius:4px;">VIEW</div></div>' },
+    'Mobile Sticky Banner': { dim: '320 × 50 px', type: 'Mobile Footer Sticky Banner', desc: 'Sticks to the bottom of mobile browser screens for continuous high-visibility impressions.', mockup: '<div style="width:280px; height:44px; background:linear-gradient(135deg,#db2777,#7c3aed); border-radius:6px; display:flex; align-items:center; justify-content:space-between; color:#fff; padding:0 12px; box-shadow:0 4px 16px rgba(0,0,0,0.3);"><div style="font-weight:700; font-size:11px;">Mobile Sticky (320x50)</div><div style="background:#fff; color:#9d174d; font-size:9px; font-weight:700; padding:2px 8px; border-radius:4px;">INSTALL</div></div>' },
+    'Native In-Feed': { dim: 'Responsive / Fluid', type: 'Contextual Native Feed Ad', desc: 'Blends seamlessly into article feeds and post lists, matching editorial styles.', mockup: '<div style="width:260px; background:var(--bg-card); border:1px solid var(--border-lt); border-radius:8px; padding:10px; text-align:left; display:flex; gap:10px;"><div style="width:50px; height:50px; background:linear-gradient(135deg,#f59e0b,#ef4444); border-radius:6px; flex-shrink:0;"></div><div><div style="font-size:9px; font-family:Space Mono; color:#f59e0b; margin-bottom:2px;">SPONSORED</div><div style="font-weight:700; font-size:11px; margin-bottom:2px;">Top 10 Crypto Picks 2026</div><div style="font-size:9px; color:var(--text-sub);">Read full analysis &rarr;</div></div></div>' },
+    'Offerwalls': { dim: '400 × 600 px Modal', type: 'Rewarded Offerwall', desc: 'Interactive reward center featuring surveys, mobile app downloads, and micro-tasks.', mockup: '<div style="width:240px; background:var(--bg-card); border:1px solid var(--border-lt); border-radius:8px; padding:12px; text-align:left;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span style="font-weight:700; font-size:11px;">⭐ Reward Center</span><span style="font-size:9px; background:rgba(52,211,153,0.15); color:#34d399; padding:1px 6px; border-radius:4px;">Earn 500 Pts</span></div><div style="font-size:9px; color:var(--text-sub); margin-bottom:6px;">Complete tasks &amp; install apps:</div><div style="background:var(--bg-hover); padding:6px; border-radius:6px; font-size:10px; display:flex; justify-content:space-between; align-items:center;"><span>Play RPG Game</span><b style="color:#34d399;">+250 Pts</b></div></div>' },
+    'Popunder Ads': { dim: 'Full Screen Underlay', type: 'Popunder / Tab-Under Ad', desc: 'Opens discreetly behind the main browser window when users click anywhere on your page.', mockup: '<div style="width:260px; height:140px; background:linear-gradient(135deg,#1e1b4b,#312e81); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; padding:12px; border:1px solid rgba(110,181,255,0.3);"><div style="font-size:10px; font-family:Space Mono; color:#6eb5ff; margin-bottom:4px;">POPUNDER UNDERLAY WINDOW</div><div style="font-weight:700; font-size:12px; margin-bottom:6px;">High Conversion Landing Page</div><div style="background:#6eb5ff; color:#03050d; font-size:9px; font-weight:700; padding:3px 10px; border-radius:4px;">VISIT OFFER</div></div>' },
+    'Push Notifications': { dim: '300 × 100 px Floating Widget', type: 'Browser Push Notification', desc: 'Delivers high-click push alerts directly to subscriber desktop and mobile devices.', mockup: '<div style="width:260px; background:var(--bg-card); border:1px solid var(--border-lt); border-radius:8px; padding:10px; text-align:left; display:flex; gap:10px; box-shadow:0 6px 20px rgba(0,0,0,0.4);"><div style="width:36px; height:36px; background:#3b82f6; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; flex-shrink:0;">🔔</div><div><div style="font-weight:700; font-size:11px; margin-bottom:2px;">Exclusive Reward Alert!</div><div style="font-size:9px; color:var(--text-sub);">Claim your daily bonus reward now.</div></div></div>' },
+    'Telegram Broadcast Ad': { dim: 'Telegram Chat Card', type: 'Telegram Channel / Group Broadcast', desc: 'Sponsored broadcast message injected into high-reach Telegram channels and groups.', mockup: '<div style="width:260px; background:#18223d; border-radius:10px; padding:10px; text-align:left; font-size:11px;"><div style="color:#6eb5ff; font-weight:700; margin-bottom:4px;">📢 Channel Sponsored Post</div><div style="color:#fff; margin-bottom:6px; font-size:10px;">Check out this exclusive top-rated platform for creators &amp; advertisers!</div><div style="background:#2563eb; color:#fff; text-align:center; padding:4px; border-radius:6px; font-weight:700; font-size:10px;">Open App &rarr;</div></div>' },
+    'SmartLink AI Routing': { dim: 'Smart Direct Link', type: 'AI Traffic Routing Link', desc: 'Single smart URL that automatically optimizes traffic geo, device, and vertical for max RPM.', mockup: '<div style="width:260px; background:var(--bg-hover); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center; font-family:Space Mono; font-size:11px; color:#6eb5ff;">https://eternant.net/sl/ref99201<div style="font-size:9px; color:var(--success); margin-top:4px;">⚡ AI Geo-Optimized Routing Active</div></div>' }
+  };
+
+  var info = specs[formatName] || {
+    dim: 'Standard Ad Unit',
+    type: formatName,
+    desc: 'High-performing advertising unit provisioned by Eternant network with verified security and instant payouts.',
+    mockup: '<div style="width:240px; height:140px; background:linear-gradient(135deg,#4a9eff,#7b5ef7); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:13px;">' + formatName + '</div>'
+  };
+
+  var modalHtml = `
+    <div class="modal-overlay active" id="adFormatPicModal" style="z-index:999;">
+      <div class="modal-box" style="max-width:560px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:800;">🖼️ ${info.type}</h2>
+            <p style="font-size:12px; color:var(--accent); font-family:'Space Mono'; margin-top:2px;">Picture Dimensions: ${info.dim}</p>
+          </div>
+          <button class="btn-secondary" onclick="document.getElementById('adFormatPicModal').remove()" style="padding:4px 10px; font-size:16px;">&times;</button>
+        </div>
+
+        <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; text-align:center;">
+          <div style="background:var(--bg-card); border:1px dashed var(--accent); border-radius:10px; padding:24px; min-height:180px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+            ${info.mockup}
+          </div>
+        </div>
+
+        <div style="font-size:12.5px; color:var(--text-sub); line-height:1.6; margin-bottom:16px;">
+          ${info.desc}
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button class="btn-secondary" onclick="document.getElementById('adFormatPicModal').remove()">Close Preview</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  var existing = document.getElementById('adFormatPicModal');
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
 </script>
 </body>
 </html>
